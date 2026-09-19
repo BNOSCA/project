@@ -16,15 +16,17 @@ from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from .config import ROOT, Settings
+from .analytics import build_admin_insights
 from .db import EventStore
 from .explanation import build_explanation
 from .firebase import initialize_firebase
 from .feed_debug import build_debug_router
 from .mock import FixtureCatalog, MockServices, filter_products, parse_demo_intent
+from .repositories.interactions import InteractionRepository
 from .search import search_products
 from .schemas import (
     ErrorBody, ErrorResponse, EventBatchResult, FeedbackEvent, FeedbackResponse,
-    FeedResponse, InsightsResponse, Intent, InteractionEvent, Outfit, PostDetail,
+    AdminInsightsResponse, AdminStatusResponse, FeedResponse, InsightsResponse, Intent, InteractionEvent, Outfit, PostDetail,
     RecommendRequest, RecommendationResponse, SearchRequest, SearchResponse, UserProfile,
     SearchFilters,
 )
@@ -70,6 +72,25 @@ def authenticated_user_id(authorization: str | None) -> str | None:
         raise APIError(401, "UNAUTHENTICATED", "Firebase 登入驗證失敗。") from exc
 
 
+def verified_user_id(authorization: str | None) -> str:
+    """Strict token verification for protected administration endpoints."""
+    if not authorization:
+        raise APIError(401, "UNAUTHENTICATED", "請先登入後再使用管理功能。")
+    scheme, _, token = authorization.partition(" ")
+    if scheme.lower() != "bearer" or not token:
+        raise APIError(401, "UNAUTHENTICATED", "Authorization 格式無效。")
+    try:
+        from firebase_admin import auth as firebase_auth
+
+        initialize_firebase()
+        uid = firebase_auth.verify_id_token(token).get("uid")
+        if not uid:
+            raise ValueError("missing uid")
+        return uid
+    except Exception as exc:
+        raise APIError(401, "UNAUTHENTICATED", "Firebase 登入驗證失敗。") from exc
+
+
 def error_response(status: int, code: str, message: str, retryable: bool = False, details: dict | None = None) -> JSONResponse:
     body = ErrorResponse(error=ErrorBody(code=code, message=message, retryable=retryable, details=details or {}))
     return JSONResponse(status_code=status, content=body.model_dump(mode="json"))
@@ -78,7 +99,7 @@ def error_response(status: int, code: str, message: str, retryable: bool = False
 def create_app(settings: Settings | None = None) -> FastAPI:
     settings = settings or Settings.from_env()
     app = FastAPI(title="Outfit demo API", version="0.1.0")
-    app.add_middleware(CORSMiddleware, allow_origins=list(settings.cors_origins), allow_methods=["GET", "POST"], allow_headers=["Content-Type"])
+    app.add_middleware(CORSMiddleware, allow_origins=list(settings.cors_origins), allow_methods=["GET", "POST", "PUT"], allow_headers=["Content-Type", "Authorization"])
     local_images = settings.data_dir / "images"
     if local_images.is_dir():
         app.mount("/products/kaggle", StaticFiles(directory=local_images), name="catalog-images")
@@ -121,6 +142,24 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             raise APIError(503, "DATA_UNAVAILABLE", "展示資料或資料庫無法使用。", True,
                            {"catalog": catalog_error, "database": db_error})
         return mock
+
+    def require_admin(authorization: str | None) -> str:
+        uid = verified_user_id(authorization)
+        if uid not in settings.admin_uids:
+            raise APIError(403, "FORBIDDEN", "你沒有管理洞察權限。")
+        return uid
+
+    def sync_interactions(events: list[InteractionEvent]) -> None:
+        if not events or os.getenv("FIRESTORE_SYNC_ENABLED", "false").lower() != "true":
+            return
+        try:
+            repository = InteractionRepository()
+            for event in events:
+                repository.record_interaction(event)
+        except Exception:
+            logger.exception("Firestore interaction sync failed")
+            if os.getenv("FIRESTORE_SYNC_REQUIRED", "false").lower() == "true":
+                raise APIError(503, "DATA_UNAVAILABLE", "互動資料同步暫時失敗。", True)
 
     def get_module(name: str) -> Any:
         try:
@@ -348,9 +387,13 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                 raise APIError(422, "INVALID_INPUT", "事件商品不存在。")
         events = [event.model_copy(update={"dwell_ms": min(event.dwell_ms, 30000)})
                   if event.dwell_ms is not None else event for event in events]
+        new_events = [event for event in events if not require_mock().store.has_event_id(event.event_id)]
         if settings.mode == "mock":
-            return require_mock().record_interactions(events)
-        return EventBatchResult.model_validate(await call_module("events", "record_interactions", events))
+            result = require_mock().record_interactions(events)
+        else:
+            result = EventBatchResult.model_validate(await call_module("events", "record_interactions", events))
+        sync_interactions(new_events)
+        return result
 
     @app.post("/api/v1/feedback", response_model=FeedbackResponse)
     async def feedback(event: FeedbackEvent,
@@ -382,6 +425,16 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                 service.store.save_intent(event.session_id, event.user_id, intent.model_dump(mode="json"))
                 if not intent.needs_clarification:
                     recommendation = service.recommend(intent, event.user_id, SearchFilters())
+            if not duplicate:
+                sync_interactions([InteractionEvent(
+                    event_id=event.event_id,
+                    session_id=event.session_id,
+                    user_id=event.user_id,
+                    event_type=event.event_type,
+                    target_type=event.target_type or "post",
+                    target_id=event.target_id or "profile",
+                    created_at=event.created_at,
+                )])
             return FeedbackResponse(profile=profile, recommendation=recommendation, duplicate=duplicate)
         profile = UserProfile.model_validate(await call_module("feedback", "record_feedback", event))
         recommendation = None
@@ -412,6 +465,20 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         if settings.mode == "mock":
             return require_mock().insights()
         return InsightsResponse.model_validate(await call_module("feedback", "get_insights"))
+
+    @app.get("/api/v1/admin/status", response_model=AdminStatusResponse)
+    async def admin_status(authorization: str | None = Header(default=None)) -> AdminStatusResponse:
+        uid = verified_user_id(authorization)
+        return AdminStatusResponse(is_admin=uid in settings.admin_uids)
+
+    @app.get("/api/v1/admin/insights", response_model=AdminInsightsResponse)
+    async def admin_insights(authorization: str | None = Header(default=None)) -> AdminInsightsResponse:
+        require_admin(authorization)
+        try:
+            return AdminInsightsResponse.model_validate(build_admin_insights())
+        except Exception as exc:
+            logger.exception("admin insights unavailable")
+            raise APIError(503, "DATA_UNAVAILABLE", "洞察資料暫時無法取得。", True) from exc
 
     built_frontend = ROOT / "frontend" / "dist"
     if built_frontend.is_dir():

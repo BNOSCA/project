@@ -1543,6 +1543,151 @@ p {
   font-size: 25px;
 }
 
+.onboarding-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(20, 24, 22, 0.48);
+}
+
+.onboarding-dialog {
+  width: min(520px, 100%);
+  padding: 32px;
+  background: var(--surface, #fff);
+  border: 1px solid var(--line, #e5e7e5);
+  border-radius: 8px;
+  box-shadow: 0 24px 70px rgba(20, 24, 22, 0.18);
+}
+
+.onboarding-dialog h1,
+.page-heading h1 {
+  margin: 8px 0;
+  color: var(--ink, #17201b);
+}
+
+.onboarding-dialog p,
+.page-heading p {
+  color: var(--muted, #69736d);
+}
+
+.onboarding-label {
+  display: block;
+  margin: 24px 0 8px;
+  font-weight: 700;
+}
+
+.onboarding-dialog select {
+  width: 100%;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1px solid var(--line, #d9dedb);
+  border-radius: 6px;
+  background: #fff;
+}
+
+.style-choice-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.style-choice {
+  min-height: 40px;
+  padding: 8px 10px;
+  border: 1px solid var(--line, #d9dedb);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--ink, #17201b);
+  cursor: pointer;
+}
+
+.style-choice.selected {
+  border-color: var(--accent, #315c4a);
+  background: #e8f0eb;
+  color: var(--accent, #315c4a);
+}
+
+.onboarding-submit {
+  width: 100%;
+  margin-top: 24px;
+}
+
+.insights-page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 48px 32px 80px;
+}
+
+.insights-kpis,
+.insights-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.insights-kpis {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 32px 0;
+}
+
+.insights-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.insight-kpi,
+.insight-panel {
+  padding: 22px;
+  border: 1px solid var(--line, #e5e7e5);
+  border-radius: 8px;
+  background: var(--surface, #fff);
+}
+
+.insight-kpi span,
+.insight-row span {
+  color: var(--muted, #69736d);
+}
+
+.insight-kpi strong {
+  display: block;
+  margin-top: 10px;
+  font-size: 28px;
+}
+
+.insight-panel h2 {
+  margin: 0 0 16px;
+  font-size: 18px;
+}
+
+.insight-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line, #eef0ee);
+}
+
+.insight-row:last-child {
+  border-bottom: 0;
+}
+
+@media (max-width: 720px) {
+  .onboarding-dialog {
+    padding: 24px;
+  }
+
+  .style-choice-grid,
+  .insights-kpis,
+  .insights-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .insights-page {
+    padding: 28px 16px 80px;
+  }
+}
+
 .home-page {
   min-height: 100vh;
 }

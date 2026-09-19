@@ -5,3 +5,4 @@ export type AppPage =
   | 'post'
   | 'saved'
   | 'profile'
+  | 'insights'

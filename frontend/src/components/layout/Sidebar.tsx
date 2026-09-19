@@ -1,5 +1,6 @@
 import {
   Bookmark,
+  BarChart3,
   Compass,
   Home,
   Plus,
@@ -20,6 +21,7 @@ interface SidebarProps {
   currentUser: User
 
   isAuthenticated: boolean
+  isAdmin: boolean
 
   onNavigate: (page: AppPage) => void
   onAuthClick: () => void
@@ -66,6 +68,7 @@ export function Sidebar({
   currentPage,
   currentUser,
   isAuthenticated,
+  isAdmin,
   onNavigate,
   onAuthClick,
 }: SidebarProps) {
@@ -82,7 +85,7 @@ export function Sidebar({
         className="desktop-nav"
         aria-label="主要導覽"
       >
-        {navigationItems.map(item => {
+        {[...navigationItems, ...(isAdmin ? [{ id: 'insights' as AppPage, label: '數據洞察', icon: BarChart3 }] : [])].map(item => {
           const Icon = item.icon
 
           return (

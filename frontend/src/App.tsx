@@ -6,6 +6,7 @@ import {
 
 import { Toast } from './components/common/Toast'
 import { AuthDialog } from './components/auth/AuthDialog'
+import { OnboardingDialog } from './components/onboarding/OnboardingDialog'
 
 import { BottomNav } from './components/layout/BottomNav'
 import { MobileHeader } from './components/layout/MobileHeader'
@@ -28,6 +29,7 @@ import {
 import { DiscoverPage } from './pages/DiscoverPage'
 import { HomePage } from './pages/HomePage'
 import { ProfilePage } from './pages/ProfilePage'
+import { InsightsPage } from './pages/InsightsPage'
 import { SavedPage } from './pages/SavedPage'
 import { ShopPage } from './pages/ShopPage'
 
@@ -45,6 +47,8 @@ import {
   saveFirebaseProfile,
   signOutCurrentUser,
 } from './services/auth'
+import { loadAdminStatus } from './services/admin'
+import { loadUserProfile, saveOnboardingProfile, type AgeRange, type StyleOption } from './services/profile'
 
 import type {
   AppPage,
@@ -159,6 +163,9 @@ export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [authConfigured, setAuthConfigured] = useState(false)
   const [authDialogOpen, setAuthDialogOpen] = useState(false)
+  const [isAdmin, setIsAdmin] = useState(false)
+  const [onboardingOpen, setOnboardingOpen] = useState(false)
+  const [onboardingUserId, setOnboardingUserId] = useState('')
 
   const [
     selectedProductPost,
@@ -209,6 +216,9 @@ export default function App() {
     if (!user || user.isAnonymous) {
       setActiveUserId('anonymous-demo')
       setCurrentUser(demoUser)
+      setIsAdmin(false)
+      setOnboardingOpen(false)
+      setOnboardingUserId('')
       return
     }
 
@@ -226,6 +236,15 @@ export default function App() {
       postCount: saved.postCount ?? 0,
       followerCount: saved.followerCount ?? 0,
       followingCount: saved.followingCount ?? 0,
+    })
+
+    void Promise.all([
+      loadAdminStatus().then(status => status.is_admin).catch(() => false),
+      loadUserProfile(user.uid).catch(() => null),
+    ]).then(([admin, profile]) => {
+      setIsAdmin(admin)
+      setOnboardingUserId(user.uid)
+      setOnboardingOpen(!profile?.onboarding_completed)
     })
   }), [])
 
@@ -339,8 +358,12 @@ export default function App() {
   function navigate(
     page: AppPage,
   ) {
-    if (!isAuthenticated && (page === 'profile' || page === 'post')) {
+    if (!isAuthenticated && (page === 'profile' || page === 'post' || page === 'insights')) {
       setAuthDialogOpen(true)
+      return
+    }
+    if (page === 'insights' && !isAdmin) {
+      setNotice('只有公司管理員可以查看數據洞察')
       return
     }
 
@@ -370,6 +393,14 @@ export default function App() {
     await signOutCurrentUser()
     setCurrentPage('home')
     setNotice('已登出帳號')
+    setIsAdmin(false)
+    setOnboardingOpen(false)
+  }
+
+  async function completeOnboarding(ageRange: AgeRange, styles: StyleOption[]) {
+    await saveOnboardingProfile(onboardingUserId, { age_range: ageRange, preferred_styles: styles })
+    setOnboardingOpen(false)
+    setNotice('偏好已儲存，開始探索吧')
   }
 
   function toggleLike(
@@ -776,6 +807,10 @@ export default function App() {
       )
     }
 
+    if (currentPage === 'insights') {
+      return <InsightsPage />
+    }
+
     return (
       <HomePage
         currentUser={
@@ -821,6 +856,11 @@ export default function App() {
         onSuccess={setNotice}
       />
 
+      <OnboardingDialog
+        open={onboardingOpen}
+        onComplete={completeOnboarding}
+      />
+
       <div className="app-layout">
         <Sidebar
           currentPage={
@@ -830,6 +870,7 @@ export default function App() {
             currentUser
           }
           isAuthenticated={isAuthenticated}
+          isAdmin={isAdmin}
           onNavigate={
             navigate
           }
