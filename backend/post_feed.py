@@ -9,9 +9,10 @@ from .schemas import FeedItem, FeedResponse, FeedScoreBreakdown, InteractionEven
 
 
 BASE_WEIGHTS = {
-    "long_term_preference": 0.25,
-    "session_intent": 0.15,
-    "social": 0.15,
+    "long_term_preference": 0.15,
+    "session_intent": 0.10,
+    "recommendation_intent": 0.20,
+    "social": 0.10,
     "deep_engagement": 0.12,
     "quality": 0.10,
     "collaborative": 0.08,
@@ -112,6 +113,7 @@ def rank_feed(
     limit: int = 20,
     *,
     session_weights: dict[str, float] | None = None,
+    recommendation_weights: dict[str, float] | None = None,
     collaborative_scores: dict[str, float] | None = None,
     post_stats: dict[str, dict[str, float]] | None = None,
     external_trend_scores: dict[str, float] | None = None,
@@ -120,6 +122,7 @@ def rank_feed(
     if user_id != profile.user_id:
         raise ValueError("profile user_id does not match feed user_id")
     session_weights = session_weights or {}
+    recommendation_weights = recommendation_weights or {}
     collaborative_scores = collaborative_scores or {}
     post_stats = post_stats or {}
     external_trend_scores = external_trend_scores or {}
@@ -162,6 +165,7 @@ def rank_feed(
         values = {
             "long_term_preference": _weights_match(post, profile.preference_weights),
             "session_intent": _weights_match(post, session_weights),
+            "recommendation_intent": _weights_match(post, recommendation_weights),
             "social": max(
                 1.0 if post.creator_id in profile.followed_creator_ids else 0.0,
                 profile.creator_affinity.get(post.creator_id, 0.0),
@@ -212,6 +216,8 @@ def rank_feed(
             reasons.append("符合使用者偏好標籤")
         if breakdown.session_intent >= 0.55:
             reasons.append("符合本次瀏覽意圖")
+        if breakdown.recommendation_intent >= 0.55:
+            reasons.append("符合本次穿搭需求")
         if post.creator_id in profile.followed_creator_ids:
             reasons.append("來自已追蹤創作者")
         if breakdown.collaborative > 0:

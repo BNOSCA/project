@@ -40,6 +40,7 @@ class Intent(Contract):
     clarifying_question: str | None = None
     semantic_query: str = ""
     source_text: str = ""
+    origin: Literal["search", "recommend", "feedback", "unknown"] = "unknown"
 
 
 class Product(Contract):
@@ -271,6 +272,7 @@ class FeedScoreBreakdown(Contract):
     preference: float = 0
     long_term_preference: float = 0
     session_intent: float = 0
+    recommendation_intent: float = 0
     social: float = 0
     deep_engagement: float = 0
     quality: float = 0

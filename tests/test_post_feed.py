@@ -103,3 +103,18 @@ def test_search_session_weights_boost_matching_post():
     assert response.items[0].post_id == "matching"
     assert response.items[0].score_breakdown.session_intent > 0.5
     assert "符合本次瀏覽意圖" in response.items[0].ranking_reason
+
+
+def test_recommendation_intent_has_its_own_higher_weight():
+    matching = make_post("matching", "japanese", "black", "shirt", "c1")
+    different = make_post("different", "street", "red", "denim", "c2")
+    profile = UserProfile(user_id="u1")
+
+    response = rank_feed(
+        "u1", [matching, different], profile, [], current_time=NOW,
+        recommendation_weights={"style:japanese": 1.0, "color:black": 1.0, "occasion:commute": 1.0},
+    )
+
+    assert response.items[0].post_id == "matching"
+    assert response.items[0].score_breakdown.recommendation_intent > 0.5
+    assert "符合本次穿搭需求" in response.items[0].ranking_reason

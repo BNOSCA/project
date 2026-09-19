@@ -164,11 +164,13 @@ class MockServices:
         saved = self.store.get_user_profile(user_id) or self.store.get_profile(session_id)
         return UserProfile.model_validate({"user_id": user_id, **(saved or {})})
 
-    def parse_intent(self, text: str, session_id: str, user_id: str) -> Intent:
+    def parse_intent(self, text: str, session_id: str, user_id: str,
+                     origin: str = "unknown") -> Intent:
         previous_data = self.store.get_intent(session_id)
         previous = Intent.model_validate(previous_data) if previous_data else None
         parsed = parse_structured_intent(text, previous)
         intent = Intent.model_validate({"session_id": session_id, **parsed})
+        intent.origin = origin
         self.store.save_intent(session_id, user_id, intent.model_dump(mode="json"))
         return intent
 
@@ -245,10 +247,13 @@ class MockServices:
         events = self.store.list_events(session_id, user_id) if session_id else []
         intent_data = self.store.get_intent(session_id) if session_id else None
         intent = Intent.model_validate(intent_data) if intent_data else None
-        session_weights = intent_to_session_weights(intent)
+        intent_weights = intent_to_session_weights(intent)
+        session_weights = intent_weights if intent and intent.origin != "recommend" else {}
+        recommendation_weights = intent_weights if intent and intent.origin == "recommend" else {}
         ranked = rank_feed(user_id=user_id, posts=self.catalog.posts, profile=profile,
                            events=events, limit=len(self.catalog.posts),
                            session_weights=session_weights,
+                           recommendation_weights=recommendation_weights,
                            external_trend_scores=self.store.trend_scores())
         page = ranked.items[offset:offset + limit]
         for i, item in enumerate(page):

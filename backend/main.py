@@ -242,7 +242,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             raise APIError(422, "INVALID_INPUT", "圖片搜尋屬 P1，目前只支援文字。")
         service = require_mock()
         if settings.mode == "mock":
-            intent = service.parse_intent(request.text, request.session_id, request.user_id)
+            intent = service.parse_intent(request.text, request.session_id, request.user_id, origin="recommend")
             if intent.needs_clarification:
                 return RecommendationResponse(session_id=request.session_id, intent=intent, fallback_used=True, message=intent.clarifying_question)
             result = service.recommend(intent, request.user_id, request.filters)
@@ -261,6 +261,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                 intent = parse_demo_intent(request.text, request.session_id, previous)
                 fallback_used = True
             intent.session_id = request.session_id
+            intent.origin = "recommend"
             store.save_intent(request.session_id, request.user_id, intent.model_dump(mode="json"))
             if intent.needs_clarification:
                 return RecommendationResponse(session_id=request.session_id, intent=intent, fallback_used=fallback_used, message=intent.clarifying_question)
@@ -293,6 +294,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         else:
             query_intent = parse_demo_intent(request.query_text, request.session_id, previous_intent)
         query_intent.session_id = request.session_id
+        query_intent.origin = "search"
         if store:
             store.save_intent(request.session_id, "anonymous-demo", query_intent.model_dump(mode="json"))
         merged = request.model_copy(deep=True)
