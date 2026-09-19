@@ -1,6 +1,7 @@
 from pathlib import Path
 import sys
 import types
+import time
 
 import pytest
 from fastapi.testclient import TestClient
@@ -227,3 +228,37 @@ def test_live_orchestration_contract(monkeypatch, tmp_path: Path):
         "event_id": "live-like", "session_id": "live", "event_type": "like",
         "target_type": "post", "target_id": "demo-post-001"}]).json()["accepted_count"] == 1
     assert client.get("/api/v1/insights").json()["sample_size"] == 1
+
+
+def test_llm_timeout_uses_rule_fallback(monkeypatch, tmp_path: Path):
+    intent_module = types.ModuleType("backend.intent")
+    def slow_parse(_text, _previous):
+        time.sleep(0.1)
+        raise AssertionError("late LLM result must not be used")
+    intent_module.parse_intent = slow_parse
+    feedback_module = types.ModuleType("backend.feedback")
+    feedback_module.get_profile = lambda user_id: {"user_id": user_id}
+    recommender_module = types.ModuleType("backend.recommender")
+    def recommend(intent, _profile, catalog):
+        items = [next(p for p in catalog if p.category == category) for category in intent.required_categories]
+        return [{"outfit_id": "fallback-outfit", "items": items, "total_price": sum(p.price for p in items)}]
+    recommender_module.recommend = recommend
+    for name, module in (("intent", intent_module), ("feedback", feedback_module), ("recommender", recommender_module)):
+        monkeypatch.setitem(sys.modules, f"backend.{name}", module)
+    settings = Settings("live", ("http://localhost:5173",), tmp_path / "timeout.sqlite3",
+                        ROOT / "data" / "fixtures", 0.02)
+    response = TestClient(create_app(settings)).post("/api/v1/recommend", json={
+        "session_id": "timeout", "text": "日系寬鬆，整套預算 3000 元"})
+    assert response.status_code == 200, response.text
+    assert response.json()["fallback_used"] is True
+    assert response.json()["outfits"]
+
+
+def test_missing_catalog_has_diagnostic_health_and_error(tmp_path: Path):
+    settings = Settings("mock", ("http://localhost:5173",), tmp_path / "missing.sqlite3",
+                        tmp_path / "no-data", 0.1)
+    client = TestClient(create_app(settings))
+    assert client.get("/health").json()["status"] == "degraded"
+    response = client.post("/api/v1/recommend", json={"session_id": "missing", "text": "日系"})
+    assert response.status_code == 503
+    assert response.json()["error"]["code"] == "DATA_UNAVAILABLE"
