@@ -1,0 +1,82 @@
+[
+  {
+    "post_id": "post-001",
+    "creator_id": "creator-001",
+    "image_url": "https://example.com/posts/post-001.jpg",
+    "caption": "週末戶外日系寬鬆穿搭，炭灰混搭黑長褲",
+    "styles": [
+      "japanese",
+      "outdoor",
+      "relaxed"
+    ],
+    "colors": [
+      "black",
+      "charcoal"
+    ],
+    "occasion": [
+      "casual",
+      "outdoor"
+    ],
+    "tagged_products": [
+      {
+        "product_id": "p-top-001",
+        "label": "寬鬆牛津襯衫",
+        "bbox": [
+          0.2,
+          0.12,
+          0.72,
+          0.55
+        ],
+        "match_type": "similar"
+      },
+      {
+        "product_id": "p-bottom-001",
+        "label": "錐形打褶長褲",
+        "bbox": [
+          0.25,
+          0.52,
+          0.75,
+          0.9
+        ],
+        "match_type": "similar"
+      }
+    ],
+    "source": "licensed_demo_content",
+    "source_checked_at": "2026-09-18",
+    "is_demo": true,
+    "created_at": "2026-09-18T10:00:00Z"
+  },
+  {
+    "post_id": "post-002",
+    "creator_id": "creator-002",
+    "image_url": "https://example.com/posts/post-002.jpg",
+    "caption": "極簡米白棉麻穿搭，陽光下的自然色調",
+    "styles": [
+      "minimal",
+      "casual"
+    ],
+    "colors": [
+      "beige"
+    ],
+    "occasion": [
+      "casual"
+    ],
+    "tagged_products": [
+      {
+        "product_id": "p-top-003",
+        "label": "棉質亞麻開襟衫",
+        "bbox": [
+          0.2,
+          0.15,
+          0.7,
+          0.6
+        ],
+        "match_type": "similar"
+      }
+    ],
+    "source": "licensed_demo_content",
+    "source_checked_at": "2026-09-18",
+    "is_demo": true,
+    "created_at": "2026-09-18T11:00:00Z"
+  }
+]
