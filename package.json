@@ -1,0 +1,11 @@
+{
+  "name": "intentloop-project",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "npm --prefix frontend run dev",
+    "build": "npm --prefix frontend run build",
+    "test": "node --experimental-strip-types --test tests/frontend-domain.test.ts"
+  },
+  "engines": { "node": ">=22.18.0" }
+}

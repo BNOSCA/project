@@ -23,6 +23,30 @@ curl -X POST http://127.0.0.1:8000/api/v1/recommend \
 
 API 文件：`http://127.0.0.1:8000/docs`。測試：`.venv/bin/python -m pip install -r requirements-dev.txt` 後執行 `.venv/bin/python -m pytest -q`。
 
+## 前端啟動
+
+前端位於 `frontend/`，使用 React、Vite 與 TypeScript。安裝 Node.js 22.18+ 後，在 repo 根目錄執行：
+
+```bash
+npm --prefix frontend ci
+npm run dev
+```
+
+開啟 `http://127.0.0.1:5173`。開發模式預設使用固定 Recommendation Mock，以便在後端未啟動時檢查 AI Query、loading、結果與錯誤畫面。若要串接本機 FastAPI，先啟動 port 8000 的後端，再設定 `VITE_USE_MOCK_RECOMMENDATION=false`；Vite 會將 `/api/*` proxy 到 `http://127.0.0.1:8000`。
+
+```bash
+VITE_USE_MOCK_RECOMMENDATION=false npm run dev
+```
+
+Windows PowerShell 可使用 `$env:VITE_USE_MOCK_RECOMMENDATION='false'; npm run dev`。Production build 不使用 Mock，並預期 `/api/v1/recommend` 與前端位於同網域。API 金鑰只能留在後端，不得放入 `VITE_*`。
+
+前端建置與 contract 測試：
+
+```bash
+npm run build
+npm test
+```
+
 ## P0 端點
 
 | Endpoint | 回應 |
