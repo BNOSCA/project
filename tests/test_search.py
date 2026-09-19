@@ -3,8 +3,10 @@ Unit tests for backend/search.py and compute_relevance.
 """
 
 import unittest
-from backend.schemas import Product, SearchFilters, SearchRequest
-from backend.search import compute_relevance, search_products
+from unittest.mock import patch
+from PIL import Image
+from backend.schemas import DetectedRegion, Product, SearchFilters, SearchRequest
+from backend.search import compute_relevance, infer_query_categories, rank_post_image_products, search_products
 
 
 class TestSearchRelevance(unittest.TestCase):
@@ -58,6 +60,43 @@ class TestSearchRelevance(unittest.TestCase):
         for pid, score in scores.items():
             self.assertGreaterEqual(score, 0.0)
             self.assertLessEqual(score, 1.0)
+
+    def test_garment_nouns_infer_hard_categories(self):
+        self.assertEqual(infer_query_categories("日系 寬鬆 襯衫"), ["top"])
+        self.assertEqual(infer_query_categories("牛仔褲與運動鞋"), ["bottom", "shoes"])
+        self.assertEqual(infer_query_categories("樂福鞋吊飾"), ["accessory"])
+
+    def test_post_image_search_crops_each_garment_and_rejects_weak_matches(self):
+        image = Image.new("RGB", (200, 300), "white")
+        regions = [DetectedRegion(label="top", bbox=(0.1, 0.2, 0.8, 0.6)),
+                   DetectedRegion(label="bottom", bbox=(0.1, 0.6, 0.8, 0.9))]
+        crops = []
+
+        def fake_relevance(*, query_image, candidates, mode):
+            crops.append((query_image.size, [product.category for product in candidates], mode))
+            return {product.product_id: (0.51 if product.category == "top" else 0.2)
+                    for product in candidates}
+
+        with patch("backend.search.load_query_image", return_value=image), \
+             patch("backend.search.compute_relevance", side_effect=fake_relevance):
+            found = rank_post_image_products("post.jpg", regions, self.products)
+
+        self.assertTrue(found)
+        self.assertTrue(all(product.category == "top" for product in found))
+        self.assertEqual(crops[0], ((140, 120), ["top", "top"], "image"))
+        self.assertEqual(crops[1], ((140, 90), ["bottom"], "image"))
+
+    def test_post_image_search_deduplicates_identical_product_photos(self):
+        products = [
+            self.products[0].model_copy(update={"image_url": "https://example.com/a.jpg"}),
+            self.products[2].model_copy(update={"image_url": "https://example.com/a.jpg"}),
+            self.products[2].model_copy(update={"product_id": "p-004", "image_url": "https://example.com/b.jpg"}),
+        ]
+        scores = {"p-001": 0.6, "p-003": 0.59, "p-004": 0.58}
+        with patch("backend.search.load_query_image", return_value=Image.new("RGB", (200, 200))), \
+             patch("backend.search.compute_relevance", return_value=scores):
+            found = rank_post_image_products("post.jpg", [DetectedRegion(label="top", bbox=(0, 0, 1, 1))], products)
+        self.assertEqual([product.product_id for product in found], ["p-001", "p-004"])
 
     def test_mixed_rrf_relevance(self):
         scores = compute_relevance(

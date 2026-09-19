@@ -106,7 +106,7 @@ export function SimilarProducts({
               </h2>
 
               <p>
-                商品資料庫之後會持續擴充。
+                這張貼文目前沒有達到相似門檻的有圖商品。
               </p>
             </div>
           )}

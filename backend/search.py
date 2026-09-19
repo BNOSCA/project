@@ -21,7 +21,7 @@ import numpy as np
 from PIL import Image
 
 from .config import ROOT
-from .schemas import Product, RetrievalInfo, SearchHit, SearchRequest, SearchResponse
+from .schemas import DetectedRegion, Product, RetrievalInfo, SearchHit, SearchRequest, SearchResponse
 from scripts.build_embeddings import FashionCLIPWrapper, extract_search_text, l2_normalize
 from scripts.embedding_store import EmbeddingStore
 
@@ -29,6 +29,22 @@ from scripts.embedding_store import EmbeddingStore
 # Global cache for embedding store and encoder
 _GLOBAL_STORE: Optional[EmbeddingStore] = None
 _GLOBAL_MODEL: Optional[FashionCLIPWrapper] = None
+
+
+def infer_query_categories(query_text: str) -> list[str]:
+    """Apply unambiguous garment nouns as a hard category filter."""
+    text = query_text.casefold()
+    if "吊飾" in text:
+        return ["accessory"]
+    terms = {
+        "top": ("襯衫", "t恤", "tee", "上衣", "背心", "針織", "毛衣"),
+        "bottom": ("褲", "裙"),
+        "shoes": ("鞋", "靴"),
+        "outerwear": ("外套", "夾克", "大衣"),
+        "accessory": ("包包", "背包", "肩背包", "帽子", "襪", "圍巾", "眼鏡", "腰帶"),
+    }
+    return [category for category, keywords in terms.items()
+            if any(keyword in text for keyword in keywords)]
 
 
 def embedding_runtime() -> dict[str, str | bool | None]:
@@ -58,7 +74,9 @@ def get_embedding_store() -> Optional[EmbeddingStore]:
     """Retrieve or load cached EmbeddingStore."""
     global _GLOBAL_STORE
     if _GLOBAL_STORE is None:
-        store_path = ROOT / "data" / "embeddings" / "products"
+        # The older `products` index mixes 500 Kaggle IDs with just 12 official
+        # products.  Search only the index built from this app's official catalog.
+        store_path = ROOT / "data" / "embeddings" / "official_products"
         if store_path.is_dir() and (store_path / "id_mapping.json").is_file():
             try:
                 _GLOBAL_STORE = EmbeddingStore.load(store_path)
@@ -76,8 +94,10 @@ def get_model() -> FashionCLIPWrapper:
     return _GLOBAL_MODEL
 
 
-def load_query_image(image_input: str) -> Optional[Image.Image]:
-    """Load query image from Base64 string, local path, or remote URL."""
+def load_query_image(image_input: str | Image.Image) -> Optional[Image.Image]:
+    """Load query image from an in-memory crop, Base64, local path, or URL."""
+    if isinstance(image_input, Image.Image):
+        return image_input.convert("RGB")
     if not image_input:
         return None
 
@@ -111,9 +131,72 @@ def load_query_image(image_input: str) -> Optional[Image.Image]:
     return None
 
 
+def rank_post_image_products(
+    image_input: str,
+    regions: list[DetectedRegion],
+    candidates: list[Product],
+    excluded_product_ids: set[str] | None = None,
+    min_similarity: float = 0.40,
+    per_region: int = 2,
+    limit: int = 8,
+) -> list[Product]:
+    """Retrieve products from garment crops, never from the whole outfit image.
+
+    Full-person backgrounds and unrelated garments skew FashionCLIP image
+    similarity. The detector's normalized boxes identify the item to compare;
+    each crop is searched only against products of its category. Weak matches
+    are omitted instead of filling the drawer with arbitrary nearest neighbors.
+    """
+    image = load_query_image(image_input)
+    if image is None:
+        return []
+    by_category: dict[str, list[Product]] = {}
+    for product in candidates:
+        by_category.setdefault(product.category, []).append(product)
+    excluded = set(excluded_product_ids or ())
+    selected_images: set[str] = set()
+    selected: list[Product] = []
+    width, height = image.size
+
+    for region in regions:
+        if sum(item.category == region.label for item in selected) >= per_region:
+            continue
+        category_products = [product for product in by_category.get(region.label, ())
+                             if product.product_id not in excluded]
+        if not category_products:
+            continue
+        x1, y1, x2, y2 = region.bbox
+        x1, y1 = max(0.0, x1), max(0.0, y1)
+        x2, y2 = min(1.0, x2), min(1.0, y2)
+        box = (round(x1 * width), round(y1 * height), round(x2 * width), round(y2 * height))
+        if box[2] - box[0] < 24 or box[3] - box[1] < 24:
+            continue
+        crop = image.crop(box)
+        scores = compute_relevance(query_image=crop, candidates=category_products, mode="image")
+        ranked = sorted(category_products, key=lambda product: (-scores.get(product.product_id, 0.0), product.product_id))
+        best_score = scores.get(ranked[0].product_id, 0.0)
+        if best_score < min_similarity:
+            continue
+        for product in ranked:
+            score = scores.get(product.product_id, 0.0)
+            if score < min_similarity or score < best_score - 0.05:
+                break
+            image_key = str(product.image_url or product.product_id)
+            if image_key in selected_images:
+                continue
+            selected.append(product)
+            excluded.add(product.product_id)
+            selected_images.add(image_key)
+            if len(selected) >= limit or sum(item.category == region.label for item in selected) >= per_region:
+                break
+        if len(selected) >= limit:
+            break
+    return selected
+
+
 def compute_relevance(
     query_text: Optional[str] = None,
-    query_image: Optional[str] = None,
+    query_image: Optional[str | Image.Image] = None,
     candidates: Optional[list[Product]] = None,
     mode: str = "text",
     image_weight: float = 0.5,

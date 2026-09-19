@@ -14,6 +14,8 @@ python3.11 -m venv .venv
 
 預設 `APP_DATA_DIR=./data/catalog/combined`，只含官方品牌商品快照，並保留官方 HTTPS 圖片與商品頁。若要回到原本 6 筆合成 fixture，可設定 `APP_DATA_DIR=./data/fixtures`。
 
+目前快照有 512 筆官方商品（GU 509、UNIQLO 3），其中 488 筆在資料中標記為 `available`；這不是即時庫存。`data/embeddings/official_products/` 是與此商品庫對應的 FashionCLIP 索引，目前 509 筆有成功取得的圖片向量，3 筆 UNIQLO 圖片下載逾時而排除。商城和首頁搜尋預設只顯示可購買且有圖片向量的商品，因此目前可搜尋的有圖且標記有庫存商品是 485 筆。
+
 另開終端：
 
 ```bash
@@ -34,6 +36,16 @@ API 文件：`http://127.0.0.1:8000/docs`。測試：`.venv/bin/python -m pip in
 ```bash
 FASHIONCLIP_ALLOW_DOWNLOAD=true .venv/bin/python -c 'from scripts.build_embeddings import FashionCLIPWrapper; print(FashionCLIPWrapper(device="cpu").backend)'
 ```
+
+正式品牌索引可用下列指令重建；失敗圖片會直接排除，不會用佔位圖產生誤導性的相似度。舊的 `data/embeddings/products/` 混合索引含 Kaggle 商品，應用程式不再讀取。
+
+```bash
+.venv/bin/python scripts/build_embeddings.py --input data/catalog/combined/products.json --output-dir data/embeddings/official_products --skip-failed-images --download-workers 6 --batch-size 16
+```
+
+商品卡不直接載入外站圖片，而走 `/products/catalog/{product_id}.jpg`：後端先讀本機圖片快取，沒有快取時再依序嘗試商品的官方圖片 URL。快取圖檔不納入 Git；新環境可先執行上述索引重建指令，或讓 proxy 即時向官方 CDN 取圖。
+
+貼文「找這套的相似商品」會先依偵測到的衣物框裁切原圖，再以 FashionCLIP 圖片向量在同類別、有庫存的商品中搜尋；低於相似度門檻的結果不會顯示。這些仍是視覺近似品，不保證為貼文同款。
 
 預設只讀本機快取，不會讓 API 請求臨時下載模型。若模型或索引無法載入，文字搜尋會明示為 `metadata_text` 降級；圖片搜尋會回 `embedding_unavailable_image`，不會產生假的相似度分數。
 

@@ -148,6 +148,11 @@ function catalogCategory(value: string): OutfitItemCategory {
 
 function catalogProduct(item: ApiCatalogProduct, matchType?: 'exact' | 'similar'): Product | null {
   if (item.price === null) return null
+  const imageUrl = item.image_url
+    ? (item.image_url.startsWith('/')
+        ? item.image_url
+        : `/products/catalog/${encodeURIComponent(item.product_id)}.jpg`)
+    : undefined
   return {
     id: item.product_id,
     brand: item.brand ?? item.source_name ?? '展示商品',
@@ -155,7 +160,7 @@ function catalogProduct(item: ApiCatalogProduct, matchType?: 'exact' | 'similar'
     category: catalogCategory(item.category),
     color: item.colors[0] === 'off_white' ? '#f5f4ef' : (item.colors[0] ?? '#d8d3ca'),
     price: item.price,
-    imageUrl: item.image_url ?? undefined,
+    imageUrl,
     productUrl: item.product_url ?? undefined,
     ...(matchType ? { matchType } : {}),
   }

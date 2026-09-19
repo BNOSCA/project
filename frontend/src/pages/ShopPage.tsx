@@ -54,7 +54,7 @@ export function ShopPage({
   const [excludedColor, setExcludedColor] = useState('')
   const [excludedFit, setExcludedFit] = useState('')
   const [size, setSize] = useState('')
-  const [availableOnly, setAvailableOnly] = useState(false)
+  const [availableOnly, setAvailableOnly] = useState(true)
   const [products, setProducts] = useState<Product[]>([])
   const [method, setMethod] = useState('')
   const [isLoading, setIsLoading] = useState(false)

@@ -1,7 +1,10 @@
 import {
   ExternalLink,
+  Footprints,
+  ShoppingBag,
+  Shirt,
 } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import type {
   Product,
@@ -15,11 +18,23 @@ interface ProductItemProps {
   ) => void
 }
 
+function ProductImageFallback({ category }: { category: Product['category'] }) {
+  const Icon = category === 'shoes' ? Footprints : category === 'top' || category === 'outerwear'
+    ? Shirt : ShoppingBag
+  return (
+    <div className="product-image-fallback" aria-label={`${category} 商品圖片暫時無法載入`}>
+      <Icon size={31} strokeWidth={1.4} />
+      <span>{category}</span>
+    </div>
+  )
+}
+
 export function ProductItem({
   product,
   onOpenProduct,
 }: ProductItemProps) {
   const [imageFailed, setImageFailed] = useState(false)
+  useEffect(() => setImageFailed(false), [product.imageUrl])
   return (
     <article className="product-card">
       <div
@@ -29,9 +44,11 @@ export function ProductItem({
             product.color,
         }}
       >
-        {product.imageUrl && !imageFailed && (
+        {product.imageUrl && !imageFailed ? (
           <img src={product.imageUrl} alt={product.name} loading="lazy"
             onError={() => setImageFailed(true)} />
+        ) : (
+          <ProductImageFallback category={product.category} />
         )}
       </div>
 
@@ -45,15 +62,15 @@ export function ProductItem({
         </strong>
 
         {product.matchType && (
-          <small>{product.matchType === 'exact' ? '同款' : '相似商品（展示配對）'}</small>
+          <small>{product.matchType === 'exact' ? '同款' : '視覺近似商品（非同款）'}</small>
         )}
 
         {typeof product.similarity ===
           'number' && (
           <small>
-            與這套相似 ·
+            搜尋相關分數 ·
             {' '}
-            {product.similarity}%
+            {product.similarity}/100
           </small>
         )}
 

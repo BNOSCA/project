@@ -14,6 +14,7 @@ import sys
 from io import BytesIO
 from pathlib import Path
 from typing import Any, Optional
+from concurrent.futures import ThreadPoolExecutor
 
 import numpy as np
 from PIL import Image
@@ -281,6 +282,8 @@ def run_pipeline(
     modality: str = "all",
     cache_dir: Optional[Path] = None,
     mock: bool = False,
+    skip_failed_images: bool = False,
+    download_workers: int = 1,
 ):
     if not input_file.is_file():
         raise FileNotFoundError(f"Input file does not exist: {input_file}")
@@ -303,6 +306,7 @@ def run_pipeline(
     model = FashionCLIPWrapper(device=device, mock=mock)
 
     valid_ids: list[str] = []
+    valid_items: list[dict[str, Any]] = []
     loaded_images: list[Image.Image] = []
     texts_to_encode: list[str] = []
     failed_items: list[dict[str, str]] = []
@@ -312,19 +316,30 @@ def run_pipeline(
 
     # 3. Process items
     print(f"[2/4] Preprocessing images and text fields...")
-    for idx, item in enumerate(tqdm(data, desc="Loading data")):
-        item_id = str(item.get(id_field, f"item_{idx}"))
-        img_src = item.get(image_field, "")
-        text_content = extract_search_text(item, text_field)
+    def load_item(item: dict[str, Any]) -> Optional[Image.Image]:
+        sources = [item.get(image_field), *item.get("image_urls", [])]
+        for source in dict.fromkeys(str(value) for value in sources if value):
+            image = image_loader.get_image(source)
+            if image is not None:
+                return image
+        return None
 
-        img = image_loader.get_image(img_src)
-        if img is None:
-            failed_items.append({"id": item_id, "field": image_field, "source": str(img_src)})
-            img = placeholder_img  # Use placeholder so index alignment is preserved
+    workers = max(1, download_workers)
+    with ThreadPoolExecutor(max_workers=workers) as executor:
+        images = executor.map(load_item, data)
+        for idx, (item, img) in enumerate(tqdm(zip(data, images), total=len(data), desc="Loading data")):
+            item_id = str(item.get(id_field, f"item_{idx}"))
+            text_content = extract_search_text(item, text_field)
+            if img is None:
+                failed_items.append({"id": item_id, "field": image_field, "source": str(item.get(image_field, ""))})
+                if skip_failed_images:
+                    continue
+                img = placeholder_img  # Preserve index alignment in legacy mode.
 
-        valid_ids.append(item_id)
-        loaded_images.append(img)
-        texts_to_encode.append(text_content)
+            valid_ids.append(item_id)
+            valid_items.append(item)
+            loaded_images.append(img)
+            texts_to_encode.append(text_content)
 
     num_items = len(valid_ids)
     image_embeddings = None
@@ -377,7 +392,7 @@ def run_pipeline(
 
     # Enhanced items catalog with embedding IDs
     enhanced_items = []
-    for item, item_id in zip(data, valid_ids):
+    for item, item_id in zip(valid_items, valid_ids):
         item_copy = dict(item)
         item_copy["image_embedding_id"] = f"emb_img_{item_id}"
         item_copy["text_embedding_id"] = f"emb_txt_{item_id}"
@@ -395,7 +410,8 @@ def run_pipeline(
     print(f"  - Text vector file: {'text_embeddings.npy' if text_embeddings is not None else 'None'}")
     print(f"  - ID Mapping: id_mapping.json")
     if failed_items:
-        print(f"  - Warning: {len(failed_items)} items had missing/corrupted images (used placeholder).")
+        handling = "excluded" if skip_failed_images else "used placeholder"
+        print(f"  - Warning: {len(failed_items)} items had missing/corrupted images ({handling}).")
     print("=======================================================\n")
 
 
@@ -465,6 +481,10 @@ def parse_args():
         action="store_true",
         help="Run in mock mode (fast dummy normalized vectors for testing)",
     )
+    parser.add_argument("--skip-failed-images", action="store_true",
+                        help="Exclude products whose image URLs cannot be fetched; do not embed placeholders")
+    parser.add_argument("--download-workers", type=int, default=1,
+                        help="Parallel image downloads (default: 1)")
     return parser.parse_args()
 
 
@@ -481,4 +501,6 @@ if __name__ == "__main__":
         modality=args.modality,
         cache_dir=args.cache_dir,
         mock=args.mock,
+        skip_failed_images=args.skip_failed_images,
+        download_workers=args.download_workers,
     )

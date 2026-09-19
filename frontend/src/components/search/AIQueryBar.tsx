@@ -80,6 +80,7 @@ export function AIQueryBar({
       const response = await searchCatalogProducts({
         queryText: text,
         queryImage,
+        filters: { availableOnly: true },
       })
 
       onResult(response)
