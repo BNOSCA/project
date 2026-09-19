@@ -198,6 +198,8 @@ class SearchHit(Contract):
     product_id: str
     score: float = 0
     score_breakdown: dict[str, float] = Field(default_factory=dict)
+    explanation: str | None = None
+    explanation_source: Literal["llm", "fallback", "none"] = "none"
     matched_filters: list[str] = Field(default_factory=list)
     warnings: list[str] = Field(default_factory=list)
     product: Product | None = None

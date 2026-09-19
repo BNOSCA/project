@@ -3,10 +3,19 @@
 from pathlib import Path
 import base64
 
+import pytest
+
 from fastapi.testclient import TestClient
 
 from backend.config import ROOT, Settings
 from backend.main import create_app
+
+
+@pytest.fixture(autouse=True)
+def disable_external_llm(monkeypatch):
+    """Integration tests must be deterministic and never call a paid API."""
+    monkeypatch.delenv("GROQ_API_KEY", raising=False)
+    monkeypatch.delenv("LLM_API_KEY", raising=False)
 
 
 def test_three_combined_catalog_demo_runs(tmp_path: Path):
@@ -72,7 +81,11 @@ def test_three_combined_catalog_demo_runs(tmp_path: Path):
         assert search_response.status_code == 200, search_response.text
         hits = search_response.json()["products"]
         assert hits
-        assert search_response.json()["retrieval"]["fusion_method"] in {"metadata_text", "fashion_clip_text"}
+        assert search_response.json()["retrieval"]["fusion_method"] in {
+            "metadata_text", "fashion_clip_text", "fashion_clip_text_image",
+        }
+        assert all(hit["explanation"] and hit["explanation_source"] in {"llm", "fallback"}
+                   for hit in hits)
         assert all(hit["product"]["category"] == "top" and
                    hit["product"]["price"] <= 1000 and
                    "beige" not in hit["product"]["colors"] for hit in hits)

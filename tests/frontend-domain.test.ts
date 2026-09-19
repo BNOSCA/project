@@ -124,6 +124,8 @@ test('商城搜尋使用共用 session，並把 API 商品映射為可開啟商�
     return new Response(JSON.stringify({
       products: [{
         score: 0.82,
+        explanation: '日系寬鬆風格與你的描述相符。',
+        explanation_source: 'llm',
         product: {
           product_id: 'gu-1', name: '寬鬆襯衫', category: 'top', brand: 'GU',
           price: 690, colors: ['black'], product_url: 'https://example.com/gu-1',
@@ -142,6 +144,8 @@ test('商城搜尋使用共用 session，並把 API 商品映射為可開啟商�
     assert.equal(result.fusionMethod, 'metadata_text')
     assert.equal(result.products[0].id, 'gu-1')
     assert.equal(result.products[0].similarity, 82)
+    assert.equal(result.products[0].similarityExplanation, '日系寬鬆風格與你的描述相符。')
+    assert.equal(result.products[0].similarityExplanationSource, 'llm')
     assert.equal(result.products[0].productUrl, 'https://example.com/gu-1')
   } finally {
     globalThis.fetch = previousFetch

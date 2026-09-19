@@ -23,6 +23,7 @@ from .firebase import initialize_firebase
 from .feed_debug import build_debug_router
 from .mock import FixtureCatalog, MockServices, filter_products, parse_demo_intent
 from .search import embedding_runtime, get_embedding_store, infer_query_categories, rank_post_image_products, search_products
+from .search_explanations import add_search_explanations
 from .schemas import (
     ErrorBody, ErrorResponse, EventBatchResult, FeedbackEvent, FeedbackResponse,
     FeedResponse, InsightsResponse, Intent, InteractionEvent, Outfit, PostDetail,
@@ -391,7 +392,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         service = require_mock()
         session_data = store.get_intent(request.session_id) if store else None
         previous_intent = Intent.model_validate(session_data) if session_data else None
-        if settings.mode == "live" and has_text:
+        if has_text:
             try:
                 parsed = await call_module("intent", "parse_intent", request.query_text, previous_intent)
                 if isinstance(parsed, dict):
@@ -401,9 +402,6 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                 if isinstance(exc, APIError) and exc.code not in {"LLM_TIMEOUT", "DATA_UNAVAILABLE"}:
                     raise
                 query_intent = parse_demo_intent(request.query_text, request.session_id, previous_intent)
-                query_intent = parse_demo_intent(request.query_text, request.session_id, previous_intent)
-        elif has_text:
-            query_intent = parse_demo_intent(request.query_text, request.session_id, previous_intent)
         else:
             query_intent = Intent(session_id=request.session_id)
         query_intent.session_id = request.session_id
@@ -424,7 +422,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             merged.filters.excluded_fits = sorted(set(merged.filters.excluded_fits + session_intent.excluded.fits))
         if settings.mode == "mock":
             candidates = searchable_products(merged.filters)
-            return search_products(merged, candidates)
+            response = search_products(merged, candidates)
+            return await asyncio.to_thread(add_search_explanations, response, query_intent.semantic_query)
         candidates = searchable_products(merged.filters)
         response = SearchResponse.model_validate(await call_module("search", "search_products", merged, candidates))
         product_ids = {p.product_id for p in candidates}
@@ -432,7 +431,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             if hit.product_id not in product_ids:
                 raise APIError(500, "INTERNAL_ERROR", "搜尋結果違反硬篩選。")
             hit.product = catalog.products_by_id[hit.product_id]
-        return response
+        return await asyncio.to_thread(add_search_explanations, response, query_intent.semantic_query)
 
     app.include_router(build_debug_router(require_mock))
 

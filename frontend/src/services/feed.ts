@@ -259,14 +259,26 @@ export async function searchCatalogProducts(
     throw new Error(body?.error?.message ?? `商品搜尋失敗 (${response.status})`)
   }
   const data = await response.json() as {
-    products: Array<{ product: ApiCatalogProduct | null; score: number }>
+    products: Array<{
+      product: ApiCatalogProduct | null
+      score: number
+      explanation?: string | null
+      explanation_source?: 'llm' | 'fallback' | 'none'
+    }>
     retrieval: { fusion_method: string; prefilter_count: number }
   }
   return {
     products: data.products.flatMap(hit => {
       if (!hit.product) return []
       const product = catalogProduct(hit.product)
-      return product ? [{ ...product, similarity: Math.round(hit.score * 100) }] : []
+      return product ? [{
+        ...product,
+        similarity: Math.round(hit.score * 100),
+        ...(hit.explanation ? { similarityExplanation: hit.explanation } : {}),
+        ...(hit.explanation_source === 'llm' || hit.explanation_source === 'fallback'
+          ? { similarityExplanationSource: hit.explanation_source }
+          : {}),
+      }] : []
     }),
     fusionMethod: data.retrieval.fusion_method,
     candidateCount: data.retrieval.prefilter_count,
