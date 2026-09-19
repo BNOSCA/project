@@ -1,0 +1,6619 @@
+[
+  {
+    "post_id": "post-pexels-16217479",
+    "creator_id": "creator-demo-lucas-brown",
+    "image_url": "https://images.pexels.com/photos/16217479/pexels-photo-16217479.png?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "sporty",
+      "street",
+      "minimal"
+    ],
+    "colors": [
+      "blue",
+      "navy",
+      "brown"
+    ],
+    "occasion": [
+      "sport"
+    ],
+    "fits": [
+      "oversized",
+      "relaxed"
+    ],
+    "materials": [],
+    "unknown_fields": [
+      "materials"
+    ],
+    "garments": [
+      {
+        "label": "accessory",
+        "bbox": [
+          0.482,
+          0.4877,
+          0.5887,
+          0.5105
+        ],
+        "colors": [
+          "black"
+        ],
+        "detection_score": 0.7904
+      },
+      {
+        "label": "shoes",
+        "bbox": [
+          0.6206,
+          0.8436,
+          0.6888,
+          0.9188
+        ],
+        "colors": [
+          "white",
+          "beige"
+        ],
+        "detection_score": 0.9941
+      },
+      {
+        "label": "dress",
+        "bbox": [
+          0.3375,
+          0.4148,
+          0.6783,
+          0.8724
+        ],
+        "colors": [
+          "navy",
+          "brown"
+        ],
+        "detection_score": 0.365
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.3363,
+          0.6073,
+          0.6888,
+          0.8684
+        ],
+        "colors": [
+          "navy",
+          "black"
+        ],
+        "detection_score": 0.9134
+      },
+      {
+        "label": "top",
+        "bbox": [
+          0.3847,
+          0.3736,
+          0.6399,
+          0.6304
+        ],
+        "colors": [
+          "black",
+          "brown"
+        ],
+        "detection_score": 0.5342
+      }
+    ],
+    "image_embedding_id": "post-pexels-16217479",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:24:39Z"
+  },
+  {
+    "post_id": "post-pexels-12204428",
+    "creator_id": "creator-demo-lucretius-mooka",
+    "image_url": "https://images.pexels.com/photos/12204428/pexels-photo-12204428.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "sporty",
+      "formal",
+      "minimal"
+    ],
+    "colors": [
+      "black",
+      "charcoal",
+      "white"
+    ],
+    "occasion": [
+      "sport"
+    ],
+    "fits": [
+      "oversized",
+      "slim"
+    ],
+    "materials": [
+      "knit"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "shoes",
+        "bbox": [
+          0.2184,
+          0.8281,
+          0.3934,
+          0.8932
+        ],
+        "colors": [
+          "green"
+        ],
+        "detection_score": 0.9645
+      },
+      {
+        "label": "accessory",
+        "bbox": [
+          0.3641,
+          0.1699,
+          0.478,
+          0.2059
+        ],
+        "colors": [
+          "brown",
+          "beige"
+        ],
+        "detection_score": 0.6556
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.2811,
+          0.5154,
+          0.5299,
+          0.8015
+        ],
+        "colors": [
+          "black",
+          "charcoal"
+        ],
+        "detection_score": 0.8857
+      }
+    ],
+    "image_embedding_id": "post-pexels-12204428",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:24:40Z"
+  },
+  {
+    "post_id": "post-pexels-29226094",
+    "creator_id": "creator-demo-el-gringo-photo",
+    "image_url": "https://images.pexels.com/photos/29226094/pexels-photo-29226094.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "sporty",
+      "minimal",
+      "street"
+    ],
+    "colors": [
+      "gray",
+      "beige",
+      "brown"
+    ],
+    "occasion": [
+      "sport"
+    ],
+    "fits": [
+      "oversized",
+      "relaxed"
+    ],
+    "materials": [
+      "silky"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "accessory",
+        "bbox": [
+          0.443,
+          0.3554,
+          0.524,
+          0.4009
+        ],
+        "colors": [
+          "blue",
+          "navy"
+        ],
+        "detection_score": 0.6508
+      },
+      {
+        "label": "shoes",
+        "bbox": [
+          0.5696,
+          0.8562,
+          0.7229,
+          0.9145
+        ],
+        "colors": [
+          "blue",
+          "navy"
+        ],
+        "detection_score": 0.9803
+      },
+      {
+        "label": "top",
+        "bbox": [
+          0.2997,
+          0.3278,
+          0.6563,
+          0.596
+        ],
+        "colors": [
+          "beige",
+          "white"
+        ],
+        "detection_score": 0.8726
+      },
+      {
+        "label": "dress",
+        "bbox": [
+          0.3032,
+          0.3445,
+          0.6706,
+          0.8727
+        ],
+        "colors": [
+          "beige",
+          "gray"
+        ],
+        "detection_score": 0.7709
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.3868,
+          0.5827,
+          0.663,
+          0.8543
+        ],
+        "colors": [
+          "gray",
+          "beige"
+        ],
+        "detection_score": 0.9817
+      }
+    ],
+    "image_embedding_id": "post-pexels-29226094",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:24:41Z"
+  },
+  {
+    "post_id": "post-pexels-39385744",
+    "creator_id": "creator-demo-maxwell-gem",
+    "image_url": "https://images.pexels.com/photos/39385744/pexels-photo-39385744.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "japanese",
+      "street",
+      "minimal"
+    ],
+    "colors": [
+      "black",
+      "charcoal",
+      "orange"
+    ],
+    "occasion": [
+      "outdoor"
+    ],
+    "fits": [
+      "oversized",
+      "relaxed"
+    ],
+    "materials": [
+      "knit"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "shoes",
+        "bbox": [
+          0.3153,
+          0.8837,
+          0.4468,
+          0.9385
+        ],
+        "colors": [
+          "orange",
+          "black"
+        ],
+        "detection_score": 0.9487
+      },
+      {
+        "label": "top",
+        "bbox": [
+          0.5165,
+          0.3329,
+          0.6313,
+          0.4867
+        ],
+        "colors": [
+          "black",
+          "charcoal"
+        ],
+        "detection_score": 0.5342
+      },
+      {
+        "label": "accessory",
+        "bbox": [
+          0.3967,
+          0.0655,
+          0.5903,
+          0.1659
+        ],
+        "colors": [
+          "white",
+          "black"
+        ],
+        "detection_score": 0.9282
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.3521,
+          0.4529,
+          0.6562,
+          0.8997
+        ],
+        "colors": [
+          "black"
+        ],
+        "detection_score": 0.7431
+      },
+      {
+        "label": "outerwear",
+        "bbox": [
+          0.3805,
+          0.1281,
+          0.8194,
+          0.5264
+        ],
+        "colors": [
+          "black",
+          "charcoal"
+        ],
+        "detection_score": 0.5565
+      }
+    ],
+    "image_embedding_id": "post-pexels-39385744",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:24:42Z"
+  },
+  {
+    "post_id": "post-pexels-15880276",
+    "creator_id": "creator-demo-lokman-sevim",
+    "image_url": "https://images.pexels.com/photos/15880276/pexels-photo-15880276.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "street",
+      "minimal",
+      "casual"
+    ],
+    "colors": [
+      "green",
+      "gray",
+      "charcoal"
+    ],
+    "occasion": [
+      "outdoor"
+    ],
+    "fits": [
+      "relaxed",
+      "oversized"
+    ],
+    "materials": [
+      "denim"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "top",
+        "bbox": [
+          0.4696,
+          0.3507,
+          0.552,
+          0.4847
+        ],
+        "colors": [
+          "white",
+          "gray"
+        ],
+        "detection_score": 0.6109
+      },
+      {
+        "label": "shoes",
+        "bbox": [
+          0.5162,
+          0.7948,
+          0.6002,
+          0.865
+        ],
+        "colors": [
+          "green",
+          "white"
+        ],
+        "detection_score": 0.9938
+      },
+      {
+        "label": "accessory",
+        "bbox": [
+          0.4846,
+          0.4742,
+          0.5574,
+          0.4986
+        ],
+        "colors": [
+          "white",
+          "pink"
+        ],
+        "detection_score": 0.695
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.3815,
+          0.4935,
+          0.5859,
+          0.8074
+        ],
+        "colors": [
+          "gray",
+          "charcoal"
+        ],
+        "detection_score": 0.9609
+      },
+      {
+        "label": "outerwear",
+        "bbox": [
+          0.3177,
+          0.3154,
+          0.663,
+          0.5662
+        ],
+        "colors": [
+          "charcoal",
+          "gray"
+        ],
+        "detection_score": 0.8126
+      }
+    ],
+    "image_embedding_id": "post-pexels-15880276",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:24:43Z"
+  },
+  {
+    "post_id": "post-pexels-28304701",
+    "creator_id": "creator-demo-juan-jos-carranza",
+    "image_url": "https://images.pexels.com/photos/28304701/pexels-photo-28304701.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "street",
+      "casual",
+      "sporty"
+    ],
+    "colors": [
+      "orange",
+      "blue",
+      "brown"
+    ],
+    "occasion": [
+      "casual"
+    ],
+    "fits": [
+      "oversized",
+      "relaxed"
+    ],
+    "materials": [
+      "denim"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "top",
+        "bbox": [
+          0.4762,
+          0.4347,
+          0.5896,
+          0.5843
+        ],
+        "colors": [
+          "orange",
+          "brown"
+        ],
+        "detection_score": 0.8573
+      },
+      {
+        "label": "shoes",
+        "bbox": [
+          0.4905,
+          0.9014,
+          0.6465,
+          0.9452
+        ],
+        "colors": [
+          "white",
+          "gray"
+        ],
+        "detection_score": 0.9579
+      },
+      {
+        "label": "accessory",
+        "bbox": [
+          0.4747,
+          0.3104,
+          0.6171,
+          0.3714
+        ],
+        "colors": [
+          "blue",
+          "green"
+        ],
+        "detection_score": 0.6781
+      },
+      {
+        "label": "dress",
+        "bbox": [
+          0.3209,
+          0.3966,
+          0.6806,
+          0.9194
+        ],
+        "colors": [
+          "brown",
+          "orange"
+        ],
+        "detection_score": 0.4385
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.3149,
+          0.5264,
+          0.619,
+          0.91
+        ],
+        "colors": [
+          "blue",
+          "gray"
+        ],
+        "detection_score": 0.9748
+      },
+      {
+        "label": "outerwear",
+        "bbox": [
+          0.3193,
+          0.3846,
+          0.693,
+          0.7079
+        ],
+        "colors": [
+          "brown",
+          "orange"
+        ],
+        "detection_score": 0.6809
+      }
+    ],
+    "image_embedding_id": "post-pexels-28304701",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:33:24Z"
+  },
+  {
+    "post_id": "post-pexels-31085360",
+    "creator_id": "creator-demo-amar-preciado",
+    "image_url": "https://images.pexels.com/photos/31085360/pexels-photo-31085360.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "vintage",
+      "japanese",
+      "minimal"
+    ],
+    "colors": [
+      "brown",
+      "green",
+      "beige"
+    ],
+    "occasion": [
+      "work"
+    ],
+    "fits": [
+      "regular",
+      "oversized"
+    ],
+    "materials": [
+      "knit"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "accessory",
+        "bbox": [
+          0.3815,
+          0.6303,
+          0.4573,
+          0.8773
+        ],
+        "colors": [
+          "black",
+          "brown"
+        ],
+        "detection_score": 0.429
+      },
+      {
+        "label": "outerwear",
+        "bbox": [
+          0.3807,
+          0.2673,
+          0.847,
+          0.9326
+        ],
+        "colors": [
+          "brown",
+          "green"
+        ],
+        "detection_score": 0.5971
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.4373,
+          0.8558,
+          0.7714,
+          0.9444
+        ],
+        "colors": [
+          "brown",
+          "black"
+        ],
+        "detection_score": 0.5096
+      }
+    ],
+    "image_embedding_id": "post-pexels-31085360",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:33:25Z"
+  },
+  {
+    "post_id": "post-pexels-9770919",
+    "creator_id": "creator-demo-bimbim-sindu",
+    "image_url": "https://images.pexels.com/photos/9770919/pexels-photo-9770919.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "japanese",
+      "minimal",
+      "casual"
+    ],
+    "colors": [
+      "black",
+      "charcoal",
+      "gray"
+    ],
+    "occasion": [
+      "work"
+    ],
+    "fits": [
+      "oversized"
+    ],
+    "materials": [],
+    "unknown_fields": [
+      "materials"
+    ],
+    "garments": [
+      {
+        "label": "accessory",
+        "bbox": [
+          0.4173,
+          0.4079,
+          0.5327,
+          0.4703
+        ],
+        "colors": [
+          "charcoal",
+          "black"
+        ],
+        "detection_score": 0.8932
+      },
+      {
+        "label": "top",
+        "bbox": [
+          0.3095,
+          0.4985,
+          0.6385,
+          0.8683
+        ],
+        "colors": [
+          "black",
+          "charcoal"
+        ],
+        "detection_score": 0.6003
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.3624,
+          0.8304,
+          0.571,
+          0.9971
+        ],
+        "colors": [
+          "blue",
+          "navy"
+        ],
+        "detection_score": 0.9794
+      }
+    ],
+    "image_embedding_id": "post-pexels-9770919",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:33:26Z"
+  },
+  {
+    "post_id": "post-pexels-31085352",
+    "creator_id": "creator-demo-amar-preciado",
+    "image_url": "https://images.pexels.com/photos/31085352/pexels-photo-31085352.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "elegant",
+      "formal",
+      "minimal"
+    ],
+    "colors": [
+      "green",
+      "brown",
+      "charcoal"
+    ],
+    "occasion": [
+      "work"
+    ],
+    "fits": [
+      "oversized",
+      "regular"
+    ],
+    "materials": [],
+    "unknown_fields": [
+      "materials"
+    ],
+    "garments": [
+      {
+        "label": "outerwear",
+        "bbox": [
+          0.3285,
+          0.2566,
+          0.8983,
+          0.8075
+        ],
+        "colors": [
+          "brown",
+          "green"
+        ],
+        "detection_score": 0.8096
+      },
+      {
+        "label": "dress",
+        "bbox": [
+          0.4221,
+          0.2646,
+          0.6992,
+          0.7978
+        ],
+        "colors": [
+          "brown",
+          "green"
+        ],
+        "detection_score": 0.4163
+      }
+    ],
+    "image_embedding_id": "post-pexels-31085352",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:33:28Z"
+  },
+  {
+    "post_id": "post-pexels-20891135",
+    "creator_id": "creator-demo-frank-casta-eda-pe-a",
+    "image_url": "https://images.pexels.com/photos/20891135/pexels-photo-20891135.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "street",
+      "japanese",
+      "vintage"
+    ],
+    "colors": [
+      "charcoal",
+      "black",
+      "gray"
+    ],
+    "occasion": [
+      "party"
+    ],
+    "fits": [
+      "oversized",
+      "regular"
+    ],
+    "materials": [
+      "knit"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "accessory",
+        "bbox": [
+          0.4619,
+          0.3857,
+          0.6665,
+          0.4159
+        ],
+        "colors": [
+          "brown",
+          "charcoal"
+        ],
+        "detection_score": 0.6816
+      },
+      {
+        "label": "shoes",
+        "bbox": [
+          0.5411,
+          0.8404,
+          0.6294,
+          0.8936
+        ],
+        "colors": [
+          "black",
+          "charcoal"
+        ],
+        "detection_score": 0.9573
+      },
+      {
+        "label": "top",
+        "bbox": [
+          0.4215,
+          0.2589,
+          0.7663,
+          0.4107
+        ],
+        "colors": [
+          "brown",
+          "charcoal"
+        ],
+        "detection_score": 0.4135
+      },
+      {
+        "label": "dress",
+        "bbox": [
+          0.4151,
+          0.2512,
+          0.7477,
+          0.8453
+        ],
+        "colors": [
+          "charcoal",
+          "gray"
+        ],
+        "detection_score": 0.8829
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.4399,
+          0.4073,
+          0.6642,
+          0.8442
+        ],
+        "colors": [
+          "charcoal",
+          "gray"
+        ],
+        "detection_score": 0.7891
+      }
+    ],
+    "image_embedding_id": "post-pexels-20891135",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:33:29Z"
+  },
+  {
+    "post_id": "post-pexels-27467728",
+    "creator_id": "creator-demo-mike-the-fabrica",
+    "image_url": "https://images.pexels.com/photos/27467728/pexels-photo-27467728.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "minimal",
+      "casual",
+      "japanese"
+    ],
+    "colors": [
+      "brown",
+      "beige",
+      "orange"
+    ],
+    "occasion": [
+      "casual"
+    ],
+    "fits": [
+      "oversized",
+      "relaxed"
+    ],
+    "materials": [
+      "knit"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "bottom",
+        "bbox": [
+          0.4824,
+          0.5895,
+          0.6882,
+          0.8222
+        ],
+        "colors": [
+          "beige",
+          "white"
+        ],
+        "detection_score": 0.5221
+      },
+      {
+        "label": "accessory",
+        "bbox": [
+          0.527,
+          0.7745,
+          0.8811,
+          0.9796
+        ],
+        "colors": [
+          "black",
+          "navy"
+        ],
+        "detection_score": 0.8549
+      }
+    ],
+    "image_embedding_id": "post-pexels-27467728",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:33:30Z"
+  },
+  {
+    "post_id": "post-pexels-28794442",
+    "creator_id": "creator-demo-louis-ftn",
+    "image_url": "https://images.pexels.com/photos/28794442/pexels-photo-28794442.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "japanese",
+      "street",
+      "minimal"
+    ],
+    "colors": [
+      "white",
+      "beige",
+      "orange"
+    ],
+    "occasion": [
+      "party"
+    ],
+    "fits": [
+      "oversized",
+      "relaxed"
+    ],
+    "materials": [],
+    "unknown_fields": [
+      "materials"
+    ],
+    "garments": [
+      {
+        "label": "shoes",
+        "bbox": [
+          0.4648,
+          0.8424,
+          0.5493,
+          0.8982
+        ],
+        "colors": [
+          "beige",
+          "white"
+        ],
+        "detection_score": 0.9923
+      },
+      {
+        "label": "dress",
+        "bbox": [
+          0.2558,
+          0.3258,
+          0.6569,
+          0.8422
+        ],
+        "colors": [
+          "white",
+          "beige"
+        ],
+        "detection_score": 0.6199
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.38,
+          0.4829,
+          0.6556,
+          0.8344
+        ],
+        "colors": [
+          "white",
+          "beige"
+        ],
+        "detection_score": 0.9009
+      }
+    ],
+    "image_embedding_id": "post-pexels-28794442",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:33:31Z"
+  },
+  {
+    "post_id": "post-pexels-8682792",
+    "creator_id": "creator-demo-ron-lach",
+    "image_url": "https://images.pexels.com/photos/8682792/pexels-photo-8682792.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "minimal",
+      "elegant",
+      "casual"
+    ],
+    "colors": [
+      "white",
+      "gray"
+    ],
+    "occasion": [
+      "work"
+    ],
+    "fits": [
+      "regular",
+      "slim"
+    ],
+    "materials": [],
+    "unknown_fields": [
+      "materials"
+    ],
+    "garments": [
+      {
+        "label": "shoes",
+        "bbox": [
+          0.4641,
+          0.8732,
+          0.5213,
+          0.9254
+        ],
+        "colors": [
+          "brown",
+          "beige"
+        ],
+        "detection_score": 0.9748
+      },
+      {
+        "label": "accessory",
+        "bbox": [
+          0.4429,
+          0.4051,
+          0.5323,
+          0.4444
+        ],
+        "colors": [
+          "brown"
+        ],
+        "detection_score": 0.4239
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.4083,
+          0.6311,
+          0.6284,
+          0.887
+        ],
+        "colors": [
+          "gray",
+          "white"
+        ],
+        "detection_score": 0.9857
+      },
+      {
+        "label": "top",
+        "bbox": [
+          0.3781,
+          0.4366,
+          0.6027,
+          0.6556
+        ],
+        "colors": [
+          "white",
+          "beige"
+        ],
+        "detection_score": 0.7385
+      }
+    ],
+    "image_embedding_id": "post-pexels-8682792",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:33:32Z"
+  },
+  {
+    "post_id": "post-pexels-6326206",
+    "creator_id": "creator-demo-vanessa-garcia",
+    "image_url": "https://images.pexels.com/photos/6326206/pexels-photo-6326206.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "formal",
+      "preppy",
+      "elegant"
+    ],
+    "colors": [
+      "navy",
+      "blue",
+      "red"
+    ],
+    "occasion": [
+      "formal"
+    ],
+    "fits": [
+      "slim",
+      "regular"
+    ],
+    "materials": [
+      "knit"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "shoes",
+        "bbox": [
+          0.5015,
+          0.9061,
+          0.6103,
+          0.9686
+        ],
+        "colors": [
+          "gray",
+          "black"
+        ],
+        "detection_score": 0.9777
+      },
+      {
+        "label": "top",
+        "bbox": [
+          0.3852,
+          0.3706,
+          0.6003,
+          0.6565
+        ],
+        "colors": [
+          "navy",
+          "orange"
+        ],
+        "detection_score": 0.5298
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.3973,
+          0.6312,
+          0.6645,
+          0.9275
+        ],
+        "colors": [
+          "charcoal",
+          "gray"
+        ],
+        "detection_score": 0.9775
+      },
+      {
+        "label": "accessory",
+        "bbox": [
+          0.5884,
+          0.4254,
+          0.6813,
+          0.6703
+        ],
+        "colors": [
+          "blue",
+          "navy"
+        ],
+        "detection_score": 0.4591
+      }
+    ],
+    "image_embedding_id": "post-pexels-6326206",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:33:34Z"
+  },
+  {
+    "post_id": "post-pexels-5448234",
+    "creator_id": "creator-demo-theo-decker",
+    "image_url": "https://images.pexels.com/photos/5448234/pexels-photo-5448234.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "street",
+      "casual",
+      "minimal"
+    ],
+    "colors": [
+      "pink",
+      "brown",
+      "beige"
+    ],
+    "occasion": [
+      "casual"
+    ],
+    "fits": [
+      "slim",
+      "oversized"
+    ],
+    "materials": [
+      "knit"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "bottom",
+        "bbox": [
+          0.6039,
+          0.5798,
+          0.8374,
+          0.8434
+        ],
+        "colors": [
+          "brown",
+          "orange"
+        ],
+        "detection_score": 0.8855
+      },
+      {
+        "label": "accessory",
+        "bbox": [
+          0.5645,
+          0.3052,
+          0.7992,
+          0.5429
+        ],
+        "colors": [
+          "pink",
+          "beige"
+        ],
+        "detection_score": 0.7479
+      },
+      {
+        "label": "shoes",
+        "bbox": [
+          0.5297,
+          0.8637,
+          0.643,
+          0.97
+        ],
+        "colors": [
+          "brown",
+          "gray"
+        ],
+        "detection_score": 0.9874
+      },
+      {
+        "label": "top",
+        "bbox": [
+          0.3662,
+          0.2846,
+          0.7347,
+          0.5878
+        ],
+        "colors": [
+          "pink",
+          "gray"
+        ],
+        "detection_score": 0.5224
+      }
+    ],
+    "image_embedding_id": "post-pexels-5448234",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:33:36Z"
+  },
+  {
+    "post_id": "post-pexels-7256450",
+    "creator_id": "creator-demo-mart-production",
+    "image_url": "https://images.pexels.com/photos/7256450/pexels-photo-7256450.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "minimal",
+      "casual",
+      "street"
+    ],
+    "colors": [
+      "beige",
+      "gray",
+      "charcoal"
+    ],
+    "occasion": [
+      "travel"
+    ],
+    "fits": [
+      "slim",
+      "regular"
+    ],
+    "materials": [
+      "knit"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "accessory",
+        "bbox": [
+          0.7208,
+          0.4314,
+          0.8145,
+          0.6603
+        ],
+        "colors": [
+          "navy",
+          "blue"
+        ],
+        "detection_score": 0.9242
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.5677,
+          0.5959,
+          0.7153,
+          0.8604
+        ],
+        "colors": [
+          "black",
+          "charcoal"
+        ],
+        "detection_score": 0.9801
+      },
+      {
+        "label": "shoes",
+        "bbox": [
+          0.6088,
+          0.8583,
+          0.6778,
+          0.9206
+        ],
+        "colors": [
+          "brown",
+          "orange"
+        ],
+        "detection_score": 0.9795
+      },
+      {
+        "label": "top",
+        "bbox": [
+          0.5599,
+          0.4275,
+          0.7656,
+          0.6235
+        ],
+        "colors": [
+          "beige",
+          "gray"
+        ],
+        "detection_score": 0.4609
+      },
+      {
+        "label": "outerwear",
+        "bbox": [
+          0.4969,
+          0.4179,
+          0.7775,
+          0.6257
+        ],
+        "colors": [
+          "beige",
+          "gray"
+        ],
+        "detection_score": 0.4622
+      }
+    ],
+    "image_embedding_id": "post-pexels-7256450",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:33:37Z"
+  },
+  {
+    "post_id": "post-pexels-5061271",
+    "creator_id": "creator-demo-thirdman",
+    "image_url": "https://images.pexels.com/photos/5061271/pexels-photo-5061271.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "elegant",
+      "street",
+      "formal"
+    ],
+    "colors": [
+      "brown",
+      "black",
+      "charcoal"
+    ],
+    "occasion": [
+      "work"
+    ],
+    "fits": [
+      "slim",
+      "regular"
+    ],
+    "materials": [
+      "leather"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "accessory",
+        "bbox": [
+          0.5035,
+          0.4555,
+          0.6924,
+          0.6227
+        ],
+        "colors": [
+          "black",
+          "charcoal"
+        ],
+        "detection_score": 0.777
+      },
+      {
+        "label": "shoes",
+        "bbox": [
+          0.7164,
+          0.7457,
+          0.8652,
+          0.8039
+        ],
+        "colors": [
+          "navy",
+          "gray"
+        ],
+        "detection_score": 0.9831
+      },
+      {
+        "label": "top",
+        "bbox": [
+          0.5315,
+          0.185,
+          0.7656,
+          0.4651
+        ],
+        "colors": [
+          "black",
+          "charcoal"
+        ],
+        "detection_score": 0.4868
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.5455,
+          0.3865,
+          0.7671,
+          0.7717
+        ],
+        "colors": [
+          "brown",
+          "black"
+        ],
+        "detection_score": 0.8988
+      },
+      {
+        "label": "outerwear",
+        "bbox": [
+          0.5252,
+          0.1826,
+          0.7582,
+          0.46
+        ],
+        "colors": [
+          "black",
+          "navy"
+        ],
+        "detection_score": 0.6024
+      }
+    ],
+    "image_embedding_id": "post-pexels-5061271",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:33:39Z"
+  },
+  {
+    "post_id": "post-pexels-34635016",
+    "creator_id": "creator-demo-necip-duman",
+    "image_url": "https://images.pexels.com/photos/34635016/pexels-photo-34635016.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "minimal",
+      "street",
+      "elegant"
+    ],
+    "colors": [
+      "gray",
+      "charcoal",
+      "blue"
+    ],
+    "occasion": [
+      "work"
+    ],
+    "fits": [
+      "oversized",
+      "relaxed"
+    ],
+    "materials": [],
+    "unknown_fields": [
+      "materials"
+    ],
+    "garments": [
+      {
+        "label": "accessory",
+        "bbox": [
+          0.3709,
+          0.6527,
+          0.4747,
+          0.6996
+        ],
+        "colors": [
+          "gray",
+          "charcoal"
+        ],
+        "detection_score": 0.8937
+      },
+      {
+        "label": "outerwear",
+        "bbox": [
+          0.0468,
+          0.3738,
+          0.7736,
+          0.9929
+        ],
+        "colors": [
+          "gray",
+          "charcoal"
+        ],
+        "detection_score": 0.7191
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.2526,
+          0.7326,
+          0.7081,
+          1.0011
+        ],
+        "colors": [
+          "gray",
+          "charcoal"
+        ],
+        "detection_score": 0.712
+      }
+    ],
+    "image_embedding_id": "post-pexels-34635016",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:33:40Z"
+  },
+  {
+    "post_id": "post-pexels-3373997",
+    "creator_id": "creator-demo-eric-dekker",
+    "image_url": "https://images.pexels.com/photos/3373997/pexels-photo-3373997.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "casual",
+      "minimal",
+      "preppy"
+    ],
+    "colors": [
+      "brown",
+      "navy",
+      "green"
+    ],
+    "occasion": [
+      "outdoor"
+    ],
+    "fits": [
+      "relaxed",
+      "regular"
+    ],
+    "materials": [],
+    "unknown_fields": [
+      "materials"
+    ],
+    "garments": [
+      {
+        "label": "shoes",
+        "bbox": [
+          0.4363,
+          0.7781,
+          0.5946,
+          0.8541
+        ],
+        "colors": [
+          "blue",
+          "navy"
+        ],
+        "detection_score": 0.9695
+      },
+      {
+        "label": "accessory",
+        "bbox": [
+          0.4748,
+          0.1609,
+          0.5918,
+          0.1966
+        ],
+        "colors": [
+          "pink",
+          "red"
+        ],
+        "detection_score": 0.6882
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.4548,
+          0.4588,
+          0.7205,
+          0.7852
+        ],
+        "colors": [
+          "brown",
+          "beige"
+        ],
+        "detection_score": 0.9669
+      },
+      {
+        "label": "top",
+        "bbox": [
+          0.433,
+          0.2149,
+          0.7421,
+          0.4929
+        ],
+        "colors": [
+          "black",
+          "green"
+        ],
+        "detection_score": 0.3548
+      },
+      {
+        "label": "outerwear",
+        "bbox": [
+          0.3867,
+          0.2144,
+          0.785,
+          0.4862
+        ],
+        "colors": [
+          "black",
+          "navy"
+        ],
+        "detection_score": 0.7393
+      }
+    ],
+    "image_embedding_id": "post-pexels-3373997",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:33:41Z"
+  },
+  {
+    "post_id": "post-pexels-974271",
+    "creator_id": "creator-demo-nur-andi-ravsanjani-gusma",
+    "image_url": "https://images.pexels.com/photos/974271/pexels-photo-974271.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "minimal",
+      "street",
+      "sporty"
+    ],
+    "colors": [
+      "black",
+      "charcoal",
+      "navy"
+    ],
+    "occasion": [
+      "outdoor"
+    ],
+    "fits": [
+      "regular",
+      "relaxed"
+    ],
+    "materials": [],
+    "unknown_fields": [
+      "materials"
+    ],
+    "garments": [
+      {
+        "label": "accessory",
+        "bbox": [
+          0.3724,
+          0.2403,
+          0.6093,
+          0.3121
+        ],
+        "colors": [
+          "black",
+          "charcoal"
+        ],
+        "detection_score": 0.7421
+      },
+      {
+        "label": "top",
+        "bbox": [
+          0.1346,
+          0.327,
+          0.8577,
+          0.8855
+        ],
+        "colors": [
+          "black",
+          "charcoal"
+        ],
+        "detection_score": 0.9639
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.298,
+          0.8523,
+          0.8115,
+          1.0011
+        ],
+        "colors": [
+          "black",
+          "charcoal"
+        ],
+        "detection_score": 0.9135
+      }
+    ],
+    "image_embedding_id": "post-pexels-974271",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:33:42Z"
+  },
+  {
+    "post_id": "post-pexels-35925185",
+    "creator_id": "creator-demo-omar-tapia",
+    "image_url": "https://images.pexels.com/photos/35925185/pexels-photo-35925185.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "sporty",
+      "casual",
+      "street"
+    ],
+    "colors": [
+      "pink",
+      "red"
+    ],
+    "occasion": [
+      "outdoor"
+    ],
+    "fits": [
+      "relaxed",
+      "oversized"
+    ],
+    "materials": [
+      "silky"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "bottom",
+        "bbox": [
+          0.0419,
+          0.6175,
+          0.901,
+          0.9991
+        ],
+        "colors": [
+          "pink",
+          "red"
+        ],
+        "detection_score": 0.9486
+      },
+      {
+        "label": "accessory",
+        "bbox": [
+          0.3309,
+          0.1794,
+          0.5212,
+          0.2442
+        ],
+        "colors": [
+          "black",
+          "charcoal"
+        ],
+        "detection_score": 0.8494
+      },
+      {
+        "label": "top",
+        "bbox": [
+          0.1743,
+          0.2882,
+          0.9491,
+          0.6995
+        ],
+        "colors": [
+          "red",
+          "pink"
+        ],
+        "detection_score": 0.3742
+      }
+    ],
+    "image_embedding_id": "post-pexels-35925185",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:33:44Z"
+  },
+  {
+    "post_id": "post-pexels-35075247",
+    "creator_id": "creator-demo-amar-preciado",
+    "image_url": "https://images.pexels.com/photos/35075247/pexels-photo-35075247.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "sporty",
+      "casual",
+      "minimal"
+    ],
+    "colors": [
+      "brown",
+      "beige",
+      "orange"
+    ],
+    "occasion": [
+      "outdoor"
+    ],
+    "fits": [
+      "relaxed",
+      "oversized"
+    ],
+    "materials": [
+      "leather"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "shoes",
+        "bbox": [
+          0.5819,
+          0.8199,
+          0.7183,
+          0.9136
+        ],
+        "colors": [
+          "brown",
+          "gray"
+        ],
+        "detection_score": 0.9804
+      },
+      {
+        "label": "top",
+        "bbox": [
+          0.4472,
+          0.3714,
+          0.575,
+          0.548
+        ],
+        "colors": [
+          "brown",
+          "white"
+        ],
+        "detection_score": 0.8318
+      },
+      {
+        "label": "accessory",
+        "bbox": [
+          0.4963,
+          0.2994,
+          0.6185,
+          0.3494
+        ],
+        "colors": [
+          "brown",
+          "beige"
+        ],
+        "detection_score": 0.4844
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.4259,
+          0.5316,
+          0.6527,
+          0.8355
+        ],
+        "colors": [
+          "gray",
+          "charcoal"
+        ],
+        "detection_score": 0.9833
+      },
+      {
+        "label": "outerwear",
+        "bbox": [
+          0.3814,
+          0.3775,
+          0.6504,
+          0.626
+        ],
+        "colors": [
+          "brown",
+          "orange"
+        ],
+        "detection_score": 0.666
+      }
+    ],
+    "image_embedding_id": "post-pexels-35075247",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:33:45Z"
+  },
+  {
+    "post_id": "post-pexels-35880490",
+    "creator_id": "creator-demo-candrasaldifa",
+    "image_url": "https://images.pexels.com/photos/35880490/pexels-photo-35880490.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "sporty",
+      "casual",
+      "street"
+    ],
+    "colors": [
+      "blue",
+      "green",
+      "orange"
+    ],
+    "occasion": [
+      "outdoor"
+    ],
+    "fits": [
+      "relaxed",
+      "oversized"
+    ],
+    "materials": [],
+    "unknown_fields": [
+      "materials"
+    ],
+    "garments": [
+      {
+        "label": "shoes",
+        "bbox": [
+          0.3512,
+          0.8922,
+          0.5713,
+          0.9676
+        ],
+        "colors": [
+          "blue",
+          "orange"
+        ],
+        "detection_score": 0.9436
+      },
+      {
+        "label": "accessory",
+        "bbox": [
+          0.4413,
+          0.0975,
+          0.6086,
+          0.1864
+        ],
+        "colors": [
+          "blue",
+          "navy"
+        ],
+        "detection_score": 0.9802
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.3691,
+          0.5334,
+          0.645,
+          0.9085
+        ],
+        "colors": [
+          "white",
+          "beige"
+        ],
+        "detection_score": 0.9851
+      }
+    ],
+    "image_embedding_id": "post-pexels-35880490",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:33:46Z"
+  },
+  {
+    "post_id": "post-pexels-7009605",
+    "creator_id": "creator-demo-tima-miroshnichenko",
+    "image_url": "https://images.pexels.com/photos/7009605/pexels-photo-7009605.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "sporty",
+      "casual",
+      "street"
+    ],
+    "colors": [
+      "red"
+    ],
+    "occasion": [
+      "outdoor"
+    ],
+    "fits": [
+      "regular",
+      "oversized"
+    ],
+    "materials": [],
+    "unknown_fields": [
+      "materials"
+    ],
+    "garments": [
+      {
+        "label": "accessory",
+        "bbox": [
+          0.3648,
+          0.2737,
+          0.5295,
+          0.3178
+        ],
+        "colors": [
+          "red",
+          "white"
+        ],
+        "detection_score": 0.842
+      },
+      {
+        "label": "outerwear",
+        "bbox": [
+          0.129,
+          0.3571,
+          0.9359,
+          0.9279
+        ],
+        "colors": [
+          "red",
+          "blue"
+        ],
+        "detection_score": 0.6902
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.2984,
+          0.8259,
+          0.7032,
+          0.9975
+        ],
+        "colors": [
+          "red",
+          "blue"
+        ],
+        "detection_score": 0.4973
+      }
+    ],
+    "image_embedding_id": "post-pexels-7009605",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:33:47Z"
+  },
+  {
+    "post_id": "post-pexels-4694566",
+    "creator_id": "creator-demo-cottonbro-studio",
+    "image_url": "https://images.pexels.com/photos/4694566/pexels-photo-4694566.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "elegant",
+      "formal",
+      "vintage"
+    ],
+    "colors": [
+      "beige",
+      "brown",
+      "white"
+    ],
+    "occasion": [
+      "date"
+    ],
+    "fits": [
+      "oversized",
+      "relaxed"
+    ],
+    "materials": [
+      "silky"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "accessory",
+        "bbox": [
+          0.2635,
+          0.3746,
+          0.4361,
+          0.5985
+        ],
+        "colors": [
+          "white",
+          "gray"
+        ],
+        "detection_score": 0.3718
+      },
+      {
+        "label": "shoes",
+        "bbox": [
+          0.2782,
+          0.8584,
+          0.387,
+          0.932
+        ],
+        "colors": [
+          "brown",
+          "black"
+        ],
+        "detection_score": 0.9831
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.2781,
+          0.5525,
+          0.5026,
+          0.801
+        ],
+        "colors": [
+          "beige",
+          "brown"
+        ],
+        "detection_score": 0.6618
+      },
+      {
+        "label": "dress",
+        "bbox": [
+          0.2853,
+          0.3945,
+          0.5127,
+          0.8056
+        ],
+        "colors": [
+          "beige",
+          "brown"
+        ],
+        "detection_score": 0.9604
+      }
+    ],
+    "image_embedding_id": "post-pexels-4694566",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:33:48Z"
+  },
+  {
+    "post_id": "post-pexels-4694559",
+    "creator_id": "creator-demo-cottonbro-studio",
+    "image_url": "https://images.pexels.com/photos/4694559/pexels-photo-4694559.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "vintage",
+      "elegant",
+      "formal"
+    ],
+    "colors": [
+      "beige",
+      "black",
+      "brown"
+    ],
+    "occasion": [
+      "date"
+    ],
+    "fits": [
+      "regular",
+      "slim"
+    ],
+    "materials": [],
+    "unknown_fields": [
+      "materials"
+    ],
+    "garments": [
+      {
+        "label": "top",
+        "bbox": [
+          0.3051,
+          -0.0008,
+          0.5714,
+          0.053
+        ],
+        "colors": [
+          "beige",
+          "brown"
+        ],
+        "detection_score": 0.6251
+      },
+      {
+        "label": "shoes",
+        "bbox": [
+          0.3529,
+          0.6048,
+          0.6237,
+          0.7305
+        ],
+        "colors": [
+          "black",
+          "charcoal"
+        ],
+        "detection_score": 0.9734
+      }
+    ],
+    "image_embedding_id": "post-pexels-4694559",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:33:49Z"
+  },
+  {
+    "post_id": "post-pexels-4694545",
+    "creator_id": "creator-demo-cottonbro-studio",
+    "image_url": "https://images.pexels.com/photos/4694545/pexels-photo-4694545.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "minimal",
+      "formal"
+    ],
+    "colors": [
+      "brown",
+      "beige"
+    ],
+    "occasion": [
+      "date"
+    ],
+    "fits": [],
+    "materials": [],
+    "unknown_fields": [
+      "fits",
+      "materials"
+    ],
+    "garments": [
+      {
+        "label": "dress",
+        "bbox": [
+          0.2197,
+          0.5799,
+          0.6458,
+          0.9986
+        ],
+        "colors": [
+          "beige",
+          "brown"
+        ],
+        "detection_score": 0.5875
+      }
+    ],
+    "image_embedding_id": "post-pexels-4694545",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:33:50Z"
+  },
+  {
+    "post_id": "post-pexels-8096435",
+    "creator_id": "creator-demo-mart-production",
+    "image_url": "https://images.pexels.com/photos/8096435/pexels-photo-8096435.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "formal",
+      "minimal",
+      "street"
+    ],
+    "colors": [
+      "black",
+      "charcoal",
+      "green"
+    ],
+    "occasion": [
+      "date"
+    ],
+    "fits": [
+      "slim",
+      "oversized"
+    ],
+    "materials": [
+      "leather"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "shoes",
+        "bbox": [
+          0.3908,
+          0.7337,
+          0.4841,
+          0.7896
+        ],
+        "colors": [
+          "brown",
+          "black"
+        ],
+        "detection_score": 0.9864
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.3151,
+          0.5127,
+          0.4801,
+          0.7262
+        ],
+        "colors": [
+          "black",
+          "charcoal"
+        ],
+        "detection_score": 0.3853
+      },
+      {
+        "label": "outerwear",
+        "bbox": [
+          0.3156,
+          0.3256,
+          0.51,
+          0.5267
+        ],
+        "colors": [
+          "black",
+          "charcoal"
+        ],
+        "detection_score": 0.3789
+      }
+    ],
+    "image_embedding_id": "post-pexels-8096435",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:33:52Z"
+  },
+  {
+    "post_id": "post-pexels-4694564",
+    "creator_id": "creator-demo-cottonbro-studio",
+    "image_url": "https://images.pexels.com/photos/4694564/pexels-photo-4694564.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "formal"
+    ],
+    "colors": [
+      "beige"
+    ],
+    "occasion": [
+      "date"
+    ],
+    "fits": [],
+    "materials": [],
+    "unknown_fields": [
+      "fits",
+      "materials"
+    ],
+    "garments": [
+      {
+        "label": "dress",
+        "bbox": [
+          0.1411,
+          0.4081,
+          0.7844,
+          1.0013
+        ],
+        "colors": [
+          "beige",
+          "brown"
+        ],
+        "detection_score": 0.6784
+      }
+    ],
+    "image_embedding_id": "post-pexels-4694564",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:33:53Z"
+  },
+  {
+    "post_id": "post-pexels-5086777",
+    "creator_id": "creator-demo-jep-gambardella",
+    "image_url": "https://images.pexels.com/photos/5086777/pexels-photo-5086777.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [],
+    "colors": [
+      "brown"
+    ],
+    "occasion": [
+      "date"
+    ],
+    "fits": [],
+    "materials": [],
+    "unknown_fields": [
+      "styles",
+      "fits",
+      "materials"
+    ],
+    "garments": [
+      {
+        "label": "dress",
+        "bbox": [
+          0.2308,
+          0.6516,
+          0.5053,
+          0.9947
+        ],
+        "colors": [
+          "brown",
+          "orange"
+        ],
+        "detection_score": 0.3587
+      },
+      {
+        "label": "shoes",
+        "bbox": [
+          0.4075,
+          0.7614,
+          0.529,
+          0.7967
+        ],
+        "colors": [
+          "orange",
+          "red"
+        ],
+        "detection_score": 0.4907
+      }
+    ],
+    "image_embedding_id": "post-pexels-5086777",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:33:55Z"
+  },
+  {
+    "post_id": "post-pexels-12765474",
+    "creator_id": "creator-demo-mehrab-zahedbeigi",
+    "image_url": "https://images.pexels.com/photos/12765474/pexels-photo-12765474.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "sporty",
+      "street",
+      "preppy"
+    ],
+    "colors": [
+      "white",
+      "gray",
+      "charcoal"
+    ],
+    "occasion": [
+      "sport"
+    ],
+    "fits": [
+      "oversized",
+      "relaxed"
+    ],
+    "materials": [
+      "silky"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "shoes",
+        "bbox": [
+          0.119,
+          0.7959,
+          0.307,
+          0.8718
+        ],
+        "colors": [
+          "gray",
+          "white"
+        ],
+        "detection_score": 0.9069
+      },
+      {
+        "label": "dress",
+        "bbox": [
+          0.1061,
+          0.3965,
+          0.6084,
+          0.7959
+        ],
+        "colors": [
+          "white",
+          "gray"
+        ],
+        "detection_score": 0.7786
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.1047,
+          0.5722,
+          0.5934,
+          0.7911
+        ],
+        "colors": [
+          "white",
+          "gray"
+        ],
+        "detection_score": 0.4349
+      }
+    ],
+    "image_embedding_id": "post-pexels-12765474",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:33:56Z"
+  },
+  {
+    "post_id": "post-pexels-2468231",
+    "creator_id": "creator-demo-marcelo-chagas",
+    "image_url": "https://images.pexels.com/photos/2468231/pexels-photo-2468231.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "sporty",
+      "preppy",
+      "casual"
+    ],
+    "colors": [
+      "navy",
+      "white",
+      "red"
+    ],
+    "occasion": [
+      "sport"
+    ],
+    "fits": [
+      "oversized",
+      "relaxed"
+    ],
+    "materials": [
+      "knit"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "shoes",
+        "bbox": [
+          0.2863,
+          0.8206,
+          0.5074,
+          0.9546
+        ],
+        "colors": [
+          "beige",
+          "white"
+        ],
+        "detection_score": 0.9805
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.3407,
+          0.572,
+          0.8059,
+          0.8627
+        ],
+        "colors": [
+          "white",
+          "red"
+        ],
+        "detection_score": 0.94
+      }
+    ],
+    "image_embedding_id": "post-pexels-2468231",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:33:57Z"
+  },
+  {
+    "post_id": "post-pexels-11338402",
+    "creator_id": "creator-demo-victor-terrell",
+    "image_url": "https://images.pexels.com/photos/11338402/pexels-photo-11338402.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "sporty",
+      "street",
+      "casual"
+    ],
+    "colors": [
+      "red",
+      "black",
+      "charcoal"
+    ],
+    "occasion": [
+      "sport"
+    ],
+    "fits": [
+      "oversized",
+      "relaxed"
+    ],
+    "materials": [
+      "leather"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "accessory",
+        "bbox": [
+          0.3798,
+          0.226,
+          0.4811,
+          0.2611
+        ],
+        "colors": [
+          "gray"
+        ],
+        "detection_score": 0.7138
+      },
+      {
+        "label": "shoes",
+        "bbox": [
+          0.3912,
+          0.8149,
+          0.5053,
+          0.9296
+        ],
+        "colors": [
+          "red",
+          "orange"
+        ],
+        "detection_score": 0.9742
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.2298,
+          0.4986,
+          0.7696,
+          0.8654
+        ],
+        "colors": [
+          "red",
+          "black"
+        ],
+        "detection_score": 0.8081
+      },
+      {
+        "label": "top",
+        "bbox": [
+          0.3312,
+          0.3034,
+          0.5217,
+          0.4932
+        ],
+        "colors": [
+          "red",
+          "black"
+        ],
+        "detection_score": 0.811
+      }
+    ],
+    "image_embedding_id": "post-pexels-11338402",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:33:58Z"
+  },
+  {
+    "post_id": "post-pexels-12568808",
+    "creator_id": "creator-demo-fika-photo",
+    "image_url": "https://images.pexels.com/photos/12568808/pexels-photo-12568808.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "sporty",
+      "minimal",
+      "casual"
+    ],
+    "colors": [
+      "white",
+      "beige",
+      "gray"
+    ],
+    "occasion": [
+      "sport"
+    ],
+    "fits": [
+      "oversized",
+      "relaxed"
+    ],
+    "materials": [],
+    "unknown_fields": [
+      "materials"
+    ],
+    "garments": [
+      {
+        "label": "accessory",
+        "bbox": [
+          0.1913,
+          0.552,
+          0.4748,
+          0.7056
+        ],
+        "colors": [
+          "beige",
+          "white"
+        ],
+        "detection_score": 0.9329
+      },
+      {
+        "label": "shoes",
+        "bbox": [
+          0.8055,
+          0.6643,
+          0.8778,
+          0.7128
+        ],
+        "colors": [
+          "brown",
+          "red"
+        ],
+        "detection_score": 0.8057
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.2646,
+          0.5133,
+          0.6129,
+          0.7274
+        ],
+        "colors": [
+          "white",
+          "beige"
+        ],
+        "detection_score": 0.4551
+      },
+      {
+        "label": "top",
+        "bbox": [
+          0.248,
+          0.3833,
+          0.4857,
+          0.5715
+        ],
+        "colors": [
+          "white",
+          "beige"
+        ],
+        "detection_score": 0.7951
+      },
+      {
+        "label": "dress",
+        "bbox": [
+          0.2327,
+          0.3613,
+          0.609,
+          0.7736
+        ],
+        "colors": [
+          "white",
+          "beige"
+        ],
+        "detection_score": 0.6891
+      }
+    ],
+    "image_embedding_id": "post-pexels-12568808",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:33:59Z"
+  },
+  {
+    "post_id": "post-pexels-37167329",
+    "creator_id": "creator-demo-murat-i-ik",
+    "image_url": "https://images.pexels.com/photos/37167329/pexels-photo-37167329.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "sporty",
+      "street",
+      "casual"
+    ],
+    "colors": [
+      "gray",
+      "beige",
+      "charcoal"
+    ],
+    "occasion": [
+      "sport"
+    ],
+    "fits": [
+      "relaxed",
+      "oversized"
+    ],
+    "materials": [
+      "knit"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "shoes",
+        "bbox": [
+          0.2606,
+          0.8581,
+          0.4282,
+          0.9682
+        ],
+        "colors": [
+          "blue",
+          "gray"
+        ],
+        "detection_score": 0.9895
+      },
+      {
+        "label": "accessory",
+        "bbox": [
+          0.4471,
+          0.2383,
+          0.5665,
+          0.2698
+        ],
+        "colors": [
+          "blue",
+          "navy"
+        ],
+        "detection_score": 0.626
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.2962,
+          0.5418,
+          0.577,
+          0.903
+        ],
+        "colors": [
+          "blue",
+          "white"
+        ],
+        "detection_score": 0.9787
+      },
+      {
+        "label": "top",
+        "bbox": [
+          0.3377,
+          0.3165,
+          0.6197,
+          0.554
+        ],
+        "colors": [
+          "gray",
+          "white"
+        ],
+        "detection_score": 0.6818
+      }
+    ],
+    "image_embedding_id": "post-pexels-37167329",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:34:00Z"
+  },
+  {
+    "post_id": "post-pexels-17834304",
+    "creator_id": "creator-demo-darya-grey-owl",
+    "image_url": "https://images.pexels.com/photos/17834304/pexels-photo-17834304.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "minimal",
+      "casual",
+      "sporty"
+    ],
+    "colors": [
+      "white",
+      "gray",
+      "beige"
+    ],
+    "occasion": [
+      "casual"
+    ],
+    "fits": [
+      "relaxed",
+      "oversized"
+    ],
+    "materials": [
+      "denim"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "shoes",
+        "bbox": [
+          0.472,
+          0.7788,
+          0.5757,
+          0.9278
+        ],
+        "colors": [
+          "white",
+          "gray"
+        ],
+        "detection_score": 0.9961
+      },
+      {
+        "label": "accessory",
+        "bbox": [
+          0.4217,
+          0.2659,
+          0.5398,
+          0.2931
+        ],
+        "colors": [
+          "brown",
+          "beige"
+        ],
+        "detection_score": 0.4641
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.3151,
+          0.462,
+          0.6478,
+          0.6669
+        ],
+        "colors": [
+          "blue",
+          "white"
+        ],
+        "detection_score": 0.8395
+      },
+      {
+        "label": "top",
+        "bbox": [
+          0.2677,
+          0.3194,
+          0.645,
+          0.5275
+        ],
+        "colors": [
+          "white"
+        ],
+        "detection_score": 0.8299
+      }
+    ],
+    "image_embedding_id": "post-pexels-17834304",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:34:01Z"
+  },
+  {
+    "post_id": "post-pexels-18480288",
+    "creator_id": "creator-demo-necip-duman",
+    "image_url": "https://images.pexels.com/photos/18480288/pexels-photo-18480288.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "street",
+      "vintage",
+      "preppy"
+    ],
+    "colors": [
+      "green",
+      "white",
+      "blue"
+    ],
+    "occasion": [
+      "casual"
+    ],
+    "fits": [
+      "oversized",
+      "relaxed"
+    ],
+    "materials": [],
+    "unknown_fields": [
+      "materials"
+    ],
+    "garments": [
+      {
+        "label": "accessory",
+        "bbox": [
+          0.6552,
+          0.2402,
+          0.8008,
+          0.2877
+        ],
+        "colors": [
+          "white",
+          "green"
+        ],
+        "detection_score": 0.8115
+      },
+      {
+        "label": "dress",
+        "bbox": [
+          0.6119,
+          0.3819,
+          0.8499,
+          0.92
+        ],
+        "colors": [
+          "white",
+          "green"
+        ],
+        "detection_score": 0.3533
+      }
+    ],
+    "image_embedding_id": "post-pexels-18480288",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:34:03Z"
+  },
+  {
+    "post_id": "post-pexels-38381341",
+    "creator_id": "creator-demo-alexandre-canteiro",
+    "image_url": "https://images.pexels.com/photos/38381341/pexels-photo-38381341.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "vintage",
+      "elegant",
+      "japanese"
+    ],
+    "colors": [
+      "charcoal",
+      "navy",
+      "gray"
+    ],
+    "occasion": [
+      "work"
+    ],
+    "fits": [
+      "oversized",
+      "regular"
+    ],
+    "materials": [],
+    "unknown_fields": [
+      "materials"
+    ],
+    "garments": [
+      {
+        "label": "shoes",
+        "bbox": [
+          0.326,
+          0.787,
+          0.4109,
+          0.8767
+        ],
+        "colors": [
+          "black",
+          "charcoal"
+        ],
+        "detection_score": 0.9956
+      },
+      {
+        "label": "accessory",
+        "bbox": [
+          0.2604,
+          0.1347,
+          0.407,
+          0.1683
+        ],
+        "colors": [
+          "brown",
+          "beige"
+        ],
+        "detection_score": 0.8065
+      },
+      {
+        "label": "dress",
+        "bbox": [
+          0.144,
+          0.1735,
+          0.8283,
+          0.6853
+        ],
+        "colors": [
+          "green",
+          "navy"
+        ],
+        "detection_score": 0.8433
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.1457,
+          0.3634,
+          0.8299,
+          0.6751
+        ],
+        "colors": [
+          "green",
+          "gray"
+        ],
+        "detection_score": 0.8992
+      }
+    ],
+    "image_embedding_id": "post-pexels-38381341",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:34:04Z"
+  },
+  {
+    "post_id": "post-pexels-12690379",
+    "creator_id": "creator-demo-adhen-wijaya-kusuma",
+    "image_url": "https://images.pexels.com/photos/12690379/pexels-photo-12690379.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "vintage",
+      "street",
+      "japanese"
+    ],
+    "colors": [
+      "blue",
+      "navy",
+      "black"
+    ],
+    "occasion": [
+      "travel"
+    ],
+    "fits": [
+      "oversized"
+    ],
+    "materials": [],
+    "unknown_fields": [
+      "materials"
+    ],
+    "garments": [
+      {
+        "label": "accessory",
+        "bbox": [
+          0.4611,
+          0.5029,
+          0.5492,
+          0.5336
+        ],
+        "colors": [
+          "black",
+          "charcoal"
+        ],
+        "detection_score": 0.8463
+      },
+      {
+        "label": "dress",
+        "bbox": [
+          0.4195,
+          0.5896,
+          0.6967,
+          0.9216
+        ],
+        "colors": [
+          "brown",
+          "charcoal"
+        ],
+        "detection_score": 0.4579
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.4539,
+          0.8596,
+          0.7125,
+          0.9989
+        ],
+        "colors": [
+          "brown",
+          "gray"
+        ],
+        "detection_score": 0.6357
+      },
+      {
+        "label": "top",
+        "bbox": [
+          0.4084,
+          0.5463,
+          0.6575,
+          0.7948
+        ],
+        "colors": [
+          "brown",
+          "beige"
+        ],
+        "detection_score": 0.4124
+      }
+    ],
+    "image_embedding_id": "post-pexels-12690379",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:34:06Z"
+  },
+  {
+    "post_id": "post-pexels-18749362",
+    "creator_id": "creator-demo-esma-atak",
+    "image_url": "https://images.pexels.com/photos/18749362/pexels-photo-18749362.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "vintage",
+      "minimal",
+      "elegant"
+    ],
+    "colors": [
+      "navy",
+      "white",
+      "orange"
+    ],
+    "occasion": [
+      "date"
+    ],
+    "fits": [
+      "oversized",
+      "slim"
+    ],
+    "materials": [],
+    "unknown_fields": [
+      "materials"
+    ],
+    "garments": [
+      {
+        "label": "accessory",
+        "bbox": [
+          0.3757,
+          0.4988,
+          0.4163,
+          0.5226
+        ],
+        "colors": [
+          "brown",
+          "orange"
+        ],
+        "detection_score": 0.3681
+      },
+      {
+        "label": "shoes",
+        "bbox": [
+          0.4523,
+          0.839,
+          0.5995,
+          0.9378
+        ],
+        "colors": [
+          "black",
+          "charcoal"
+        ],
+        "detection_score": 0.9979
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.372,
+          0.4623,
+          0.6416,
+          0.6648
+        ],
+        "colors": [
+          "navy",
+          "blue"
+        ],
+        "detection_score": 0.5087
+      },
+      {
+        "label": "top",
+        "bbox": [
+          0.3136,
+          0.2867,
+          0.583,
+          0.5316
+        ],
+        "colors": [
+          "blue",
+          "white"
+        ],
+        "detection_score": 0.5156
+      }
+    ],
+    "image_embedding_id": "post-pexels-18749362",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:34:07Z"
+  },
+  {
+    "post_id": "post-pexels-34460008",
+    "creator_id": "creator-demo-shahin-mren",
+    "image_url": "https://images.pexels.com/photos/34460008/pexels-photo-34460008.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "vintage",
+      "japanese",
+      "minimal"
+    ],
+    "colors": [
+      "gray",
+      "charcoal",
+      "blue"
+    ],
+    "occasion": [
+      "work"
+    ],
+    "fits": [
+      "oversized",
+      "regular"
+    ],
+    "materials": [],
+    "unknown_fields": [
+      "materials"
+    ],
+    "garments": [
+      {
+        "label": "accessory",
+        "bbox": [
+          0.4302,
+          0.3348,
+          0.628,
+          0.4275
+        ],
+        "colors": [
+          "brown",
+          "beige"
+        ],
+        "detection_score": 0.7153
+      },
+      {
+        "label": "top",
+        "bbox": [
+          0.3686,
+          0.5352,
+          0.7052,
+          0.8349
+        ],
+        "colors": [
+          "beige",
+          "brown"
+        ],
+        "detection_score": 0.6481
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.3803,
+          0.8281,
+          0.7354,
+          0.9982
+        ],
+        "colors": [
+          "brown",
+          "beige"
+        ],
+        "detection_score": 0.3578
+      }
+    ],
+    "image_embedding_id": "post-pexels-34460008",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:34:08Z"
+  },
+  {
+    "post_id": "post-pexels-18762528",
+    "creator_id": "creator-demo-daniil-kondrashin",
+    "image_url": "https://images.pexels.com/photos/18762528/pexels-photo-18762528.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "vintage",
+      "minimal",
+      "elegant"
+    ],
+    "colors": [
+      "black",
+      "pink",
+      "charcoal"
+    ],
+    "occasion": [
+      "date"
+    ],
+    "fits": [
+      "oversized",
+      "relaxed"
+    ],
+    "materials": [
+      "knit"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "accessory",
+        "bbox": [
+          0.2881,
+          0.3303,
+          0.4932,
+          0.3932
+        ],
+        "colors": [
+          "black",
+          "navy"
+        ],
+        "detection_score": 0.9607
+      },
+      {
+        "label": "top",
+        "bbox": [
+          0.087,
+          0.3186,
+          0.6738,
+          0.8009
+        ],
+        "colors": [
+          "black",
+          "charcoal"
+        ],
+        "detection_score": 0.4493
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.3219,
+          0.7719,
+          0.6928,
+          0.9981
+        ],
+        "colors": [
+          "brown",
+          "beige"
+        ],
+        "detection_score": 0.4632
+      }
+    ],
+    "image_embedding_id": "post-pexels-18762528",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:34:09Z"
+  },
+  {
+    "post_id": "post-pexels-13929212",
+    "creator_id": "creator-demo-mizuno-k",
+    "image_url": "https://images.pexels.com/photos/13929212/pexels-photo-13929212.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "preppy",
+      "street",
+      "vintage"
+    ],
+    "colors": [
+      "navy",
+      "white",
+      "brown"
+    ],
+    "occasion": [
+      "casual"
+    ],
+    "fits": [
+      "oversized",
+      "relaxed"
+    ],
+    "materials": [
+      "knit"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "top",
+        "bbox": [
+          0.1632,
+          0.0018,
+          0.5714,
+          0.3011
+        ],
+        "colors": [
+          "brown",
+          "navy"
+        ],
+        "detection_score": 0.4991
+      },
+      {
+        "label": "shoes",
+        "bbox": [
+          0.2475,
+          0.6699,
+          0.5199,
+          0.8301
+        ],
+        "colors": [
+          "white"
+        ],
+        "detection_score": 0.9655
+      },
+      {
+        "label": "accessory",
+        "bbox": [
+          0.4996,
+          0.2933,
+          0.7515,
+          0.6045
+        ],
+        "colors": [
+          "gray",
+          "white"
+        ],
+        "detection_score": 0.9729
+      }
+    ],
+    "image_embedding_id": "post-pexels-13929212",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:34:10Z"
+  },
+  {
+    "post_id": "post-pexels-7753711",
+    "creator_id": "creator-demo-rizki-koto",
+    "image_url": "https://images.pexels.com/photos/7753711/pexels-photo-7753711.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "preppy",
+      "japanese",
+      "vintage"
+    ],
+    "colors": [
+      "blue",
+      "gray",
+      "white"
+    ],
+    "occasion": [
+      "outdoor"
+    ],
+    "fits": [],
+    "materials": [],
+    "unknown_fields": [
+      "fits",
+      "materials"
+    ],
+    "garments": [
+      {
+        "label": "accessory",
+        "bbox": [
+          0.2118,
+          0.3943,
+          0.3318,
+          0.6377
+        ],
+        "colors": [
+          "gray",
+          "brown"
+        ],
+        "detection_score": 0.7115
+      },
+      {
+        "label": "shoes",
+        "bbox": [
+          0.5322,
+          0.8631,
+          0.6714,
+          0.9665
+        ],
+        "colors": [
+          "white",
+          "gray"
+        ],
+        "detection_score": 0.974
+      },
+      {
+        "label": "dress",
+        "bbox": [
+          0.2672,
+          0.3873,
+          0.5988,
+          0.7579
+        ],
+        "colors": [
+          "blue",
+          "white"
+        ],
+        "detection_score": 0.9396
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.2691,
+          0.6101,
+          0.5936,
+          0.754
+        ],
+        "colors": [
+          "blue",
+          "green"
+        ],
+        "detection_score": 0.5853
+      }
+    ],
+    "image_embedding_id": "post-pexels-7753711",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:34:12Z"
+  },
+  {
+    "post_id": "post-pexels-17774708",
+    "creator_id": "creator-demo-emre-akyol",
+    "image_url": "https://images.pexels.com/photos/17774708/pexels-photo-17774708.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "preppy",
+      "vintage",
+      "street"
+    ],
+    "colors": [
+      "green",
+      "white",
+      "orange"
+    ],
+    "occasion": [
+      "travel"
+    ],
+    "fits": [
+      "oversized",
+      "regular"
+    ],
+    "materials": [],
+    "unknown_fields": [
+      "materials"
+    ],
+    "garments": [
+      {
+        "label": "accessory",
+        "bbox": [
+          0.3597,
+          0.2827,
+          0.6557,
+          0.4222
+        ],
+        "colors": [
+          "white"
+        ],
+        "detection_score": 0.99
+      },
+      {
+        "label": "top",
+        "bbox": [
+          0.2509,
+          0.4642,
+          0.7991,
+          0.9885
+        ],
+        "colors": [
+          "green"
+        ],
+        "detection_score": 0.6765
+      }
+    ],
+    "image_embedding_id": "post-pexels-17774708",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:34:13Z"
+  },
+  {
+    "post_id": "post-pexels-9178814",
+    "creator_id": "creator-demo-darina-belonogova",
+    "image_url": "https://images.pexels.com/photos/9178814/pexels-photo-9178814.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "preppy",
+      "vintage",
+      "street"
+    ],
+    "colors": [
+      "brown",
+      "blue",
+      "navy"
+    ],
+    "occasion": [
+      "outdoor"
+    ],
+    "fits": [
+      "oversized",
+      "regular"
+    ],
+    "materials": [
+      "leather"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "bottom",
+        "bbox": [
+          0.1183,
+          0.566,
+          0.5148,
+          0.7786
+        ],
+        "colors": [
+          "brown",
+          "red"
+        ],
+        "detection_score": 0.7312
+      },
+      {
+        "label": "shoes",
+        "bbox": [
+          0.1337,
+          0.9552,
+          0.2494,
+          0.9979
+        ],
+        "colors": [
+          "navy",
+          "black"
+        ],
+        "detection_score": 0.9813
+      },
+      {
+        "label": "dress",
+        "bbox": [
+          0.125,
+          0.361,
+          0.5159,
+          0.7806
+        ],
+        "colors": [
+          "beige",
+          "brown"
+        ],
+        "detection_score": 0.7024
+      },
+      {
+        "label": "top",
+        "bbox": [
+          0.218,
+          0.3554,
+          0.5635,
+          0.6359
+        ],
+        "colors": [
+          "blue",
+          "beige"
+        ],
+        "detection_score": 0.6468
+      }
+    ],
+    "image_embedding_id": "post-pexels-9178814",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:34:15Z"
+  },
+  {
+    "post_id": "post-pexels-9178783",
+    "creator_id": "creator-demo-darina-belonogova",
+    "image_url": "https://images.pexels.com/photos/9178783/pexels-photo-9178783.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "preppy",
+      "vintage",
+      "minimal"
+    ],
+    "colors": [
+      "brown",
+      "orange",
+      "beige"
+    ],
+    "occasion": [
+      "date"
+    ],
+    "fits": [
+      "oversized",
+      "relaxed"
+    ],
+    "materials": [
+      "knit"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "top",
+        "bbox": [
+          0.4276,
+          -0.0026,
+          0.7155,
+          0.2171
+        ],
+        "colors": [
+          "blue",
+          "beige"
+        ],
+        "detection_score": 0.6282
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.006,
+          0.1902,
+          0.7351,
+          0.6347
+        ],
+        "colors": [
+          "brown",
+          "orange"
+        ],
+        "detection_score": 0.4862
+      }
+    ],
+    "image_embedding_id": "post-pexels-9178783",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:34:16Z"
+  },
+  {
+    "post_id": "post-pexels-5730452",
+    "creator_id": "creator-demo-cottonbro-studio",
+    "image_url": "https://images.pexels.com/photos/5730452/pexels-photo-5730452.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "preppy",
+      "sporty",
+      "vintage"
+    ],
+    "colors": [
+      "navy",
+      "white",
+      "blue"
+    ],
+    "occasion": [
+      "sport"
+    ],
+    "fits": [
+      "regular",
+      "slim"
+    ],
+    "materials": [
+      "knit"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "shoes",
+        "bbox": [
+          0.2865,
+          0.7573,
+          0.3801,
+          0.8406
+        ],
+        "colors": [
+          "white",
+          "red"
+        ],
+        "detection_score": 0.9934
+      },
+      {
+        "label": "accessory",
+        "bbox": [
+          0.2977,
+          0.2979,
+          0.4401,
+          0.3442
+        ],
+        "colors": [
+          "red"
+        ],
+        "detection_score": 0.6351
+      }
+    ],
+    "image_embedding_id": "post-pexels-5730452",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:34:17Z"
+  },
+  {
+    "post_id": "post-pexels-12640454",
+    "creator_id": "creator-demo-zero-pamungkas",
+    "image_url": "https://images.pexels.com/photos/12640454/pexels-photo-12640454.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "minimal",
+      "vintage",
+      "japanese"
+    ],
+    "colors": [
+      "charcoal",
+      "gray",
+      "black"
+    ],
+    "occasion": [
+      "work"
+    ],
+    "fits": [
+      "relaxed",
+      "oversized"
+    ],
+    "materials": [
+      "knit"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "accessory",
+        "bbox": [
+          0.7051,
+          0.4528,
+          0.7661,
+          0.4766
+        ],
+        "colors": [
+          "white",
+          "gray"
+        ],
+        "detection_score": 0.4465
+      },
+      {
+        "label": "shoes",
+        "bbox": [
+          0.5418,
+          0.7072,
+          0.6078,
+          0.7408
+        ],
+        "colors": [
+          "black",
+          "charcoal"
+        ],
+        "detection_score": 0.7422
+      }
+    ],
+    "image_embedding_id": "post-pexels-12640454",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:34:19Z"
+  },
+  {
+    "post_id": "post-pexels-31931771",
+    "creator_id": "creator-demo-helin-gezer",
+    "image_url": "https://images.pexels.com/photos/31931771/pexels-photo-31931771.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "minimal",
+      "vintage",
+      "street"
+    ],
+    "colors": [
+      "brown",
+      "red",
+      "orange"
+    ],
+    "occasion": [
+      "date"
+    ],
+    "fits": [
+      "oversized",
+      "regular"
+    ],
+    "materials": [],
+    "unknown_fields": [
+      "materials"
+    ],
+    "garments": [
+      {
+        "label": "shoes",
+        "bbox": [
+          0.4915,
+          0.7332,
+          0.5403,
+          0.7947
+        ],
+        "colors": [
+          "orange",
+          "brown"
+        ],
+        "detection_score": 0.8556
+      },
+      {
+        "label": "outerwear",
+        "bbox": [
+          0.3034,
+          0.4572,
+          0.5778,
+          0.6402
+        ],
+        "colors": [
+          "brown",
+          "red"
+        ],
+        "detection_score": 0.4468
+      },
+      {
+        "label": "accessory",
+        "bbox": [
+          0.517,
+          0.5258,
+          0.5796,
+          0.6052
+        ],
+        "colors": [
+          "brown",
+          "red"
+        ],
+        "detection_score": 0.5399
+      },
+      {
+        "label": "dress",
+        "bbox": [
+          0.4052,
+          0.4589,
+          0.5566,
+          0.6381
+        ],
+        "colors": [
+          "red",
+          "brown"
+        ],
+        "detection_score": 0.6859
+      }
+    ],
+    "image_embedding_id": "post-pexels-31931771",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:34:20Z"
+  },
+  {
+    "post_id": "post-pexels-16749835",
+    "creator_id": "creator-demo-mohammad-hossein-mirzagol",
+    "image_url": "https://images.pexels.com/photos/16749835/pexels-photo-16749835.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "minimal",
+      "elegant",
+      "formal"
+    ],
+    "colors": [
+      "black",
+      "charcoal",
+      "navy"
+    ],
+    "occasion": [
+      "work"
+    ],
+    "fits": [
+      "oversized",
+      "relaxed"
+    ],
+    "materials": [
+      "silky"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "shoes",
+        "bbox": [
+          0.4883,
+          0.8339,
+          0.5364,
+          0.906
+        ],
+        "colors": [
+          "beige",
+          "brown"
+        ],
+        "detection_score": 0.9792
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.4476,
+          0.6533,
+          0.5646,
+          0.8274
+        ],
+        "colors": [
+          "black",
+          "charcoal"
+        ],
+        "detection_score": 0.8895
+      },
+      {
+        "label": "outerwear",
+        "bbox": [
+          0.3596,
+          0.3005,
+          0.627,
+          0.7339
+        ],
+        "colors": [
+          "black",
+          "charcoal"
+        ],
+        "detection_score": 0.6562
+      }
+    ],
+    "image_embedding_id": "post-pexels-16749835",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:34:22Z"
+  },
+  {
+    "post_id": "post-pexels-9211605",
+    "creator_id": "creator-demo-jeff-vieira",
+    "image_url": "https://images.pexels.com/photos/9211605/pexels-photo-9211605.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "minimal",
+      "casual",
+      "sporty"
+    ],
+    "colors": [
+      "black",
+      "charcoal",
+      "navy"
+    ],
+    "occasion": [
+      "outdoor"
+    ],
+    "fits": [
+      "slim",
+      "oversized"
+    ],
+    "materials": [
+      "knit"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "accessory",
+        "bbox": [
+          0.3825,
+          0.339,
+          0.5272,
+          0.378
+        ],
+        "colors": [
+          "navy",
+          "black"
+        ],
+        "detection_score": 0.9042
+      },
+      {
+        "label": "shoes",
+        "bbox": [
+          0.5855,
+          0.6939,
+          0.6861,
+          0.7682
+        ],
+        "colors": [
+          "black",
+          "navy"
+        ],
+        "detection_score": 0.9864
+      },
+      {
+        "label": "top",
+        "bbox": [
+          0.3605,
+          0.2273,
+          0.5777,
+          0.3733
+        ],
+        "colors": [
+          "black",
+          "navy"
+        ],
+        "detection_score": 0.6435
+      },
+      {
+        "label": "dress",
+        "bbox": [
+          0.3661,
+          0.26,
+          0.6437,
+          0.6823
+        ],
+        "colors": [
+          "black",
+          "charcoal"
+        ],
+        "detection_score": 0.4339
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.3883,
+          0.3841,
+          0.6445,
+          0.6827
+        ],
+        "colors": [
+          "black",
+          "navy"
+        ],
+        "detection_score": 0.9088
+      }
+    ],
+    "image_embedding_id": "post-pexels-9211605",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:34:23Z"
+  },
+  {
+    "post_id": "post-pexels-14967411",
+    "creator_id": "creator-demo-david-eluwole",
+    "image_url": "https://images.pexels.com/photos/14967411/pexels-photo-14967411.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "minimal",
+      "street",
+      "sporty"
+    ],
+    "colors": [
+      "white",
+      "black",
+      "charcoal"
+    ],
+    "occasion": [
+      "travel"
+    ],
+    "fits": [
+      "slim",
+      "regular"
+    ],
+    "materials": [],
+    "unknown_fields": [
+      "materials"
+    ],
+    "garments": [
+      {
+        "label": "accessory",
+        "bbox": [
+          0.6063,
+          0.4346,
+          0.7854,
+          0.6727
+        ],
+        "colors": [
+          "black",
+          "charcoal"
+        ],
+        "detection_score": 0.9183
+      },
+      {
+        "label": "shoes",
+        "bbox": [
+          0.6814,
+          0.9424,
+          0.7544,
+          0.9812
+        ],
+        "colors": [
+          "gray",
+          "charcoal"
+        ],
+        "detection_score": 0.9394
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.4488,
+          0.5733,
+          0.7724,
+          0.9593
+        ],
+        "colors": [
+          "black",
+          "charcoal"
+        ],
+        "detection_score": 0.9575
+      },
+      {
+        "label": "dress",
+        "bbox": [
+          0.4476,
+          0.4349,
+          0.7773,
+          0.9308
+        ],
+        "colors": [
+          "black",
+          "charcoal"
+        ],
+        "detection_score": 0.4731
+      }
+    ],
+    "image_embedding_id": "post-pexels-14967411",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:34:24Z"
+  },
+  {
+    "post_id": "post-pexels-18794353",
+    "creator_id": "creator-demo-braks-alexandros",
+    "image_url": "https://images.pexels.com/photos/18794353/pexels-photo-18794353.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "minimal",
+      "sporty",
+      "elegant"
+    ],
+    "colors": [
+      "black",
+      "charcoal",
+      "gray"
+    ],
+    "occasion": [
+      "party"
+    ],
+    "fits": [
+      "oversized",
+      "relaxed"
+    ],
+    "materials": [
+      "silky"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "shoes",
+        "bbox": [
+          0.5794,
+          0.672,
+          0.6644,
+          0.7263
+        ],
+        "colors": [
+          "black",
+          "charcoal"
+        ],
+        "detection_score": 0.9036
+      },
+      {
+        "label": "top",
+        "bbox": [
+          0.4193,
+          0.2122,
+          0.6373,
+          0.4059
+        ],
+        "colors": [
+          "black",
+          "charcoal"
+        ],
+        "detection_score": 0.6697
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.3059,
+          0.3846,
+          0.662,
+          0.6825
+        ],
+        "colors": [
+          "black",
+          "charcoal"
+        ],
+        "detection_score": 0.7921
+      }
+    ],
+    "image_embedding_id": "post-pexels-18794353",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:34:26Z"
+  },
+  {
+    "post_id": "post-pexels-3223423",
+    "creator_id": "creator-demo-mo-productions",
+    "image_url": "https://images.pexels.com/photos/3223423/pexels-photo-3223423.png?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "japanese",
+      "minimal",
+      "casual"
+    ],
+    "colors": [
+      "red",
+      "black",
+      "charcoal"
+    ],
+    "occasion": [
+      "travel"
+    ],
+    "fits": [
+      "oversized",
+      "slim"
+    ],
+    "materials": [],
+    "unknown_fields": [
+      "materials"
+    ],
+    "garments": [
+      {
+        "label": "accessory",
+        "bbox": [
+          0.183,
+          0.2896,
+          0.384,
+          0.5691
+        ],
+        "colors": [
+          "red"
+        ],
+        "detection_score": 0.758
+      },
+      {
+        "label": "shoes",
+        "bbox": [
+          0.4585,
+          0.6793,
+          0.5205,
+          0.7186
+        ],
+        "colors": [
+          "green"
+        ],
+        "detection_score": 0.9778
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.3721,
+          0.4319,
+          0.5336,
+          0.6658
+        ],
+        "colors": [
+          "black",
+          "charcoal"
+        ],
+        "detection_score": 0.8839
+      }
+    ],
+    "image_embedding_id": "post-pexels-3223423",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:34:29Z"
+  },
+  {
+    "post_id": "post-pexels-9523357",
+    "creator_id": "creator-demo-unknown",
+    "image_url": "https://images.pexels.com/photos/9523357/pexels-photo-9523357.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "casual",
+      "minimal",
+      "vintage"
+    ],
+    "colors": [
+      "white",
+      "beige",
+      "gray"
+    ],
+    "occasion": [
+      "travel"
+    ],
+    "fits": [
+      "relaxed",
+      "oversized"
+    ],
+    "materials": [],
+    "unknown_fields": [
+      "materials"
+    ],
+    "garments": [
+      {
+        "label": "accessory",
+        "bbox": [
+          0.3643,
+          0.5434,
+          0.8162,
+          0.8475
+        ],
+        "colors": [
+          "red"
+        ],
+        "detection_score": 0.6949
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.0761,
+          0.7566,
+          0.873,
+          0.9999
+        ],
+        "colors": [
+          "brown",
+          "beige"
+        ],
+        "detection_score": 0.4152
+      }
+    ],
+    "image_embedding_id": "post-pexels-9523357",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:34:30Z"
+  },
+  {
+    "post_id": "post-pexels-3220232",
+    "creator_id": "creator-demo-asya-cusima",
+    "image_url": "https://images.pexels.com/photos/3220232/pexels-photo-3220232.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "vintage",
+      "elegant",
+      "formal"
+    ],
+    "colors": [
+      "brown",
+      "orange",
+      "beige"
+    ],
+    "occasion": [
+      "travel"
+    ],
+    "fits": [
+      "oversized"
+    ],
+    "materials": [],
+    "unknown_fields": [
+      "materials"
+    ],
+    "garments": [
+      {
+        "label": "accessory",
+        "bbox": [
+          0.5926,
+          0.3066,
+          0.6792,
+          0.3308
+        ],
+        "colors": [
+          "orange",
+          "brown"
+        ],
+        "detection_score": 0.674
+      },
+      {
+        "label": "shoes",
+        "bbox": [
+          0.6658,
+          0.6999,
+          0.7323,
+          0.7632
+        ],
+        "colors": [
+          "orange",
+          "brown"
+        ],
+        "detection_score": 0.9621
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.5547,
+          0.4873,
+          0.7724,
+          0.6944
+        ],
+        "colors": [
+          "black",
+          "brown"
+        ],
+        "detection_score": 0.6318
+      },
+      {
+        "label": "top",
+        "bbox": [
+          0.506,
+          0.3763,
+          0.7205,
+          0.4992
+        ],
+        "colors": [
+          "brown",
+          "red"
+        ],
+        "detection_score": 0.7163
+      },
+      {
+        "label": "outerwear",
+        "bbox": [
+          0.3788,
+          0.3656,
+          0.8354,
+          0.7432
+        ],
+        "colors": [
+          "brown",
+          "red"
+        ],
+        "detection_score": 0.4455
+      }
+    ],
+    "image_embedding_id": "post-pexels-3220232",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:34:32Z"
+  },
+  {
+    "post_id": "post-pexels-7446975",
+    "creator_id": "creator-demo-gustavo-fring",
+    "image_url": "https://images.pexels.com/photos/7446975/pexels-photo-7446975.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "street",
+      "sporty",
+      "minimal"
+    ],
+    "colors": [
+      "red",
+      "orange"
+    ],
+    "occasion": [
+      "travel"
+    ],
+    "fits": [
+      "regular",
+      "relaxed"
+    ],
+    "materials": [],
+    "unknown_fields": [
+      "materials"
+    ],
+    "garments": [
+      {
+        "label": "shoes",
+        "bbox": [
+          0.3393,
+          0.888,
+          0.4549,
+          0.9728
+        ],
+        "colors": [
+          "orange",
+          "red"
+        ],
+        "detection_score": 0.9678
+      },
+      {
+        "label": "dress",
+        "bbox": [
+          0.264,
+          0.3991,
+          0.5353,
+          0.8051
+        ],
+        "colors": [
+          "orange",
+          "red"
+        ],
+        "detection_score": 0.4438
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.3279,
+          0.5966,
+          0.5831,
+          0.8952
+        ],
+        "colors": [
+          "red",
+          "black"
+        ],
+        "detection_score": 0.7409
+      },
+      {
+        "label": "outerwear",
+        "bbox": [
+          0.2464,
+          0.3106,
+          0.7375,
+          0.6801
+        ],
+        "colors": [
+          "orange",
+          "red"
+        ],
+        "detection_score": 0.487
+      }
+    ],
+    "image_embedding_id": "post-pexels-7446975",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:34:33Z"
+  },
+  {
+    "post_id": "post-pexels-15960059",
+    "creator_id": "creator-demo-farhad-irani",
+    "image_url": "https://images.pexels.com/photos/15960059/pexels-photo-15960059.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "street",
+      "minimal",
+      "casual"
+    ],
+    "colors": [
+      "white",
+      "beige",
+      "gray"
+    ],
+    "occasion": [
+      "outdoor"
+    ],
+    "fits": [
+      "oversized",
+      "relaxed"
+    ],
+    "materials": [
+      "knit"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "bottom",
+        "bbox": [
+          0.3736,
+          0.66,
+          0.5095,
+          0.8494
+        ],
+        "colors": [
+          "blue",
+          "navy"
+        ],
+        "detection_score": 0.3655
+      },
+      {
+        "label": "shoes",
+        "bbox": [
+          0.3549,
+          0.8396,
+          0.4109,
+          0.8749
+        ],
+        "colors": [
+          "white",
+          "gray"
+        ],
+        "detection_score": 0.9609
+      },
+      {
+        "label": "accessory",
+        "bbox": [
+          0.4047,
+          0.5642,
+          0.561,
+          0.7006
+        ],
+        "colors": [
+          "white",
+          "beige"
+        ],
+        "detection_score": 0.9144
+      },
+      {
+        "label": "top",
+        "bbox": [
+          0.4338,
+          0.427,
+          0.5264,
+          0.5889
+        ],
+        "colors": [
+          "navy",
+          "white"
+        ],
+        "detection_score": 0.4314
+      },
+      {
+        "label": "dress",
+        "bbox": [
+          0.3929,
+          0.4343,
+          0.5596,
+          0.6903
+        ],
+        "colors": [
+          "white",
+          "black"
+        ],
+        "detection_score": 0.6167
+      },
+      {
+        "label": "outerwear",
+        "bbox": [
+          0.3142,
+          0.3956,
+          0.6091,
+          0.6909
+        ],
+        "colors": [
+          "charcoal",
+          "gray"
+        ],
+        "detection_score": 0.4264
+      }
+    ],
+    "image_embedding_id": "post-pexels-15960059",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:34:36Z"
+  },
+  {
+    "post_id": "post-pexels-14433234",
+    "creator_id": "creator-demo-batitay-japheth",
+    "image_url": "https://images.pexels.com/photos/14433234/pexels-photo-14433234.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "japanese",
+      "formal",
+      "elegant"
+    ],
+    "colors": [
+      "gray",
+      "beige",
+      "charcoal"
+    ],
+    "occasion": [
+      "work"
+    ],
+    "fits": [
+      "oversized",
+      "slim"
+    ],
+    "materials": [
+      "silky"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "bottom",
+        "bbox": [
+          0.3246,
+          0.5169,
+          0.5448,
+          0.7626
+        ],
+        "colors": [
+          "navy",
+          "black"
+        ],
+        "detection_score": 0.5801
+      },
+      {
+        "label": "shoes",
+        "bbox": [
+          0.382,
+          0.7299,
+          0.4456,
+          0.7687
+        ],
+        "colors": [
+          "black",
+          "charcoal"
+        ],
+        "detection_score": 0.9532
+      },
+      {
+        "label": "accessory",
+        "bbox": [
+          0.4529,
+          0.5251,
+          0.5481,
+          0.6474
+        ],
+        "colors": [
+          "navy",
+          "black"
+        ],
+        "detection_score": 0.5734
+      },
+      {
+        "label": "outerwear",
+        "bbox": [
+          0.2908,
+          0.3261,
+          0.6354,
+          0.5478
+        ],
+        "colors": [
+          "gray",
+          "beige"
+        ],
+        "detection_score": 0.7414
+      }
+    ],
+    "image_embedding_id": "post-pexels-14433234",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:34:37Z"
+  },
+  {
+    "post_id": "post-pexels-17370251",
+    "creator_id": "creator-demo-marcelo-chagas",
+    "image_url": "https://images.pexels.com/photos/17370251/pexels-photo-17370251.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "sporty",
+      "street",
+      "formal"
+    ],
+    "colors": [
+      "black",
+      "green",
+      "navy"
+    ],
+    "occasion": [
+      "party"
+    ],
+    "fits": [],
+    "materials": [],
+    "unknown_fields": [
+      "fits",
+      "materials"
+    ],
+    "garments": [
+      {
+        "label": "shoes",
+        "bbox": [
+          0.6995,
+          0.8814,
+          0.8115,
+          0.9571
+        ],
+        "colors": [
+          "green",
+          "orange"
+        ],
+        "detection_score": 0.603
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.3993,
+          0.6206,
+          0.7876,
+          0.9601
+        ],
+        "colors": [
+          "green",
+          "orange"
+        ],
+        "detection_score": 0.941
+      }
+    ],
+    "image_embedding_id": "post-pexels-17370251",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:34:38Z"
+  },
+  {
+    "post_id": "post-pexels-19517638",
+    "creator_id": "creator-demo-wolrider-yurtseven",
+    "image_url": "https://images.pexels.com/photos/19517638/pexels-photo-19517638.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "formal",
+      "elegant",
+      "minimal"
+    ],
+    "colors": [
+      "black",
+      "charcoal",
+      "brown"
+    ],
+    "occasion": [
+      "party"
+    ],
+    "fits": [],
+    "materials": [
+      "leather"
+    ],
+    "unknown_fields": [
+      "fits"
+    ],
+    "garments": [
+      {
+        "label": "shoes",
+        "bbox": [
+          0.1578,
+          0.8532,
+          0.4526,
+          0.9963
+        ],
+        "colors": [
+          "black",
+          "brown"
+        ],
+        "detection_score": 0.5765
+      },
+      {
+        "label": "dress",
+        "bbox": [
+          0.3465,
+          0.3818,
+          0.7253,
+          0.7839
+        ],
+        "colors": [
+          "black",
+          "red"
+        ],
+        "detection_score": 0.6327
+      }
+    ],
+    "image_embedding_id": "post-pexels-19517638",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:34:40Z"
+  },
+  {
+    "post_id": "post-pexels-2096982",
+    "creator_id": "creator-demo-julie-aagaard",
+    "image_url": "https://images.pexels.com/photos/2096982/pexels-photo-2096982.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "vintage",
+      "formal",
+      "minimal"
+    ],
+    "colors": [
+      "navy",
+      "black",
+      "blue"
+    ],
+    "occasion": [
+      "party"
+    ],
+    "fits": [
+      "oversized",
+      "relaxed"
+    ],
+    "materials": [
+      "leather"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "dress",
+        "bbox": [
+          0.1992,
+          0.2814,
+          0.7089,
+          1.0004
+        ],
+        "colors": [
+          "navy",
+          "blue"
+        ],
+        "detection_score": 0.8005
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.1882,
+          0.5649,
+          0.7112,
+          1.0004
+        ],
+        "colors": [
+          "blue",
+          "navy"
+        ],
+        "detection_score": 0.5009
+      }
+    ],
+    "image_embedding_id": "post-pexels-2096982",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:34:41Z"
+  },
+  {
+    "post_id": "post-pexels-14472553",
+    "creator_id": "creator-demo-god-picture",
+    "image_url": "https://images.pexels.com/photos/14472553/pexels-photo-14472553.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "elegant",
+      "formal",
+      "street"
+    ],
+    "colors": [
+      "black",
+      "brown",
+      "orange"
+    ],
+    "occasion": [
+      "party"
+    ],
+    "fits": [
+      "slim",
+      "oversized"
+    ],
+    "materials": [],
+    "unknown_fields": [
+      "materials"
+    ],
+    "garments": [
+      {
+        "label": "top",
+        "bbox": [
+          0.0829,
+          -0.0032,
+          0.8783,
+          0.1967
+        ],
+        "colors": [
+          "pink",
+          "red"
+        ],
+        "detection_score": 0.3695
+      },
+      {
+        "label": "accessory",
+        "bbox": [
+          0.1641,
+          0.3983,
+          0.6508,
+          0.7107
+        ],
+        "colors": [
+          "black",
+          "brown"
+        ],
+        "detection_score": 0.3979
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.3243,
+          0.0117,
+          0.7044,
+          0.4514
+        ],
+        "colors": [
+          "navy",
+          "black"
+        ],
+        "detection_score": 0.7246
+      }
+    ],
+    "image_embedding_id": "post-pexels-14472553",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:34:42Z"
+  },
+  {
+    "post_id": "post-pexels-3419651",
+    "creator_id": "creator-demo-cottonbro-studio",
+    "image_url": "https://images.pexels.com/photos/3419651/pexels-photo-3419651.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "vintage",
+      "preppy",
+      "minimal"
+    ],
+    "colors": [
+      "navy"
+    ],
+    "occasion": [
+      "date"
+    ],
+    "fits": [
+      "relaxed",
+      "regular"
+    ],
+    "materials": [],
+    "unknown_fields": [
+      "materials"
+    ],
+    "garments": [
+      {
+        "label": "shoes",
+        "bbox": [
+          0.3648,
+          0.6635,
+          0.7024,
+          0.7972
+        ],
+        "colors": [
+          "black",
+          "orange"
+        ],
+        "detection_score": 0.7841
+      }
+    ],
+    "image_embedding_id": "post-pexels-3419651",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:34:43Z"
+  },
+  {
+    "post_id": "post-pexels-13330557",
+    "creator_id": "creator-demo-criativa-pix-fotografia",
+    "image_url": "https://images.pexels.com/photos/13330557/pexels-photo-13330557.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "formal",
+      "elegant",
+      "sporty"
+    ],
+    "colors": [
+      "black",
+      "navy",
+      "charcoal"
+    ],
+    "occasion": [
+      "party"
+    ],
+    "fits": [],
+    "materials": [],
+    "unknown_fields": [
+      "fits",
+      "materials"
+    ],
+    "garments": [
+      {
+        "label": "shoes",
+        "bbox": [
+          0.5823,
+          0.8575,
+          0.6712,
+          0.9345
+        ],
+        "colors": [
+          "black",
+          "blue"
+        ],
+        "detection_score": 0.9968
+      },
+      {
+        "label": "dress",
+        "bbox": [
+          0.3159,
+          0.3293,
+          0.673,
+          0.8686
+        ],
+        "colors": [
+          "black",
+          "blue"
+        ],
+        "detection_score": 0.4807
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.3272,
+          0.4458,
+          0.6469,
+          0.8638
+        ],
+        "colors": [
+          "black",
+          "blue"
+        ],
+        "detection_score": 0.9557
+      },
+      {
+        "label": "top",
+        "bbox": [
+          0.2069,
+          0.2418,
+          0.6993,
+          0.4486
+        ],
+        "colors": [
+          "black",
+          "navy"
+        ],
+        "detection_score": 0.4574
+      }
+    ],
+    "image_embedding_id": "post-pexels-13330557",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:34:45Z"
+  },
+  {
+    "post_id": "post-pexels-27439409",
+    "creator_id": "creator-demo-paul-espinoza",
+    "image_url": "https://images.pexels.com/photos/27439409/pexels-photo-27439409.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "formal",
+      "elegant",
+      "minimal"
+    ],
+    "colors": [
+      "navy",
+      "black",
+      "charcoal"
+    ],
+    "occasion": [
+      "party"
+    ],
+    "fits": [
+      "slim",
+      "regular"
+    ],
+    "materials": [],
+    "unknown_fields": [
+      "materials"
+    ],
+    "garments": [
+      {
+        "label": "top",
+        "bbox": [
+          0.4085,
+          0.3129,
+          0.6174,
+          0.5332
+        ],
+        "colors": [
+          "brown",
+          "beige"
+        ],
+        "detection_score": 0.6166
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.2714,
+          0.6907,
+          0.7564,
+          1.0002
+        ],
+        "colors": [
+          "black",
+          "navy"
+        ],
+        "detection_score": 0.7747
+      },
+      {
+        "label": "outerwear",
+        "bbox": [
+          0.1268,
+          0.3156,
+          0.9371,
+          0.975
+        ],
+        "colors": [
+          "black",
+          "navy"
+        ],
+        "detection_score": 0.7513
+      }
+    ],
+    "image_embedding_id": "post-pexels-27439409",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:34:46Z"
+  },
+  {
+    "post_id": "post-pexels-6405884",
+    "creator_id": "creator-demo-pavel-danilyuk",
+    "image_url": "https://images.pexels.com/photos/6405884/pexels-photo-6405884.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "elegant",
+      "formal",
+      "minimal"
+    ],
+    "colors": [
+      "white",
+      "beige",
+      "gray"
+    ],
+    "occasion": [
+      "work"
+    ],
+    "fits": [
+      "regular",
+      "oversized"
+    ],
+    "materials": [
+      "silky"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "accessory",
+        "bbox": [
+          0.4685,
+          0.5533,
+          0.6664,
+          0.5968
+        ],
+        "colors": [
+          "brown",
+          "beige"
+        ],
+        "detection_score": 0.8937
+      },
+      {
+        "label": "dress",
+        "bbox": [
+          0.2825,
+          0.2782,
+          0.7105,
+          0.9205
+        ],
+        "colors": [
+          "white",
+          "beige"
+        ],
+        "detection_score": 0.9474
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.2877,
+          0.5874,
+          0.7043,
+          0.9155
+        ],
+        "colors": [
+          "white",
+          "beige"
+        ],
+        "detection_score": 0.4136
+      }
+    ],
+    "image_embedding_id": "post-pexels-6405884",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:34:48Z"
+  },
+  {
+    "post_id": "post-pexels-32678770",
+    "creator_id": "creator-demo-vika-glitter",
+    "image_url": "https://images.pexels.com/photos/32678770/pexels-photo-32678770.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "vintage",
+      "formal",
+      "street"
+    ],
+    "colors": [
+      "charcoal",
+      "black",
+      "beige"
+    ],
+    "occasion": [
+      "party"
+    ],
+    "fits": [],
+    "materials": [],
+    "unknown_fields": [
+      "fits",
+      "materials"
+    ],
+    "garments": [
+      {
+        "label": "accessory",
+        "bbox": [
+          0.4102,
+          0.4932,
+          0.5777,
+          0.518
+        ],
+        "colors": [
+          "brown",
+          "beige"
+        ],
+        "detection_score": 0.6422
+      },
+      {
+        "label": "shoes",
+        "bbox": [
+          0.3721,
+          0.8273,
+          0.4452,
+          0.9297
+        ],
+        "colors": [
+          "brown",
+          "beige"
+        ],
+        "detection_score": 0.9935
+      },
+      {
+        "label": "dress",
+        "bbox": [
+          0.3827,
+          0.4345,
+          0.608,
+          0.7175
+        ],
+        "colors": [
+          "charcoal",
+          "black"
+        ],
+        "detection_score": 0.9677
+      }
+    ],
+    "image_embedding_id": "post-pexels-32678770",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:34:49Z"
+  },
+  {
+    "post_id": "post-pexels-19397648",
+    "creator_id": "creator-demo-alexander-mass",
+    "image_url": "https://images.pexels.com/photos/19397648/pexels-photo-19397648.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "minimal",
+      "formal",
+      "elegant"
+    ],
+    "colors": [
+      "charcoal",
+      "black",
+      "gray"
+    ],
+    "occasion": [
+      "work"
+    ],
+    "fits": [
+      "relaxed",
+      "oversized"
+    ],
+    "materials": [
+      "silky"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "shoes",
+        "bbox": [
+          0.2637,
+          0.7653,
+          0.4036,
+          0.8195
+        ],
+        "colors": [
+          "green",
+          "black"
+        ],
+        "detection_score": 0.9622
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.3743,
+          0.0032,
+          0.8313,
+          0.6516
+        ],
+        "colors": [
+          "black",
+          "charcoal"
+        ],
+        "detection_score": 0.6874
+      }
+    ],
+    "image_embedding_id": "post-pexels-19397648",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:34:51Z"
+  },
+  {
+    "post_id": "post-pexels-6467697",
+    "creator_id": "creator-demo-cottonbro-studio",
+    "image_url": "https://images.pexels.com/photos/6467697/pexels-photo-6467697.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "elegant",
+      "formal",
+      "minimal"
+    ],
+    "colors": [
+      "white",
+      "beige"
+    ],
+    "occasion": [
+      "date"
+    ],
+    "fits": [
+      "relaxed",
+      "oversized"
+    ],
+    "materials": [
+      "silky"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "dress",
+        "bbox": [
+          0.2508,
+          0.3449,
+          1.0099,
+          1.008
+        ],
+        "colors": [
+          "white",
+          "beige"
+        ],
+        "detection_score": 0.9713
+      }
+    ],
+    "image_embedding_id": "post-pexels-6467697",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:34:52Z"
+  },
+  {
+    "post_id": "post-pexels-19628449",
+    "creator_id": "creator-demo-beyzaa-yurtkuran",
+    "image_url": "https://images.pexels.com/photos/19628449/pexels-photo-19628449.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "sporty",
+      "minimal",
+      "casual"
+    ],
+    "colors": [
+      "gray",
+      "blue",
+      "white"
+    ],
+    "occasion": [
+      "outdoor"
+    ],
+    "fits": [
+      "relaxed",
+      "oversized"
+    ],
+    "materials": [
+      "denim"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "bottom",
+        "bbox": [
+          0.4893,
+          0.6073,
+          0.904,
+          0.9117
+        ],
+        "colors": [
+          "blue",
+          "gray"
+        ],
+        "detection_score": 0.987
+      },
+      {
+        "label": "shoes",
+        "bbox": [
+          0.7432,
+          0.8569,
+          0.8666,
+          0.9779
+        ],
+        "colors": [
+          "blue",
+          "charcoal"
+        ],
+        "detection_score": 0.9377
+      },
+      {
+        "label": "accessory",
+        "bbox": [
+          0.6077,
+          0.3662,
+          0.7752,
+          0.4297
+        ],
+        "colors": [
+          "blue",
+          "green"
+        ],
+        "detection_score": 0.9456
+      },
+      {
+        "label": "top",
+        "bbox": [
+          0.5253,
+          0.4668,
+          0.6694,
+          0.6051
+        ],
+        "colors": [
+          "gray",
+          "white"
+        ],
+        "detection_score": 0.9149
+      }
+    ],
+    "image_embedding_id": "post-pexels-19628449",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:34:54Z"
+  },
+  {
+    "post_id": "post-pexels-33505922",
+    "creator_id": "creator-demo-mert-co-kun",
+    "image_url": "https://images.pexels.com/photos/33505922/pexels-photo-33505922.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "vintage",
+      "minimal",
+      "casual"
+    ],
+    "colors": [
+      "blue",
+      "green",
+      "brown"
+    ],
+    "occasion": [
+      "casual"
+    ],
+    "fits": [
+      "relaxed",
+      "oversized"
+    ],
+    "materials": [
+      "denim"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "accessory",
+        "bbox": [
+          0.5927,
+          0.5507,
+          0.7078,
+          0.6265
+        ],
+        "colors": [
+          "brown",
+          "orange"
+        ],
+        "detection_score": 0.4882
+      },
+      {
+        "label": "shoes",
+        "bbox": [
+          0.446,
+          0.7524,
+          0.5566,
+          0.8274
+        ],
+        "colors": [
+          "orange",
+          "brown"
+        ],
+        "detection_score": 0.9951
+      },
+      {
+        "label": "dress",
+        "bbox": [
+          0.3594,
+          0.3041,
+          0.5473,
+          0.6507
+        ],
+        "colors": [
+          "blue",
+          "green"
+        ],
+        "detection_score": 0.6406
+      },
+      {
+        "label": "top",
+        "bbox": [
+          0.4279,
+          0.3097,
+          0.5572,
+          0.4172
+        ],
+        "colors": [
+          "blue",
+          "gray"
+        ],
+        "detection_score": 0.4828
+      }
+    ],
+    "image_embedding_id": "post-pexels-33505922",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:34:56Z"
+  },
+  {
+    "post_id": "post-pexels-37495285",
+    "creator_id": "creator-demo-mayara-caroline-mombelli",
+    "image_url": "https://images.pexels.com/photos/37495285/pexels-photo-37495285.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "vintage",
+      "elegant",
+      "casual"
+    ],
+    "colors": [
+      "blue",
+      "navy"
+    ],
+    "occasion": [
+      "outdoor"
+    ],
+    "fits": [
+      "relaxed",
+      "regular"
+    ],
+    "materials": [
+      "denim"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "accessory",
+        "bbox": [
+          0.075,
+          0.1035,
+          0.5391,
+          0.2602
+        ],
+        "colors": [
+          "blue"
+        ],
+        "detection_score": 0.6073
+      },
+      {
+        "label": "top",
+        "bbox": [
+          0.0359,
+          0.2983,
+          0.8519,
+          0.7507
+        ],
+        "colors": [
+          "blue",
+          "navy"
+        ],
+        "detection_score": 0.3783
+      }
+    ],
+    "image_embedding_id": "post-pexels-37495285",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:34:57Z"
+  },
+  {
+    "post_id": "post-pexels-26762955",
+    "creator_id": "creator-demo-hoang-anh",
+    "image_url": "https://images.pexels.com/photos/26762955/pexels-photo-26762955.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "vintage",
+      "minimal",
+      "casual"
+    ],
+    "colors": [
+      "blue",
+      "navy",
+      "orange"
+    ],
+    "occasion": [
+      "outdoor"
+    ],
+    "fits": [
+      "oversized"
+    ],
+    "materials": [
+      "denim"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "accessory",
+        "bbox": [
+          0.3735,
+          0.4073,
+          0.4742,
+          0.4416
+        ],
+        "colors": [
+          "brown",
+          "orange"
+        ],
+        "detection_score": 0.7462
+      },
+      {
+        "label": "shoes",
+        "bbox": [
+          0.2485,
+          0.7826,
+          0.3606,
+          0.9334
+        ],
+        "colors": [
+          "brown",
+          "green"
+        ],
+        "detection_score": 0.8983
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.3558,
+          0.6316,
+          0.5541,
+          0.7027
+        ],
+        "colors": [
+          "blue",
+          "navy"
+        ],
+        "detection_score": 0.4015
+      }
+    ],
+    "image_embedding_id": "post-pexels-26762955",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:34:59Z"
+  },
+  {
+    "post_id": "post-pexels-31321758",
+    "creator_id": "creator-demo-fernando-huelgas",
+    "image_url": "https://images.pexels.com/photos/31321758/pexels-photo-31321758.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "street",
+      "casual",
+      "sporty"
+    ],
+    "colors": [
+      "blue",
+      "navy"
+    ],
+    "occasion": [
+      "outdoor"
+    ],
+    "fits": [
+      "relaxed",
+      "oversized"
+    ],
+    "materials": [
+      "denim"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "shoes",
+        "bbox": [
+          0.3119,
+          0.7207,
+          0.4619,
+          0.8478
+        ],
+        "colors": [
+          "white",
+          "blue"
+        ],
+        "detection_score": 0.9759
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.21,
+          0.6152,
+          0.7216,
+          0.8866
+        ],
+        "colors": [
+          "white",
+          "blue"
+        ],
+        "detection_score": 0.91
+      }
+    ],
+    "image_embedding_id": "post-pexels-31321758",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:35:00Z"
+  },
+  {
+    "post_id": "post-pexels-28860054",
+    "creator_id": "creator-demo-alexander-mass",
+    "image_url": "https://images.pexels.com/photos/28860054/pexels-photo-28860054.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "street",
+      "casual",
+      "minimal"
+    ],
+    "colors": [
+      "gray",
+      "charcoal",
+      "blue"
+    ],
+    "occasion": [
+      "outdoor"
+    ],
+    "fits": [
+      "oversized",
+      "relaxed"
+    ],
+    "materials": [
+      "denim"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "shoes",
+        "bbox": [
+          0.5233,
+          0.5626,
+          0.7372,
+          0.6631
+        ],
+        "colors": [
+          "gray",
+          "beige"
+        ],
+        "detection_score": 0.8742
+      },
+      {
+        "label": "accessory",
+        "bbox": [
+          0.5696,
+          0.4996,
+          0.6186,
+          0.5299
+        ],
+        "colors": [
+          "gray",
+          "charcoal"
+        ],
+        "detection_score": 0.5375
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.539,
+          0.5432,
+          0.9332,
+          0.7082
+        ],
+        "colors": [
+          "gray",
+          "beige"
+        ],
+        "detection_score": 0.5435
+      },
+      {
+        "label": "outerwear",
+        "bbox": [
+          0.2862,
+          0.3958,
+          0.6478,
+          0.6028
+        ],
+        "colors": [
+          "gray",
+          "blue"
+        ],
+        "detection_score": 0.3598
+      }
+    ],
+    "image_embedding_id": "post-pexels-28860054",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:35:02Z"
+  },
+  {
+    "post_id": "post-pexels-39010207",
+    "creator_id": "creator-demo-jerry-bulus",
+    "image_url": "https://images.pexels.com/photos/39010207/pexels-photo-39010207.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "formal",
+      "street",
+      "preppy"
+    ],
+    "colors": [
+      "red",
+      "white",
+      "orange"
+    ],
+    "occasion": [
+      "party"
+    ],
+    "fits": [
+      "oversized",
+      "slim"
+    ],
+    "materials": [],
+    "unknown_fields": [
+      "materials"
+    ],
+    "garments": [
+      {
+        "label": "top",
+        "bbox": [
+          0.1079,
+          0.2908,
+          0.7863,
+          0.9157
+        ],
+        "colors": [
+          "red",
+          "white"
+        ],
+        "detection_score": 0.8364
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.2003,
+          0.8341,
+          0.7373,
+          0.9995
+        ],
+        "colors": [
+          "red",
+          "white"
+        ],
+        "detection_score": 0.8783
+      }
+    ],
+    "image_embedding_id": "post-pexels-39010207",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:35:03Z"
+  },
+  {
+    "post_id": "post-pexels-15870276",
+    "creator_id": "creator-demo-abhinav-kumar-sharma",
+    "image_url": "https://images.pexels.com/photos/15870276/pexels-photo-15870276.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "formal",
+      "elegant",
+      "street"
+    ],
+    "colors": [
+      "navy",
+      "white",
+      "blue"
+    ],
+    "occasion": [
+      "work"
+    ],
+    "fits": [
+      "slim",
+      "regular"
+    ],
+    "materials": [],
+    "unknown_fields": [
+      "materials"
+    ],
+    "garments": [
+      {
+        "label": "accessory",
+        "bbox": [
+          0.4018,
+          0.4265,
+          0.5839,
+          0.452
+        ],
+        "colors": [
+          "blue",
+          "navy"
+        ],
+        "detection_score": 0.9112
+      },
+      {
+        "label": "shoes",
+        "bbox": [
+          0.4978,
+          0.7258,
+          0.5781,
+          0.7965
+        ],
+        "colors": [
+          "navy",
+          "blue"
+        ],
+        "detection_score": 0.9959
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.3778,
+          0.4172,
+          0.5947,
+          0.7742
+        ],
+        "colors": [
+          "navy",
+          "blue"
+        ],
+        "detection_score": 0.9641
+      },
+      {
+        "label": "top",
+        "bbox": [
+          0.3441,
+          0.2424,
+          0.6287,
+          0.4563
+        ],
+        "colors": [
+          "white",
+          "gray"
+        ],
+        "detection_score": 0.6543
+      }
+    ],
+    "image_embedding_id": "post-pexels-15870276",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:35:04Z"
+  },
+  {
+    "post_id": "post-pexels-39034241",
+    "creator_id": "creator-demo-brandon-retratos",
+    "image_url": "https://images.pexels.com/photos/39034241/pexels-photo-39034241.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "vintage",
+      "elegant",
+      "preppy"
+    ],
+    "colors": [
+      "beige",
+      "brown",
+      "green"
+    ],
+    "occasion": [
+      "outdoor"
+    ],
+    "fits": [
+      "oversized",
+      "relaxed"
+    ],
+    "materials": [
+      "silky"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "dress",
+        "bbox": [
+          0.1053,
+          0.4253,
+          0.7734,
+          0.9961
+        ],
+        "colors": [
+          "brown",
+          "beige"
+        ],
+        "detection_score": 0.9605
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.118,
+          0.7722,
+          0.7682,
+          0.9873
+        ],
+        "colors": [
+          "green",
+          "brown"
+        ],
+        "detection_score": 0.6156
+      }
+    ],
+    "image_embedding_id": "post-pexels-39034241",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:35:06Z"
+  },
+  {
+    "post_id": "post-pexels-3160996",
+    "creator_id": "creator-demo-manav-sharma",
+    "image_url": "https://images.pexels.com/photos/3160996/pexels-photo-3160996.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "formal",
+      "elegant",
+      "minimal"
+    ],
+    "colors": [
+      "navy",
+      "gray",
+      "charcoal"
+    ],
+    "occasion": [
+      "formal"
+    ],
+    "fits": [
+      "slim",
+      "regular"
+    ],
+    "materials": [
+      "denim"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "accessory",
+        "bbox": [
+          0.2611,
+          0.5758,
+          0.4154,
+          0.856
+        ],
+        "colors": [
+          "navy",
+          "beige"
+        ],
+        "detection_score": 0.503
+      },
+      {
+        "label": "top",
+        "bbox": [
+          0.454,
+          0.2581,
+          0.59,
+          0.4892
+        ],
+        "colors": [
+          "white",
+          "navy"
+        ],
+        "detection_score": 0.7423
+      },
+      {
+        "label": "shoes",
+        "bbox": [
+          0.3404,
+          0.8268,
+          0.4527,
+          0.9164
+        ],
+        "colors": [
+          "white",
+          "beige"
+        ],
+        "detection_score": 0.9855
+      },
+      {
+        "label": "outerwear",
+        "bbox": [
+          0.321,
+          0.2408,
+          0.7197,
+          0.6343
+        ],
+        "colors": [
+          "navy",
+          "blue"
+        ],
+        "detection_score": 0.7689
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.3933,
+          0.4546,
+          0.5908,
+          0.8254
+        ],
+        "colors": [
+          "charcoal",
+          "navy"
+        ],
+        "detection_score": 0.7848
+      }
+    ],
+    "image_embedding_id": "post-pexels-3160996",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:35:07Z"
+  },
+  {
+    "post_id": "post-pexels-17748260",
+    "creator_id": "creator-demo-the-earthy-jay",
+    "image_url": "https://images.pexels.com/photos/17748260/pexels-photo-17748260.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "minimal",
+      "formal"
+    ],
+    "colors": [
+      "blue",
+      "navy",
+      "black"
+    ],
+    "occasion": [
+      "party"
+    ],
+    "fits": [
+      "regular",
+      "slim"
+    ],
+    "materials": [],
+    "unknown_fields": [
+      "materials"
+    ],
+    "garments": [
+      {
+        "label": "outerwear",
+        "bbox": [
+          0.0096,
+          0.4983,
+          0.8835,
+          1.0051
+        ],
+        "colors": [
+          "blue",
+          "navy"
+        ],
+        "detection_score": 0.5548
+      },
+      {
+        "label": "top",
+        "bbox": [
+          0.3185,
+          0.5179,
+          0.6522,
+          1.0028
+        ],
+        "colors": [
+          "blue",
+          "white"
+        ],
+        "detection_score": 0.625
+      }
+    ],
+    "image_embedding_id": "post-pexels-17748260",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:35:08Z"
+  },
+  {
+    "post_id": "post-pexels-20183906",
+    "creator_id": "creator-demo-rocket-effect",
+    "image_url": "https://images.pexels.com/photos/20183906/pexels-photo-20183906.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    "styles": [
+      "preppy",
+      "vintage",
+      "street"
+    ],
+    "colors": [
+      "navy",
+      "red",
+      "white"
+    ],
+    "occasion": [
+      "date"
+    ],
+    "fits": [
+      "oversized",
+      "slim"
+    ],
+    "materials": [],
+    "unknown_fields": [
+      "materials"
+    ],
+    "garments": [
+      {
+        "label": "accessory",
+        "bbox": [
+          0.363,
+          0.4828,
+          0.4985,
+          0.6196
+        ],
+        "colors": [
+          "white",
+          "beige"
+        ],
+        "detection_score": 0.849
+      },
+      {
+        "label": "shoes",
+        "bbox": [
+          0.4826,
+          0.8383,
+          0.599,
+          0.9056
+        ],
+        "colors": [
+          "brown",
+          "black"
+        ],
+        "detection_score": 0.9947
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.4256,
+          0.6863,
+          0.5775,
+          0.8588
+        ],
+        "colors": [
+          "white",
+          "beige"
+        ],
+        "detection_score": 0.6839
+      },
+      {
+        "label": "outerwear",
+        "bbox": [
+          0.3795,
+          0.3381,
+          0.6656,
+          0.648
+        ],
+        "colors": [
+          "brown",
+          "red"
+        ],
+        "detection_score": 0.6201
+      }
+    ],
+    "image_embedding_id": "post-pexels-20183906",
+    "tagged_products": [],
+    "source": "pexels_licensed_demo_content",
+    "source_checked_at": "2026-09-19",
+    "is_demo": true,
+    "created_at": "2026-09-19T12:35:10Z"
+  }
+]

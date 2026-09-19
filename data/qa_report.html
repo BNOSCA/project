@@ -1,0 +1,1534 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<title>貼文抽取結果 QA</title>
+<style>
+  body { font-family: -apple-system, "Noto Sans TC", sans-serif; background:#111; color:#eee; margin:0; padding:24px; }
+  h1 { font-size:18px; margin-bottom:4px; }
+  .sub { color:#999; font-size:13px; margin-bottom:16px; }
+  .legend { margin-bottom:20px; font-size:13px; }
+  .legend-item { margin-right:16px; }
+  .dot { display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:4px; }
+  .grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:20px; }
+  .card { background:#1c1c1c; border-radius:8px; overflow:hidden; }
+  .img-wrap { position:relative; width:100%; aspect-ratio: 3/4; background:#000; }
+  .img-wrap img { width:100%; height:100%; object-fit:cover; display:block; }
+  .box { position:absolute; border:2px solid; box-sizing:border-box; }
+  .box-label { position:absolute; top:-18px; left:-2px; font-size:10px; color:#fff; padding:1px 4px; border-radius:3px; white-space:nowrap; }
+  .meta { padding:10px 12px; font-size:12px; }
+  .post-id { font-weight:bold; margin-bottom:6px; color:#aaa; }
+  .row { margin-bottom:4px; }
+  .tag { display:inline-block; padding:1px 6px; border-radius:10px; margin:1px; font-size:11px; }
+  .tag.style { background:#1e3a5f; }
+  .tag.color { background:#3f2f1e; }
+  .tag.occasion { background:#1e3f2a; }
+  .tag.fit { background:#3f1e3a; }
+  .tag.material { background:#3f3a1e; }
+  .tag.empty { background:#333; color:#777; }
+  .unknown { color:#f87171; }
+  .creator { color:#666; margin-top:4px; }
+</style>
+</head>
+<body>
+  <h1>貼文抽取結果 QA（83 篇）</h1>
+  <div class="sub">FashionCLIP 分類 + YOLOS-fashionpedia 偵測；框線顏色 = 單品類別</div>
+  <div class="legend"><span class="legend-item"><span class="dot" style="background:#3b82f6"></span>top</span><span class="legend-item"><span class="dot" style="background:#22c55e"></span>bottom</span><span class="legend-item"><span class="dot" style="background:#f97316"></span>shoes</span><span class="legend-item"><span class="dot" style="background:#a855f7"></span>outerwear</span><span class="legend-item"><span class="dot" style="background:#ec4899"></span>accessory</span><span class="legend-item"><span class="dot" style="background:#ef4444"></span>dress</span></div>
+  <div class="grid">
+    
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/16217479/pexels-photo-16217479.png?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:48.20%; top:48.77%; width:10.67%; height:2.28%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.79</span></div><div class="box" style="left:62.06%; top:84.36%; width:6.82%; height:7.52%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 0.99</span></div><div class="box" style="left:33.75%; top:41.48%; width:34.08%; height:45.76%; border-color:#ef4444;"><span class="box-label" style="background:#ef4444;">dress 0.36</span></div><div class="box" style="left:33.63%; top:60.73%; width:35.25%; height:26.11%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.91</span></div><div class="box" style="left:38.47%; top:37.36%; width:25.52%; height:25.68%; border-color:#3b82f6;"><span class="box-label" style="background:#3b82f6;">top 0.53</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-16217479</div>
+        <div class="row"><b>styles</b> <span class="tag style">sporty</span><span class="tag style">street</span><span class="tag style">minimal</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">blue</span><span class="tag color">navy</span><span class="tag color">brown</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">sport</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">oversized</span><span class="tag fit">relaxed</span></div>
+        <div class="row"><b>materials</b> <span class="tag empty">（無）</span></div>
+        <div class="row unknown"><b>unknown_fields</b> materials</div>
+        <div class="row creator">creator: creator-demo-lucas-brown</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/12204428/pexels-photo-12204428.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:21.84%; top:82.81%; width:17.50%; height:6.51%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 0.96</span></div><div class="box" style="left:36.41%; top:16.99%; width:11.39%; height:3.60%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.66</span></div><div class="box" style="left:28.11%; top:51.54%; width:24.88%; height:28.61%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.89</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-12204428</div>
+        <div class="row"><b>styles</b> <span class="tag style">sporty</span><span class="tag style">formal</span><span class="tag style">minimal</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">black</span><span class="tag color">charcoal</span><span class="tag color">white</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">sport</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">oversized</span><span class="tag fit">slim</span></div>
+        <div class="row"><b>materials</b> <span class="tag material">knit</span></div>
+        <div class="row unknown"><b>unknown_fields</b> 無</div>
+        <div class="row creator">creator: creator-demo-lucretius-mooka</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/29226094/pexels-photo-29226094.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:44.30%; top:35.54%; width:8.10%; height:4.55%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.65</span></div><div class="box" style="left:56.96%; top:85.62%; width:15.33%; height:5.83%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 0.98</span></div><div class="box" style="left:29.97%; top:32.78%; width:35.66%; height:26.82%; border-color:#3b82f6;"><span class="box-label" style="background:#3b82f6;">top 0.87</span></div><div class="box" style="left:30.32%; top:34.45%; width:36.74%; height:52.82%; border-color:#ef4444;"><span class="box-label" style="background:#ef4444;">dress 0.77</span></div><div class="box" style="left:38.68%; top:58.27%; width:27.62%; height:27.16%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.98</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-29226094</div>
+        <div class="row"><b>styles</b> <span class="tag style">sporty</span><span class="tag style">minimal</span><span class="tag style">street</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">gray</span><span class="tag color">beige</span><span class="tag color">brown</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">sport</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">oversized</span><span class="tag fit">relaxed</span></div>
+        <div class="row"><b>materials</b> <span class="tag material">silky</span></div>
+        <div class="row unknown"><b>unknown_fields</b> 無</div>
+        <div class="row creator">creator: creator-demo-el-gringo-photo</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/39385744/pexels-photo-39385744.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:31.53%; top:88.37%; width:13.15%; height:5.48%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 0.95</span></div><div class="box" style="left:51.65%; top:33.29%; width:11.48%; height:15.38%; border-color:#3b82f6;"><span class="box-label" style="background:#3b82f6;">top 0.53</span></div><div class="box" style="left:39.67%; top:6.55%; width:19.36%; height:10.04%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.93</span></div><div class="box" style="left:35.21%; top:45.29%; width:30.41%; height:44.68%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.74</span></div><div class="box" style="left:38.05%; top:12.81%; width:43.89%; height:39.83%; border-color:#a855f7;"><span class="box-label" style="background:#a855f7;">outerwear 0.56</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-39385744</div>
+        <div class="row"><b>styles</b> <span class="tag style">japanese</span><span class="tag style">street</span><span class="tag style">minimal</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">black</span><span class="tag color">charcoal</span><span class="tag color">orange</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">outdoor</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">oversized</span><span class="tag fit">relaxed</span></div>
+        <div class="row"><b>materials</b> <span class="tag material">knit</span></div>
+        <div class="row unknown"><b>unknown_fields</b> 無</div>
+        <div class="row creator">creator: creator-demo-maxwell-gem</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/15880276/pexels-photo-15880276.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:46.96%; top:35.07%; width:8.24%; height:13.40%; border-color:#3b82f6;"><span class="box-label" style="background:#3b82f6;">top 0.61</span></div><div class="box" style="left:51.62%; top:79.48%; width:8.40%; height:7.02%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 0.99</span></div><div class="box" style="left:48.46%; top:47.42%; width:7.28%; height:2.44%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.69</span></div><div class="box" style="left:38.15%; top:49.35%; width:20.44%; height:31.39%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.96</span></div><div class="box" style="left:31.77%; top:31.54%; width:34.53%; height:25.08%; border-color:#a855f7;"><span class="box-label" style="background:#a855f7;">outerwear 0.81</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-15880276</div>
+        <div class="row"><b>styles</b> <span class="tag style">street</span><span class="tag style">minimal</span><span class="tag style">casual</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">green</span><span class="tag color">gray</span><span class="tag color">charcoal</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">outdoor</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">relaxed</span><span class="tag fit">oversized</span></div>
+        <div class="row"><b>materials</b> <span class="tag material">denim</span></div>
+        <div class="row unknown"><b>unknown_fields</b> 無</div>
+        <div class="row creator">creator: creator-demo-lokman-sevim</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/28304701/pexels-photo-28304701.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:47.62%; top:43.47%; width:11.34%; height:14.96%; border-color:#3b82f6;"><span class="box-label" style="background:#3b82f6;">top 0.86</span></div><div class="box" style="left:49.05%; top:90.14%; width:15.60%; height:4.38%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 0.96</span></div><div class="box" style="left:47.47%; top:31.04%; width:14.24%; height:6.10%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.68</span></div><div class="box" style="left:32.09%; top:39.66%; width:35.97%; height:52.28%; border-color:#ef4444;"><span class="box-label" style="background:#ef4444;">dress 0.44</span></div><div class="box" style="left:31.49%; top:52.64%; width:30.41%; height:38.36%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.97</span></div><div class="box" style="left:31.93%; top:38.46%; width:37.37%; height:32.33%; border-color:#a855f7;"><span class="box-label" style="background:#a855f7;">outerwear 0.68</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-28304701</div>
+        <div class="row"><b>styles</b> <span class="tag style">street</span><span class="tag style">casual</span><span class="tag style">sporty</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">orange</span><span class="tag color">blue</span><span class="tag color">brown</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">casual</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">oversized</span><span class="tag fit">relaxed</span></div>
+        <div class="row"><b>materials</b> <span class="tag material">denim</span></div>
+        <div class="row unknown"><b>unknown_fields</b> 無</div>
+        <div class="row creator">creator: creator-demo-juan-jos-carranza</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/31085360/pexels-photo-31085360.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:38.15%; top:63.03%; width:7.58%; height:24.70%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.43</span></div><div class="box" style="left:38.07%; top:26.73%; width:46.63%; height:66.53%; border-color:#a855f7;"><span class="box-label" style="background:#a855f7;">outerwear 0.60</span></div><div class="box" style="left:43.73%; top:85.58%; width:33.41%; height:8.86%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.51</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-31085360</div>
+        <div class="row"><b>styles</b> <span class="tag style">vintage</span><span class="tag style">japanese</span><span class="tag style">minimal</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">brown</span><span class="tag color">green</span><span class="tag color">beige</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">work</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">regular</span><span class="tag fit">oversized</span></div>
+        <div class="row"><b>materials</b> <span class="tag material">knit</span></div>
+        <div class="row unknown"><b>unknown_fields</b> 無</div>
+        <div class="row creator">creator: creator-demo-amar-preciado</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/9770919/pexels-photo-9770919.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:41.73%; top:40.79%; width:11.54%; height:6.24%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.89</span></div><div class="box" style="left:30.95%; top:49.85%; width:32.90%; height:36.98%; border-color:#3b82f6;"><span class="box-label" style="background:#3b82f6;">top 0.60</span></div><div class="box" style="left:36.24%; top:83.04%; width:20.86%; height:16.67%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.98</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-9770919</div>
+        <div class="row"><b>styles</b> <span class="tag style">japanese</span><span class="tag style">minimal</span><span class="tag style">casual</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">black</span><span class="tag color">charcoal</span><span class="tag color">gray</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">work</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">oversized</span></div>
+        <div class="row"><b>materials</b> <span class="tag empty">（無）</span></div>
+        <div class="row unknown"><b>unknown_fields</b> materials</div>
+        <div class="row creator">creator: creator-demo-bimbim-sindu</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/31085352/pexels-photo-31085352.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:32.85%; top:25.66%; width:56.98%; height:55.09%; border-color:#a855f7;"><span class="box-label" style="background:#a855f7;">outerwear 0.81</span></div><div class="box" style="left:42.21%; top:26.46%; width:27.71%; height:53.32%; border-color:#ef4444;"><span class="box-label" style="background:#ef4444;">dress 0.42</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-31085352</div>
+        <div class="row"><b>styles</b> <span class="tag style">elegant</span><span class="tag style">formal</span><span class="tag style">minimal</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">green</span><span class="tag color">brown</span><span class="tag color">charcoal</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">work</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">oversized</span><span class="tag fit">regular</span></div>
+        <div class="row"><b>materials</b> <span class="tag empty">（無）</span></div>
+        <div class="row unknown"><b>unknown_fields</b> materials</div>
+        <div class="row creator">creator: creator-demo-amar-preciado</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/20891135/pexels-photo-20891135.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:46.19%; top:38.57%; width:20.46%; height:3.02%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.68</span></div><div class="box" style="left:54.11%; top:84.04%; width:8.83%; height:5.32%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 0.96</span></div><div class="box" style="left:42.15%; top:25.89%; width:34.48%; height:15.18%; border-color:#3b82f6;"><span class="box-label" style="background:#3b82f6;">top 0.41</span></div><div class="box" style="left:41.51%; top:25.12%; width:33.26%; height:59.41%; border-color:#ef4444;"><span class="box-label" style="background:#ef4444;">dress 0.88</span></div><div class="box" style="left:43.99%; top:40.73%; width:22.43%; height:43.69%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.79</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-20891135</div>
+        <div class="row"><b>styles</b> <span class="tag style">street</span><span class="tag style">japanese</span><span class="tag style">vintage</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">charcoal</span><span class="tag color">black</span><span class="tag color">gray</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">party</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">oversized</span><span class="tag fit">regular</span></div>
+        <div class="row"><b>materials</b> <span class="tag material">knit</span></div>
+        <div class="row unknown"><b>unknown_fields</b> 無</div>
+        <div class="row creator">creator: creator-demo-frank-casta-eda-pe-a</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/27467728/pexels-photo-27467728.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:48.24%; top:58.95%; width:20.58%; height:23.27%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.52</span></div><div class="box" style="left:52.70%; top:77.45%; width:35.41%; height:20.51%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.85</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-27467728</div>
+        <div class="row"><b>styles</b> <span class="tag style">minimal</span><span class="tag style">casual</span><span class="tag style">japanese</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">brown</span><span class="tag color">beige</span><span class="tag color">orange</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">casual</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">oversized</span><span class="tag fit">relaxed</span></div>
+        <div class="row"><b>materials</b> <span class="tag material">knit</span></div>
+        <div class="row unknown"><b>unknown_fields</b> 無</div>
+        <div class="row creator">creator: creator-demo-mike-the-fabrica</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/28794442/pexels-photo-28794442.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:46.48%; top:84.24%; width:8.45%; height:5.58%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 0.99</span></div><div class="box" style="left:25.58%; top:32.58%; width:40.11%; height:51.64%; border-color:#ef4444;"><span class="box-label" style="background:#ef4444;">dress 0.62</span></div><div class="box" style="left:38.00%; top:48.29%; width:27.56%; height:35.15%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.90</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-28794442</div>
+        <div class="row"><b>styles</b> <span class="tag style">japanese</span><span class="tag style">street</span><span class="tag style">minimal</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">white</span><span class="tag color">beige</span><span class="tag color">orange</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">party</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">oversized</span><span class="tag fit">relaxed</span></div>
+        <div class="row"><b>materials</b> <span class="tag empty">（無）</span></div>
+        <div class="row unknown"><b>unknown_fields</b> materials</div>
+        <div class="row creator">creator: creator-demo-louis-ftn</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/8682792/pexels-photo-8682792.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:46.41%; top:87.32%; width:5.72%; height:5.22%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 0.97</span></div><div class="box" style="left:44.29%; top:40.51%; width:8.94%; height:3.93%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.42</span></div><div class="box" style="left:40.83%; top:63.11%; width:22.01%; height:25.59%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.99</span></div><div class="box" style="left:37.81%; top:43.66%; width:22.46%; height:21.90%; border-color:#3b82f6;"><span class="box-label" style="background:#3b82f6;">top 0.74</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-8682792</div>
+        <div class="row"><b>styles</b> <span class="tag style">minimal</span><span class="tag style">elegant</span><span class="tag style">casual</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">white</span><span class="tag color">gray</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">work</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">regular</span><span class="tag fit">slim</span></div>
+        <div class="row"><b>materials</b> <span class="tag empty">（無）</span></div>
+        <div class="row unknown"><b>unknown_fields</b> materials</div>
+        <div class="row creator">creator: creator-demo-ron-lach</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/6326206/pexels-photo-6326206.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:50.15%; top:90.61%; width:10.88%; height:6.25%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 0.98</span></div><div class="box" style="left:38.52%; top:37.06%; width:21.51%; height:28.59%; border-color:#3b82f6;"><span class="box-label" style="background:#3b82f6;">top 0.53</span></div><div class="box" style="left:39.73%; top:63.12%; width:26.72%; height:29.63%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.98</span></div><div class="box" style="left:58.84%; top:42.54%; width:9.29%; height:24.49%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.46</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-6326206</div>
+        <div class="row"><b>styles</b> <span class="tag style">formal</span><span class="tag style">preppy</span><span class="tag style">elegant</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">navy</span><span class="tag color">blue</span><span class="tag color">red</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">formal</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">slim</span><span class="tag fit">regular</span></div>
+        <div class="row"><b>materials</b> <span class="tag material">knit</span></div>
+        <div class="row unknown"><b>unknown_fields</b> 無</div>
+        <div class="row creator">creator: creator-demo-vanessa-garcia</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/5448234/pexels-photo-5448234.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:60.39%; top:57.98%; width:23.35%; height:26.36%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.89</span></div><div class="box" style="left:56.45%; top:30.52%; width:23.47%; height:23.77%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.75</span></div><div class="box" style="left:52.97%; top:86.37%; width:11.33%; height:10.63%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 0.99</span></div><div class="box" style="left:36.62%; top:28.46%; width:36.85%; height:30.32%; border-color:#3b82f6;"><span class="box-label" style="background:#3b82f6;">top 0.52</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-5448234</div>
+        <div class="row"><b>styles</b> <span class="tag style">street</span><span class="tag style">casual</span><span class="tag style">minimal</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">pink</span><span class="tag color">brown</span><span class="tag color">beige</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">casual</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">slim</span><span class="tag fit">oversized</span></div>
+        <div class="row"><b>materials</b> <span class="tag material">knit</span></div>
+        <div class="row unknown"><b>unknown_fields</b> 無</div>
+        <div class="row creator">creator: creator-demo-theo-decker</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/7256450/pexels-photo-7256450.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:72.08%; top:43.14%; width:9.37%; height:22.89%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.92</span></div><div class="box" style="left:56.77%; top:59.59%; width:14.76%; height:26.45%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.98</span></div><div class="box" style="left:60.88%; top:85.83%; width:6.90%; height:6.23%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 0.98</span></div><div class="box" style="left:55.99%; top:42.75%; width:20.57%; height:19.60%; border-color:#3b82f6;"><span class="box-label" style="background:#3b82f6;">top 0.46</span></div><div class="box" style="left:49.69%; top:41.79%; width:28.06%; height:20.78%; border-color:#a855f7;"><span class="box-label" style="background:#a855f7;">outerwear 0.46</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-7256450</div>
+        <div class="row"><b>styles</b> <span class="tag style">minimal</span><span class="tag style">casual</span><span class="tag style">street</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">beige</span><span class="tag color">gray</span><span class="tag color">charcoal</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">travel</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">slim</span><span class="tag fit">regular</span></div>
+        <div class="row"><b>materials</b> <span class="tag material">knit</span></div>
+        <div class="row unknown"><b>unknown_fields</b> 無</div>
+        <div class="row creator">creator: creator-demo-mart-production</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/5061271/pexels-photo-5061271.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:50.35%; top:45.55%; width:18.89%; height:16.72%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.78</span></div><div class="box" style="left:71.64%; top:74.57%; width:14.88%; height:5.82%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 0.98</span></div><div class="box" style="left:53.15%; top:18.50%; width:23.41%; height:28.01%; border-color:#3b82f6;"><span class="box-label" style="background:#3b82f6;">top 0.49</span></div><div class="box" style="left:54.55%; top:38.65%; width:22.16%; height:38.52%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.90</span></div><div class="box" style="left:52.52%; top:18.26%; width:23.30%; height:27.74%; border-color:#a855f7;"><span class="box-label" style="background:#a855f7;">outerwear 0.60</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-5061271</div>
+        <div class="row"><b>styles</b> <span class="tag style">elegant</span><span class="tag style">street</span><span class="tag style">formal</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">brown</span><span class="tag color">black</span><span class="tag color">charcoal</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">work</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">slim</span><span class="tag fit">regular</span></div>
+        <div class="row"><b>materials</b> <span class="tag material">leather</span></div>
+        <div class="row unknown"><b>unknown_fields</b> 無</div>
+        <div class="row creator">creator: creator-demo-thirdman</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/34635016/pexels-photo-34635016.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:37.09%; top:65.27%; width:10.38%; height:4.69%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.89</span></div><div class="box" style="left:4.68%; top:37.38%; width:72.68%; height:61.91%; border-color:#a855f7;"><span class="box-label" style="background:#a855f7;">outerwear 0.72</span></div><div class="box" style="left:25.26%; top:73.26%; width:45.55%; height:26.85%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.71</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-34635016</div>
+        <div class="row"><b>styles</b> <span class="tag style">minimal</span><span class="tag style">street</span><span class="tag style">elegant</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">gray</span><span class="tag color">charcoal</span><span class="tag color">blue</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">work</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">oversized</span><span class="tag fit">relaxed</span></div>
+        <div class="row"><b>materials</b> <span class="tag empty">（無）</span></div>
+        <div class="row unknown"><b>unknown_fields</b> materials</div>
+        <div class="row creator">creator: creator-demo-necip-duman</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/3373997/pexels-photo-3373997.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:43.63%; top:77.81%; width:15.83%; height:7.60%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 0.97</span></div><div class="box" style="left:47.48%; top:16.09%; width:11.70%; height:3.57%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.69</span></div><div class="box" style="left:45.48%; top:45.88%; width:26.57%; height:32.64%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.97</span></div><div class="box" style="left:43.30%; top:21.49%; width:30.91%; height:27.80%; border-color:#3b82f6;"><span class="box-label" style="background:#3b82f6;">top 0.35</span></div><div class="box" style="left:38.67%; top:21.44%; width:39.83%; height:27.18%; border-color:#a855f7;"><span class="box-label" style="background:#a855f7;">outerwear 0.74</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-3373997</div>
+        <div class="row"><b>styles</b> <span class="tag style">casual</span><span class="tag style">minimal</span><span class="tag style">preppy</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">brown</span><span class="tag color">navy</span><span class="tag color">green</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">outdoor</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">relaxed</span><span class="tag fit">regular</span></div>
+        <div class="row"><b>materials</b> <span class="tag empty">（無）</span></div>
+        <div class="row unknown"><b>unknown_fields</b> materials</div>
+        <div class="row creator">creator: creator-demo-eric-dekker</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/974271/pexels-photo-974271.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:37.24%; top:24.03%; width:23.69%; height:7.18%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.74</span></div><div class="box" style="left:13.46%; top:32.70%; width:72.31%; height:55.85%; border-color:#3b82f6;"><span class="box-label" style="background:#3b82f6;">top 0.96</span></div><div class="box" style="left:29.80%; top:85.23%; width:51.35%; height:14.88%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.91</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-974271</div>
+        <div class="row"><b>styles</b> <span class="tag style">minimal</span><span class="tag style">street</span><span class="tag style">sporty</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">black</span><span class="tag color">charcoal</span><span class="tag color">navy</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">outdoor</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">regular</span><span class="tag fit">relaxed</span></div>
+        <div class="row"><b>materials</b> <span class="tag empty">（無）</span></div>
+        <div class="row unknown"><b>unknown_fields</b> materials</div>
+        <div class="row creator">creator: creator-demo-nur-andi-ravsanjani-gusma</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/35925185/pexels-photo-35925185.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:4.19%; top:61.75%; width:85.91%; height:38.16%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.95</span></div><div class="box" style="left:33.09%; top:17.94%; width:19.03%; height:6.48%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.85</span></div><div class="box" style="left:17.43%; top:28.82%; width:77.48%; height:41.13%; border-color:#3b82f6;"><span class="box-label" style="background:#3b82f6;">top 0.37</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-35925185</div>
+        <div class="row"><b>styles</b> <span class="tag style">sporty</span><span class="tag style">casual</span><span class="tag style">street</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">pink</span><span class="tag color">red</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">outdoor</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">relaxed</span><span class="tag fit">oversized</span></div>
+        <div class="row"><b>materials</b> <span class="tag material">silky</span></div>
+        <div class="row unknown"><b>unknown_fields</b> 無</div>
+        <div class="row creator">creator: creator-demo-omar-tapia</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/35075247/pexels-photo-35075247.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:58.19%; top:81.99%; width:13.64%; height:9.37%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 0.98</span></div><div class="box" style="left:44.72%; top:37.14%; width:12.78%; height:17.66%; border-color:#3b82f6;"><span class="box-label" style="background:#3b82f6;">top 0.83</span></div><div class="box" style="left:49.63%; top:29.94%; width:12.22%; height:5.00%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.48</span></div><div class="box" style="left:42.59%; top:53.16%; width:22.68%; height:30.39%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.98</span></div><div class="box" style="left:38.14%; top:37.75%; width:26.90%; height:24.85%; border-color:#a855f7;"><span class="box-label" style="background:#a855f7;">outerwear 0.67</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-35075247</div>
+        <div class="row"><b>styles</b> <span class="tag style">sporty</span><span class="tag style">casual</span><span class="tag style">minimal</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">brown</span><span class="tag color">beige</span><span class="tag color">orange</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">outdoor</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">relaxed</span><span class="tag fit">oversized</span></div>
+        <div class="row"><b>materials</b> <span class="tag material">leather</span></div>
+        <div class="row unknown"><b>unknown_fields</b> 無</div>
+        <div class="row creator">creator: creator-demo-amar-preciado</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/35880490/pexels-photo-35880490.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:35.12%; top:89.22%; width:22.01%; height:7.54%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 0.94</span></div><div class="box" style="left:44.13%; top:9.75%; width:16.73%; height:8.89%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.98</span></div><div class="box" style="left:36.91%; top:53.34%; width:27.59%; height:37.51%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.99</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-35880490</div>
+        <div class="row"><b>styles</b> <span class="tag style">sporty</span><span class="tag style">casual</span><span class="tag style">street</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">blue</span><span class="tag color">green</span><span class="tag color">orange</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">outdoor</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">relaxed</span><span class="tag fit">oversized</span></div>
+        <div class="row"><b>materials</b> <span class="tag empty">（無）</span></div>
+        <div class="row unknown"><b>unknown_fields</b> materials</div>
+        <div class="row creator">creator: creator-demo-candrasaldifa</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/7009605/pexels-photo-7009605.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:36.48%; top:27.37%; width:16.47%; height:4.41%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.84</span></div><div class="box" style="left:12.90%; top:35.71%; width:80.69%; height:57.08%; border-color:#a855f7;"><span class="box-label" style="background:#a855f7;">outerwear 0.69</span></div><div class="box" style="left:29.84%; top:82.59%; width:40.48%; height:17.16%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.50</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-7009605</div>
+        <div class="row"><b>styles</b> <span class="tag style">sporty</span><span class="tag style">casual</span><span class="tag style">street</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">red</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">outdoor</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">regular</span><span class="tag fit">oversized</span></div>
+        <div class="row"><b>materials</b> <span class="tag empty">（無）</span></div>
+        <div class="row unknown"><b>unknown_fields</b> materials</div>
+        <div class="row creator">creator: creator-demo-tima-miroshnichenko</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/4694566/pexels-photo-4694566.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:26.35%; top:37.46%; width:17.26%; height:22.39%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.37</span></div><div class="box" style="left:27.82%; top:85.84%; width:10.88%; height:7.36%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 0.98</span></div><div class="box" style="left:27.81%; top:55.25%; width:22.45%; height:24.85%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.66</span></div><div class="box" style="left:28.53%; top:39.45%; width:22.74%; height:41.11%; border-color:#ef4444;"><span class="box-label" style="background:#ef4444;">dress 0.96</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-4694566</div>
+        <div class="row"><b>styles</b> <span class="tag style">elegant</span><span class="tag style">formal</span><span class="tag style">vintage</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">beige</span><span class="tag color">brown</span><span class="tag color">white</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">date</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">oversized</span><span class="tag fit">relaxed</span></div>
+        <div class="row"><b>materials</b> <span class="tag material">silky</span></div>
+        <div class="row unknown"><b>unknown_fields</b> 無</div>
+        <div class="row creator">creator: creator-demo-cottonbro-studio</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/4694559/pexels-photo-4694559.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:30.51%; top:-0.08%; width:26.63%; height:5.38%; border-color:#3b82f6;"><span class="box-label" style="background:#3b82f6;">top 0.63</span></div><div class="box" style="left:35.29%; top:60.48%; width:27.08%; height:12.57%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 0.97</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-4694559</div>
+        <div class="row"><b>styles</b> <span class="tag style">vintage</span><span class="tag style">elegant</span><span class="tag style">formal</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">beige</span><span class="tag color">black</span><span class="tag color">brown</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">date</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">regular</span><span class="tag fit">slim</span></div>
+        <div class="row"><b>materials</b> <span class="tag empty">（無）</span></div>
+        <div class="row unknown"><b>unknown_fields</b> materials</div>
+        <div class="row creator">creator: creator-demo-cottonbro-studio</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/4694545/pexels-photo-4694545.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:21.97%; top:57.99%; width:42.61%; height:41.87%; border-color:#ef4444;"><span class="box-label" style="background:#ef4444;">dress 0.59</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-4694545</div>
+        <div class="row"><b>styles</b> <span class="tag style">minimal</span><span class="tag style">formal</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">brown</span><span class="tag color">beige</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">date</span></div>
+        <div class="row"><b>fits</b> <span class="tag empty">（無）</span></div>
+        <div class="row"><b>materials</b> <span class="tag empty">（無）</span></div>
+        <div class="row unknown"><b>unknown_fields</b> fits, materials</div>
+        <div class="row creator">creator: creator-demo-cottonbro-studio</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/8096435/pexels-photo-8096435.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:39.08%; top:73.37%; width:9.33%; height:5.59%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 0.99</span></div><div class="box" style="left:31.51%; top:51.27%; width:16.50%; height:21.35%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.39</span></div><div class="box" style="left:31.56%; top:32.56%; width:19.44%; height:20.11%; border-color:#a855f7;"><span class="box-label" style="background:#a855f7;">outerwear 0.38</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-8096435</div>
+        <div class="row"><b>styles</b> <span class="tag style">formal</span><span class="tag style">minimal</span><span class="tag style">street</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">black</span><span class="tag color">charcoal</span><span class="tag color">green</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">date</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">slim</span><span class="tag fit">oversized</span></div>
+        <div class="row"><b>materials</b> <span class="tag material">leather</span></div>
+        <div class="row unknown"><b>unknown_fields</b> 無</div>
+        <div class="row creator">creator: creator-demo-mart-production</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/4694564/pexels-photo-4694564.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:14.11%; top:40.81%; width:64.33%; height:59.32%; border-color:#ef4444;"><span class="box-label" style="background:#ef4444;">dress 0.68</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-4694564</div>
+        <div class="row"><b>styles</b> <span class="tag style">formal</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">beige</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">date</span></div>
+        <div class="row"><b>fits</b> <span class="tag empty">（無）</span></div>
+        <div class="row"><b>materials</b> <span class="tag empty">（無）</span></div>
+        <div class="row unknown"><b>unknown_fields</b> fits, materials</div>
+        <div class="row creator">creator: creator-demo-cottonbro-studio</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/5086777/pexels-photo-5086777.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:23.08%; top:65.16%; width:27.45%; height:34.31%; border-color:#ef4444;"><span class="box-label" style="background:#ef4444;">dress 0.36</span></div><div class="box" style="left:40.75%; top:76.14%; width:12.15%; height:3.53%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 0.49</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-5086777</div>
+        <div class="row"><b>styles</b> <span class="tag empty">（無）</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">brown</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">date</span></div>
+        <div class="row"><b>fits</b> <span class="tag empty">（無）</span></div>
+        <div class="row"><b>materials</b> <span class="tag empty">（無）</span></div>
+        <div class="row unknown"><b>unknown_fields</b> styles, fits, materials</div>
+        <div class="row creator">creator: creator-demo-jep-gambardella</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/12765474/pexels-photo-12765474.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:11.90%; top:79.59%; width:18.80%; height:7.59%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 0.91</span></div><div class="box" style="left:10.61%; top:39.65%; width:50.23%; height:39.94%; border-color:#ef4444;"><span class="box-label" style="background:#ef4444;">dress 0.78</span></div><div class="box" style="left:10.47%; top:57.22%; width:48.87%; height:21.89%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.43</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-12765474</div>
+        <div class="row"><b>styles</b> <span class="tag style">sporty</span><span class="tag style">street</span><span class="tag style">preppy</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">white</span><span class="tag color">gray</span><span class="tag color">charcoal</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">sport</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">oversized</span><span class="tag fit">relaxed</span></div>
+        <div class="row"><b>materials</b> <span class="tag material">silky</span></div>
+        <div class="row unknown"><b>unknown_fields</b> 無</div>
+        <div class="row creator">creator: creator-demo-mehrab-zahedbeigi</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/2468231/pexels-photo-2468231.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:28.63%; top:82.06%; width:22.11%; height:13.40%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 0.98</span></div><div class="box" style="left:34.07%; top:57.20%; width:46.52%; height:29.07%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.94</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-2468231</div>
+        <div class="row"><b>styles</b> <span class="tag style">sporty</span><span class="tag style">preppy</span><span class="tag style">casual</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">navy</span><span class="tag color">white</span><span class="tag color">red</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">sport</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">oversized</span><span class="tag fit">relaxed</span></div>
+        <div class="row"><b>materials</b> <span class="tag material">knit</span></div>
+        <div class="row unknown"><b>unknown_fields</b> 無</div>
+        <div class="row creator">creator: creator-demo-marcelo-chagas</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/11338402/pexels-photo-11338402.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:37.98%; top:22.60%; width:10.13%; height:3.51%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.71</span></div><div class="box" style="left:39.12%; top:81.49%; width:11.41%; height:11.47%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 0.97</span></div><div class="box" style="left:22.98%; top:49.86%; width:53.98%; height:36.68%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.81</span></div><div class="box" style="left:33.12%; top:30.34%; width:19.05%; height:18.98%; border-color:#3b82f6;"><span class="box-label" style="background:#3b82f6;">top 0.81</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-11338402</div>
+        <div class="row"><b>styles</b> <span class="tag style">sporty</span><span class="tag style">street</span><span class="tag style">casual</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">red</span><span class="tag color">black</span><span class="tag color">charcoal</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">sport</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">oversized</span><span class="tag fit">relaxed</span></div>
+        <div class="row"><b>materials</b> <span class="tag material">leather</span></div>
+        <div class="row unknown"><b>unknown_fields</b> 無</div>
+        <div class="row creator">creator: creator-demo-victor-terrell</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/12568808/pexels-photo-12568808.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:19.13%; top:55.20%; width:28.35%; height:15.36%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.93</span></div><div class="box" style="left:80.55%; top:66.43%; width:7.23%; height:4.85%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 0.81</span></div><div class="box" style="left:26.46%; top:51.33%; width:34.83%; height:21.41%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.46</span></div><div class="box" style="left:24.80%; top:38.33%; width:23.77%; height:18.82%; border-color:#3b82f6;"><span class="box-label" style="background:#3b82f6;">top 0.80</span></div><div class="box" style="left:23.27%; top:36.13%; width:37.63%; height:41.23%; border-color:#ef4444;"><span class="box-label" style="background:#ef4444;">dress 0.69</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-12568808</div>
+        <div class="row"><b>styles</b> <span class="tag style">sporty</span><span class="tag style">minimal</span><span class="tag style">casual</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">white</span><span class="tag color">beige</span><span class="tag color">gray</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">sport</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">oversized</span><span class="tag fit">relaxed</span></div>
+        <div class="row"><b>materials</b> <span class="tag empty">（無）</span></div>
+        <div class="row unknown"><b>unknown_fields</b> materials</div>
+        <div class="row creator">creator: creator-demo-fika-photo</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/37167329/pexels-photo-37167329.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:26.06%; top:85.81%; width:16.76%; height:11.01%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 0.99</span></div><div class="box" style="left:44.71%; top:23.83%; width:11.94%; height:3.15%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.63</span></div><div class="box" style="left:29.62%; top:54.18%; width:28.08%; height:36.12%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.98</span></div><div class="box" style="left:33.77%; top:31.65%; width:28.20%; height:23.75%; border-color:#3b82f6;"><span class="box-label" style="background:#3b82f6;">top 0.68</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-37167329</div>
+        <div class="row"><b>styles</b> <span class="tag style">sporty</span><span class="tag style">street</span><span class="tag style">casual</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">gray</span><span class="tag color">beige</span><span class="tag color">charcoal</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">sport</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">relaxed</span><span class="tag fit">oversized</span></div>
+        <div class="row"><b>materials</b> <span class="tag material">knit</span></div>
+        <div class="row unknown"><b>unknown_fields</b> 無</div>
+        <div class="row creator">creator: creator-demo-murat-i-ik</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/17834304/pexels-photo-17834304.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:47.20%; top:77.88%; width:10.37%; height:14.90%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 1.00</span></div><div class="box" style="left:42.17%; top:26.59%; width:11.81%; height:2.72%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.46</span></div><div class="box" style="left:31.51%; top:46.20%; width:33.27%; height:20.49%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.84</span></div><div class="box" style="left:26.77%; top:31.94%; width:37.73%; height:20.81%; border-color:#3b82f6;"><span class="box-label" style="background:#3b82f6;">top 0.83</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-17834304</div>
+        <div class="row"><b>styles</b> <span class="tag style">minimal</span><span class="tag style">casual</span><span class="tag style">sporty</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">white</span><span class="tag color">gray</span><span class="tag color">beige</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">casual</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">relaxed</span><span class="tag fit">oversized</span></div>
+        <div class="row"><b>materials</b> <span class="tag material">denim</span></div>
+        <div class="row unknown"><b>unknown_fields</b> 無</div>
+        <div class="row creator">creator: creator-demo-darya-grey-owl</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/18480288/pexels-photo-18480288.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:65.52%; top:24.02%; width:14.56%; height:4.75%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.81</span></div><div class="box" style="left:61.19%; top:38.19%; width:23.80%; height:53.81%; border-color:#ef4444;"><span class="box-label" style="background:#ef4444;">dress 0.35</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-18480288</div>
+        <div class="row"><b>styles</b> <span class="tag style">street</span><span class="tag style">vintage</span><span class="tag style">preppy</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">green</span><span class="tag color">white</span><span class="tag color">blue</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">casual</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">oversized</span><span class="tag fit">relaxed</span></div>
+        <div class="row"><b>materials</b> <span class="tag empty">（無）</span></div>
+        <div class="row unknown"><b>unknown_fields</b> materials</div>
+        <div class="row creator">creator: creator-demo-necip-duman</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/38381341/pexels-photo-38381341.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:32.60%; top:78.70%; width:8.49%; height:8.97%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 1.00</span></div><div class="box" style="left:26.04%; top:13.47%; width:14.66%; height:3.36%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.81</span></div><div class="box" style="left:14.40%; top:17.35%; width:68.43%; height:51.18%; border-color:#ef4444;"><span class="box-label" style="background:#ef4444;">dress 0.84</span></div><div class="box" style="left:14.57%; top:36.34%; width:68.42%; height:31.17%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.90</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-38381341</div>
+        <div class="row"><b>styles</b> <span class="tag style">vintage</span><span class="tag style">elegant</span><span class="tag style">japanese</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">charcoal</span><span class="tag color">navy</span><span class="tag color">gray</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">work</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">oversized</span><span class="tag fit">regular</span></div>
+        <div class="row"><b>materials</b> <span class="tag empty">（無）</span></div>
+        <div class="row unknown"><b>unknown_fields</b> materials</div>
+        <div class="row creator">creator: creator-demo-alexandre-canteiro</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/12690379/pexels-photo-12690379.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:46.11%; top:50.29%; width:8.81%; height:3.07%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.85</span></div><div class="box" style="left:41.95%; top:58.96%; width:27.72%; height:33.20%; border-color:#ef4444;"><span class="box-label" style="background:#ef4444;">dress 0.46</span></div><div class="box" style="left:45.39%; top:85.96%; width:25.86%; height:13.93%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.64</span></div><div class="box" style="left:40.84%; top:54.63%; width:24.91%; height:24.85%; border-color:#3b82f6;"><span class="box-label" style="background:#3b82f6;">top 0.41</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-12690379</div>
+        <div class="row"><b>styles</b> <span class="tag style">vintage</span><span class="tag style">street</span><span class="tag style">japanese</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">blue</span><span class="tag color">navy</span><span class="tag color">black</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">travel</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">oversized</span></div>
+        <div class="row"><b>materials</b> <span class="tag empty">（無）</span></div>
+        <div class="row unknown"><b>unknown_fields</b> materials</div>
+        <div class="row creator">creator: creator-demo-adhen-wijaya-kusuma</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/18749362/pexels-photo-18749362.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:37.57%; top:49.88%; width:4.06%; height:2.38%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.37</span></div><div class="box" style="left:45.23%; top:83.90%; width:14.72%; height:9.88%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 1.00</span></div><div class="box" style="left:37.20%; top:46.23%; width:26.96%; height:20.25%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.51</span></div><div class="box" style="left:31.36%; top:28.67%; width:26.94%; height:24.49%; border-color:#3b82f6;"><span class="box-label" style="background:#3b82f6;">top 0.52</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-18749362</div>
+        <div class="row"><b>styles</b> <span class="tag style">vintage</span><span class="tag style">minimal</span><span class="tag style">elegant</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">navy</span><span class="tag color">white</span><span class="tag color">orange</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">date</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">oversized</span><span class="tag fit">slim</span></div>
+        <div class="row"><b>materials</b> <span class="tag empty">（無）</span></div>
+        <div class="row unknown"><b>unknown_fields</b> materials</div>
+        <div class="row creator">creator: creator-demo-esma-atak</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/34460008/pexels-photo-34460008.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:43.02%; top:33.48%; width:19.78%; height:9.27%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.72</span></div><div class="box" style="left:36.86%; top:53.52%; width:33.66%; height:29.97%; border-color:#3b82f6;"><span class="box-label" style="background:#3b82f6;">top 0.65</span></div><div class="box" style="left:38.03%; top:82.81%; width:35.51%; height:17.01%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.36</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-34460008</div>
+        <div class="row"><b>styles</b> <span class="tag style">vintage</span><span class="tag style">japanese</span><span class="tag style">minimal</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">gray</span><span class="tag color">charcoal</span><span class="tag color">blue</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">work</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">oversized</span><span class="tag fit">regular</span></div>
+        <div class="row"><b>materials</b> <span class="tag empty">（無）</span></div>
+        <div class="row unknown"><b>unknown_fields</b> materials</div>
+        <div class="row creator">creator: creator-demo-shahin-mren</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/18762528/pexels-photo-18762528.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:28.81%; top:33.03%; width:20.51%; height:6.29%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.96</span></div><div class="box" style="left:8.70%; top:31.86%; width:58.68%; height:48.23%; border-color:#3b82f6;"><span class="box-label" style="background:#3b82f6;">top 0.45</span></div><div class="box" style="left:32.19%; top:77.19%; width:37.09%; height:22.62%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.46</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-18762528</div>
+        <div class="row"><b>styles</b> <span class="tag style">vintage</span><span class="tag style">minimal</span><span class="tag style">elegant</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">black</span><span class="tag color">pink</span><span class="tag color">charcoal</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">date</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">oversized</span><span class="tag fit">relaxed</span></div>
+        <div class="row"><b>materials</b> <span class="tag material">knit</span></div>
+        <div class="row unknown"><b>unknown_fields</b> 無</div>
+        <div class="row creator">creator: creator-demo-daniil-kondrashin</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/13929212/pexels-photo-13929212.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:16.32%; top:0.18%; width:40.82%; height:29.93%; border-color:#3b82f6;"><span class="box-label" style="background:#3b82f6;">top 0.50</span></div><div class="box" style="left:24.75%; top:66.99%; width:27.24%; height:16.02%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 0.97</span></div><div class="box" style="left:49.96%; top:29.33%; width:25.19%; height:31.12%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.97</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-13929212</div>
+        <div class="row"><b>styles</b> <span class="tag style">preppy</span><span class="tag style">street</span><span class="tag style">vintage</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">navy</span><span class="tag color">white</span><span class="tag color">brown</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">casual</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">oversized</span><span class="tag fit">relaxed</span></div>
+        <div class="row"><b>materials</b> <span class="tag material">knit</span></div>
+        <div class="row unknown"><b>unknown_fields</b> 無</div>
+        <div class="row creator">creator: creator-demo-mizuno-k</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/7753711/pexels-photo-7753711.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:21.18%; top:39.43%; width:12.00%; height:24.34%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.71</span></div><div class="box" style="left:53.22%; top:86.31%; width:13.92%; height:10.34%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 0.97</span></div><div class="box" style="left:26.72%; top:38.73%; width:33.16%; height:37.06%; border-color:#ef4444;"><span class="box-label" style="background:#ef4444;">dress 0.94</span></div><div class="box" style="left:26.91%; top:61.01%; width:32.45%; height:14.39%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.59</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-7753711</div>
+        <div class="row"><b>styles</b> <span class="tag style">preppy</span><span class="tag style">japanese</span><span class="tag style">vintage</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">blue</span><span class="tag color">gray</span><span class="tag color">white</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">outdoor</span></div>
+        <div class="row"><b>fits</b> <span class="tag empty">（無）</span></div>
+        <div class="row"><b>materials</b> <span class="tag empty">（無）</span></div>
+        <div class="row unknown"><b>unknown_fields</b> fits, materials</div>
+        <div class="row creator">creator: creator-demo-rizki-koto</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/17774708/pexels-photo-17774708.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:35.97%; top:28.27%; width:29.60%; height:13.95%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.99</span></div><div class="box" style="left:25.09%; top:46.42%; width:54.82%; height:52.43%; border-color:#3b82f6;"><span class="box-label" style="background:#3b82f6;">top 0.68</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-17774708</div>
+        <div class="row"><b>styles</b> <span class="tag style">preppy</span><span class="tag style">vintage</span><span class="tag style">street</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">green</span><span class="tag color">white</span><span class="tag color">orange</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">travel</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">oversized</span><span class="tag fit">regular</span></div>
+        <div class="row"><b>materials</b> <span class="tag empty">（無）</span></div>
+        <div class="row unknown"><b>unknown_fields</b> materials</div>
+        <div class="row creator">creator: creator-demo-emre-akyol</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/9178814/pexels-photo-9178814.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:11.83%; top:56.60%; width:39.65%; height:21.26%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.73</span></div><div class="box" style="left:13.37%; top:95.52%; width:11.57%; height:4.27%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 0.98</span></div><div class="box" style="left:12.50%; top:36.10%; width:39.09%; height:41.96%; border-color:#ef4444;"><span class="box-label" style="background:#ef4444;">dress 0.70</span></div><div class="box" style="left:21.80%; top:35.54%; width:34.55%; height:28.05%; border-color:#3b82f6;"><span class="box-label" style="background:#3b82f6;">top 0.65</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-9178814</div>
+        <div class="row"><b>styles</b> <span class="tag style">preppy</span><span class="tag style">vintage</span><span class="tag style">street</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">brown</span><span class="tag color">blue</span><span class="tag color">navy</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">outdoor</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">oversized</span><span class="tag fit">regular</span></div>
+        <div class="row"><b>materials</b> <span class="tag material">leather</span></div>
+        <div class="row unknown"><b>unknown_fields</b> 無</div>
+        <div class="row creator">creator: creator-demo-darina-belonogova</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/9178783/pexels-photo-9178783.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:42.76%; top:-0.26%; width:28.79%; height:21.97%; border-color:#3b82f6;"><span class="box-label" style="background:#3b82f6;">top 0.63</span></div><div class="box" style="left:0.60%; top:19.02%; width:72.91%; height:44.45%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.49</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-9178783</div>
+        <div class="row"><b>styles</b> <span class="tag style">preppy</span><span class="tag style">vintage</span><span class="tag style">minimal</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">brown</span><span class="tag color">orange</span><span class="tag color">beige</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">date</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">oversized</span><span class="tag fit">relaxed</span></div>
+        <div class="row"><b>materials</b> <span class="tag material">knit</span></div>
+        <div class="row unknown"><b>unknown_fields</b> 無</div>
+        <div class="row creator">creator: creator-demo-darina-belonogova</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/5730452/pexels-photo-5730452.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:28.65%; top:75.73%; width:9.36%; height:8.33%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 0.99</span></div><div class="box" style="left:29.77%; top:29.79%; width:14.24%; height:4.63%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.64</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-5730452</div>
+        <div class="row"><b>styles</b> <span class="tag style">preppy</span><span class="tag style">sporty</span><span class="tag style">vintage</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">navy</span><span class="tag color">white</span><span class="tag color">blue</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">sport</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">regular</span><span class="tag fit">slim</span></div>
+        <div class="row"><b>materials</b> <span class="tag material">knit</span></div>
+        <div class="row unknown"><b>unknown_fields</b> 無</div>
+        <div class="row creator">creator: creator-demo-cottonbro-studio</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/12640454/pexels-photo-12640454.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:70.51%; top:45.28%; width:6.10%; height:2.38%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.45</span></div><div class="box" style="left:54.18%; top:70.72%; width:6.60%; height:3.36%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 0.74</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-12640454</div>
+        <div class="row"><b>styles</b> <span class="tag style">minimal</span><span class="tag style">vintage</span><span class="tag style">japanese</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">charcoal</span><span class="tag color">gray</span><span class="tag color">black</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">work</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">relaxed</span><span class="tag fit">oversized</span></div>
+        <div class="row"><b>materials</b> <span class="tag material">knit</span></div>
+        <div class="row unknown"><b>unknown_fields</b> 無</div>
+        <div class="row creator">creator: creator-demo-zero-pamungkas</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/31931771/pexels-photo-31931771.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:49.15%; top:73.32%; width:4.88%; height:6.15%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 0.86</span></div><div class="box" style="left:30.34%; top:45.72%; width:27.44%; height:18.30%; border-color:#a855f7;"><span class="box-label" style="background:#a855f7;">outerwear 0.45</span></div><div class="box" style="left:51.70%; top:52.58%; width:6.26%; height:7.94%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.54</span></div><div class="box" style="left:40.52%; top:45.89%; width:15.14%; height:17.92%; border-color:#ef4444;"><span class="box-label" style="background:#ef4444;">dress 0.69</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-31931771</div>
+        <div class="row"><b>styles</b> <span class="tag style">minimal</span><span class="tag style">vintage</span><span class="tag style">street</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">brown</span><span class="tag color">red</span><span class="tag color">orange</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">date</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">oversized</span><span class="tag fit">regular</span></div>
+        <div class="row"><b>materials</b> <span class="tag empty">（無）</span></div>
+        <div class="row unknown"><b>unknown_fields</b> materials</div>
+        <div class="row creator">creator: creator-demo-helin-gezer</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/16749835/pexels-photo-16749835.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:48.83%; top:83.39%; width:4.81%; height:7.21%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 0.98</span></div><div class="box" style="left:44.76%; top:65.33%; width:11.70%; height:17.41%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.89</span></div><div class="box" style="left:35.96%; top:30.05%; width:26.74%; height:43.34%; border-color:#a855f7;"><span class="box-label" style="background:#a855f7;">outerwear 0.66</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-16749835</div>
+        <div class="row"><b>styles</b> <span class="tag style">minimal</span><span class="tag style">elegant</span><span class="tag style">formal</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">black</span><span class="tag color">charcoal</span><span class="tag color">navy</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">work</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">oversized</span><span class="tag fit">relaxed</span></div>
+        <div class="row"><b>materials</b> <span class="tag material">silky</span></div>
+        <div class="row unknown"><b>unknown_fields</b> 無</div>
+        <div class="row creator">creator: creator-demo-mohammad-hossein-mirzagol</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/9211605/pexels-photo-9211605.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:38.25%; top:33.90%; width:14.47%; height:3.90%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.90</span></div><div class="box" style="left:58.55%; top:69.39%; width:10.06%; height:7.43%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 0.99</span></div><div class="box" style="left:36.05%; top:22.73%; width:21.72%; height:14.60%; border-color:#3b82f6;"><span class="box-label" style="background:#3b82f6;">top 0.64</span></div><div class="box" style="left:36.61%; top:26.00%; width:27.76%; height:42.23%; border-color:#ef4444;"><span class="box-label" style="background:#ef4444;">dress 0.43</span></div><div class="box" style="left:38.83%; top:38.41%; width:25.62%; height:29.86%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.91</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-9211605</div>
+        <div class="row"><b>styles</b> <span class="tag style">minimal</span><span class="tag style">casual</span><span class="tag style">sporty</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">black</span><span class="tag color">charcoal</span><span class="tag color">navy</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">outdoor</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">slim</span><span class="tag fit">oversized</span></div>
+        <div class="row"><b>materials</b> <span class="tag material">knit</span></div>
+        <div class="row unknown"><b>unknown_fields</b> 無</div>
+        <div class="row creator">creator: creator-demo-jeff-vieira</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/14967411/pexels-photo-14967411.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:60.63%; top:43.46%; width:17.91%; height:23.81%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.92</span></div><div class="box" style="left:68.14%; top:94.24%; width:7.30%; height:3.88%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 0.94</span></div><div class="box" style="left:44.88%; top:57.33%; width:32.36%; height:38.60%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.96</span></div><div class="box" style="left:44.76%; top:43.49%; width:32.97%; height:49.59%; border-color:#ef4444;"><span class="box-label" style="background:#ef4444;">dress 0.47</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-14967411</div>
+        <div class="row"><b>styles</b> <span class="tag style">minimal</span><span class="tag style">street</span><span class="tag style">sporty</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">white</span><span class="tag color">black</span><span class="tag color">charcoal</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">travel</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">slim</span><span class="tag fit">regular</span></div>
+        <div class="row"><b>materials</b> <span class="tag empty">（無）</span></div>
+        <div class="row unknown"><b>unknown_fields</b> materials</div>
+        <div class="row creator">creator: creator-demo-david-eluwole</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/18794353/pexels-photo-18794353.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:57.94%; top:67.20%; width:8.50%; height:5.43%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 0.90</span></div><div class="box" style="left:41.93%; top:21.22%; width:21.80%; height:19.37%; border-color:#3b82f6;"><span class="box-label" style="background:#3b82f6;">top 0.67</span></div><div class="box" style="left:30.59%; top:38.46%; width:35.61%; height:29.79%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.79</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-18794353</div>
+        <div class="row"><b>styles</b> <span class="tag style">minimal</span><span class="tag style">sporty</span><span class="tag style">elegant</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">black</span><span class="tag color">charcoal</span><span class="tag color">gray</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">party</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">oversized</span><span class="tag fit">relaxed</span></div>
+        <div class="row"><b>materials</b> <span class="tag material">silky</span></div>
+        <div class="row unknown"><b>unknown_fields</b> 無</div>
+        <div class="row creator">creator: creator-demo-braks-alexandros</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/3223423/pexels-photo-3223423.png?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:18.30%; top:28.96%; width:20.10%; height:27.95%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.76</span></div><div class="box" style="left:45.85%; top:67.93%; width:6.20%; height:3.93%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 0.98</span></div><div class="box" style="left:37.21%; top:43.19%; width:16.15%; height:23.39%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.88</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-3223423</div>
+        <div class="row"><b>styles</b> <span class="tag style">japanese</span><span class="tag style">minimal</span><span class="tag style">casual</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">red</span><span class="tag color">black</span><span class="tag color">charcoal</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">travel</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">oversized</span><span class="tag fit">slim</span></div>
+        <div class="row"><b>materials</b> <span class="tag empty">（無）</span></div>
+        <div class="row unknown"><b>unknown_fields</b> materials</div>
+        <div class="row creator">creator: creator-demo-mo-productions</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/9523357/pexels-photo-9523357.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:36.43%; top:54.34%; width:45.19%; height:30.41%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.69</span></div><div class="box" style="left:7.61%; top:75.66%; width:79.69%; height:24.33%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.42</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-9523357</div>
+        <div class="row"><b>styles</b> <span class="tag style">casual</span><span class="tag style">minimal</span><span class="tag style">vintage</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">white</span><span class="tag color">beige</span><span class="tag color">gray</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">travel</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">relaxed</span><span class="tag fit">oversized</span></div>
+        <div class="row"><b>materials</b> <span class="tag empty">（無）</span></div>
+        <div class="row unknown"><b>unknown_fields</b> materials</div>
+        <div class="row creator">creator: creator-demo-unknown</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/3220232/pexels-photo-3220232.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:59.26%; top:30.66%; width:8.66%; height:2.42%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.67</span></div><div class="box" style="left:66.58%; top:69.99%; width:6.65%; height:6.33%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 0.96</span></div><div class="box" style="left:55.47%; top:48.73%; width:21.77%; height:20.71%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.63</span></div><div class="box" style="left:50.60%; top:37.63%; width:21.45%; height:12.29%; border-color:#3b82f6;"><span class="box-label" style="background:#3b82f6;">top 0.72</span></div><div class="box" style="left:37.88%; top:36.56%; width:45.66%; height:37.76%; border-color:#a855f7;"><span class="box-label" style="background:#a855f7;">outerwear 0.45</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-3220232</div>
+        <div class="row"><b>styles</b> <span class="tag style">vintage</span><span class="tag style">elegant</span><span class="tag style">formal</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">brown</span><span class="tag color">orange</span><span class="tag color">beige</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">travel</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">oversized</span></div>
+        <div class="row"><b>materials</b> <span class="tag empty">（無）</span></div>
+        <div class="row unknown"><b>unknown_fields</b> materials</div>
+        <div class="row creator">creator: creator-demo-asya-cusima</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/7446975/pexels-photo-7446975.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:33.93%; top:88.80%; width:11.56%; height:8.48%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 0.97</span></div><div class="box" style="left:26.40%; top:39.91%; width:27.13%; height:40.60%; border-color:#ef4444;"><span class="box-label" style="background:#ef4444;">dress 0.44</span></div><div class="box" style="left:32.79%; top:59.66%; width:25.52%; height:29.86%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.74</span></div><div class="box" style="left:24.64%; top:31.06%; width:49.11%; height:36.95%; border-color:#a855f7;"><span class="box-label" style="background:#a855f7;">outerwear 0.49</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-7446975</div>
+        <div class="row"><b>styles</b> <span class="tag style">street</span><span class="tag style">sporty</span><span class="tag style">minimal</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">red</span><span class="tag color">orange</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">travel</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">regular</span><span class="tag fit">relaxed</span></div>
+        <div class="row"><b>materials</b> <span class="tag empty">（無）</span></div>
+        <div class="row unknown"><b>unknown_fields</b> materials</div>
+        <div class="row creator">creator: creator-demo-gustavo-fring</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/15960059/pexels-photo-15960059.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:37.36%; top:66.00%; width:13.59%; height:18.94%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.37</span></div><div class="box" style="left:35.49%; top:83.96%; width:5.60%; height:3.53%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 0.96</span></div><div class="box" style="left:40.47%; top:56.42%; width:15.63%; height:13.64%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.91</span></div><div class="box" style="left:43.38%; top:42.70%; width:9.26%; height:16.19%; border-color:#3b82f6;"><span class="box-label" style="background:#3b82f6;">top 0.43</span></div><div class="box" style="left:39.29%; top:43.43%; width:16.67%; height:25.60%; border-color:#ef4444;"><span class="box-label" style="background:#ef4444;">dress 0.62</span></div><div class="box" style="left:31.42%; top:39.56%; width:29.49%; height:29.53%; border-color:#a855f7;"><span class="box-label" style="background:#a855f7;">outerwear 0.43</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-15960059</div>
+        <div class="row"><b>styles</b> <span class="tag style">street</span><span class="tag style">minimal</span><span class="tag style">casual</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">white</span><span class="tag color">beige</span><span class="tag color">gray</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">outdoor</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">oversized</span><span class="tag fit">relaxed</span></div>
+        <div class="row"><b>materials</b> <span class="tag material">knit</span></div>
+        <div class="row unknown"><b>unknown_fields</b> 無</div>
+        <div class="row creator">creator: creator-demo-farhad-irani</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/14433234/pexels-photo-14433234.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:32.46%; top:51.69%; width:22.02%; height:24.57%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.58</span></div><div class="box" style="left:38.20%; top:72.99%; width:6.36%; height:3.88%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 0.95</span></div><div class="box" style="left:45.29%; top:52.51%; width:9.52%; height:12.23%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.57</span></div><div class="box" style="left:29.08%; top:32.61%; width:34.46%; height:22.17%; border-color:#a855f7;"><span class="box-label" style="background:#a855f7;">outerwear 0.74</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-14433234</div>
+        <div class="row"><b>styles</b> <span class="tag style">japanese</span><span class="tag style">formal</span><span class="tag style">elegant</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">gray</span><span class="tag color">beige</span><span class="tag color">charcoal</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">work</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">oversized</span><span class="tag fit">slim</span></div>
+        <div class="row"><b>materials</b> <span class="tag material">silky</span></div>
+        <div class="row unknown"><b>unknown_fields</b> 無</div>
+        <div class="row creator">creator: creator-demo-batitay-japheth</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/17370251/pexels-photo-17370251.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:69.95%; top:88.14%; width:11.20%; height:7.57%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 0.60</span></div><div class="box" style="left:39.93%; top:62.06%; width:38.83%; height:33.95%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.94</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-17370251</div>
+        <div class="row"><b>styles</b> <span class="tag style">sporty</span><span class="tag style">street</span><span class="tag style">formal</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">black</span><span class="tag color">green</span><span class="tag color">navy</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">party</span></div>
+        <div class="row"><b>fits</b> <span class="tag empty">（無）</span></div>
+        <div class="row"><b>materials</b> <span class="tag empty">（無）</span></div>
+        <div class="row unknown"><b>unknown_fields</b> fits, materials</div>
+        <div class="row creator">creator: creator-demo-marcelo-chagas</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/19517638/pexels-photo-19517638.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:15.78%; top:85.32%; width:29.48%; height:14.31%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 0.58</span></div><div class="box" style="left:34.65%; top:38.18%; width:37.88%; height:40.21%; border-color:#ef4444;"><span class="box-label" style="background:#ef4444;">dress 0.63</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-19517638</div>
+        <div class="row"><b>styles</b> <span class="tag style">formal</span><span class="tag style">elegant</span><span class="tag style">minimal</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">black</span><span class="tag color">charcoal</span><span class="tag color">brown</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">party</span></div>
+        <div class="row"><b>fits</b> <span class="tag empty">（無）</span></div>
+        <div class="row"><b>materials</b> <span class="tag material">leather</span></div>
+        <div class="row unknown"><b>unknown_fields</b> fits</div>
+        <div class="row creator">creator: creator-demo-wolrider-yurtseven</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/2096982/pexels-photo-2096982.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:19.92%; top:28.14%; width:50.97%; height:71.90%; border-color:#ef4444;"><span class="box-label" style="background:#ef4444;">dress 0.80</span></div><div class="box" style="left:18.82%; top:56.49%; width:52.30%; height:43.55%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.50</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-2096982</div>
+        <div class="row"><b>styles</b> <span class="tag style">vintage</span><span class="tag style">formal</span><span class="tag style">minimal</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">navy</span><span class="tag color">black</span><span class="tag color">blue</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">party</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">oversized</span><span class="tag fit">relaxed</span></div>
+        <div class="row"><b>materials</b> <span class="tag material">leather</span></div>
+        <div class="row unknown"><b>unknown_fields</b> 無</div>
+        <div class="row creator">creator: creator-demo-julie-aagaard</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/14472553/pexels-photo-14472553.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:8.29%; top:-0.32%; width:79.54%; height:19.99%; border-color:#3b82f6;"><span class="box-label" style="background:#3b82f6;">top 0.37</span></div><div class="box" style="left:16.41%; top:39.83%; width:48.67%; height:31.24%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.40</span></div><div class="box" style="left:32.43%; top:1.17%; width:38.01%; height:43.97%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.72</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-14472553</div>
+        <div class="row"><b>styles</b> <span class="tag style">elegant</span><span class="tag style">formal</span><span class="tag style">street</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">black</span><span class="tag color">brown</span><span class="tag color">orange</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">party</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">slim</span><span class="tag fit">oversized</span></div>
+        <div class="row"><b>materials</b> <span class="tag empty">（無）</span></div>
+        <div class="row unknown"><b>unknown_fields</b> materials</div>
+        <div class="row creator">creator: creator-demo-god-picture</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/3419651/pexels-photo-3419651.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:36.48%; top:66.35%; width:33.76%; height:13.37%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 0.78</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-3419651</div>
+        <div class="row"><b>styles</b> <span class="tag style">vintage</span><span class="tag style">preppy</span><span class="tag style">minimal</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">navy</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">date</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">relaxed</span><span class="tag fit">regular</span></div>
+        <div class="row"><b>materials</b> <span class="tag empty">（無）</span></div>
+        <div class="row unknown"><b>unknown_fields</b> materials</div>
+        <div class="row creator">creator: creator-demo-cottonbro-studio</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/13330557/pexels-photo-13330557.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:58.23%; top:85.75%; width:8.89%; height:7.70%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 1.00</span></div><div class="box" style="left:31.59%; top:32.93%; width:35.71%; height:53.93%; border-color:#ef4444;"><span class="box-label" style="background:#ef4444;">dress 0.48</span></div><div class="box" style="left:32.72%; top:44.58%; width:31.97%; height:41.80%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.96</span></div><div class="box" style="left:20.69%; top:24.18%; width:49.24%; height:20.68%; border-color:#3b82f6;"><span class="box-label" style="background:#3b82f6;">top 0.46</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-13330557</div>
+        <div class="row"><b>styles</b> <span class="tag style">formal</span><span class="tag style">elegant</span><span class="tag style">sporty</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">black</span><span class="tag color">navy</span><span class="tag color">charcoal</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">party</span></div>
+        <div class="row"><b>fits</b> <span class="tag empty">（無）</span></div>
+        <div class="row"><b>materials</b> <span class="tag empty">（無）</span></div>
+        <div class="row unknown"><b>unknown_fields</b> fits, materials</div>
+        <div class="row creator">creator: creator-demo-criativa-pix-fotografia</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/27439409/pexels-photo-27439409.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:40.85%; top:31.29%; width:20.89%; height:22.03%; border-color:#3b82f6;"><span class="box-label" style="background:#3b82f6;">top 0.62</span></div><div class="box" style="left:27.14%; top:69.07%; width:48.50%; height:30.95%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.77</span></div><div class="box" style="left:12.68%; top:31.56%; width:81.03%; height:65.94%; border-color:#a855f7;"><span class="box-label" style="background:#a855f7;">outerwear 0.75</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-27439409</div>
+        <div class="row"><b>styles</b> <span class="tag style">formal</span><span class="tag style">elegant</span><span class="tag style">minimal</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">navy</span><span class="tag color">black</span><span class="tag color">charcoal</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">party</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">slim</span><span class="tag fit">regular</span></div>
+        <div class="row"><b>materials</b> <span class="tag empty">（無）</span></div>
+        <div class="row unknown"><b>unknown_fields</b> materials</div>
+        <div class="row creator">creator: creator-demo-paul-espinoza</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/6405884/pexels-photo-6405884.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:46.85%; top:55.33%; width:19.79%; height:4.35%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.89</span></div><div class="box" style="left:28.25%; top:27.82%; width:42.80%; height:64.23%; border-color:#ef4444;"><span class="box-label" style="background:#ef4444;">dress 0.95</span></div><div class="box" style="left:28.77%; top:58.74%; width:41.66%; height:32.81%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.41</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-6405884</div>
+        <div class="row"><b>styles</b> <span class="tag style">elegant</span><span class="tag style">formal</span><span class="tag style">minimal</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">white</span><span class="tag color">beige</span><span class="tag color">gray</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">work</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">regular</span><span class="tag fit">oversized</span></div>
+        <div class="row"><b>materials</b> <span class="tag material">silky</span></div>
+        <div class="row unknown"><b>unknown_fields</b> 無</div>
+        <div class="row creator">creator: creator-demo-pavel-danilyuk</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/32678770/pexels-photo-32678770.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:41.02%; top:49.32%; width:16.75%; height:2.48%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.64</span></div><div class="box" style="left:37.21%; top:82.73%; width:7.31%; height:10.24%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 0.99</span></div><div class="box" style="left:38.27%; top:43.45%; width:22.53%; height:28.30%; border-color:#ef4444;"><span class="box-label" style="background:#ef4444;">dress 0.97</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-32678770</div>
+        <div class="row"><b>styles</b> <span class="tag style">vintage</span><span class="tag style">formal</span><span class="tag style">street</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">charcoal</span><span class="tag color">black</span><span class="tag color">beige</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">party</span></div>
+        <div class="row"><b>fits</b> <span class="tag empty">（無）</span></div>
+        <div class="row"><b>materials</b> <span class="tag empty">（無）</span></div>
+        <div class="row unknown"><b>unknown_fields</b> fits, materials</div>
+        <div class="row creator">creator: creator-demo-vika-glitter</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/19397648/pexels-photo-19397648.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:26.37%; top:76.53%; width:13.99%; height:5.42%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 0.96</span></div><div class="box" style="left:37.43%; top:0.32%; width:45.70%; height:64.84%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.69</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-19397648</div>
+        <div class="row"><b>styles</b> <span class="tag style">minimal</span><span class="tag style">formal</span><span class="tag style">elegant</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">charcoal</span><span class="tag color">black</span><span class="tag color">gray</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">work</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">relaxed</span><span class="tag fit">oversized</span></div>
+        <div class="row"><b>materials</b> <span class="tag material">silky</span></div>
+        <div class="row unknown"><b>unknown_fields</b> 無</div>
+        <div class="row creator">creator: creator-demo-alexander-mass</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/6467697/pexels-photo-6467697.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:25.08%; top:34.49%; width:75.91%; height:66.31%; border-color:#ef4444;"><span class="box-label" style="background:#ef4444;">dress 0.97</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-6467697</div>
+        <div class="row"><b>styles</b> <span class="tag style">elegant</span><span class="tag style">formal</span><span class="tag style">minimal</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">white</span><span class="tag color">beige</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">date</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">relaxed</span><span class="tag fit">oversized</span></div>
+        <div class="row"><b>materials</b> <span class="tag material">silky</span></div>
+        <div class="row unknown"><b>unknown_fields</b> 無</div>
+        <div class="row creator">creator: creator-demo-cottonbro-studio</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/19628449/pexels-photo-19628449.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:48.93%; top:60.73%; width:41.47%; height:30.44%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.99</span></div><div class="box" style="left:74.32%; top:85.69%; width:12.34%; height:12.10%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 0.94</span></div><div class="box" style="left:60.77%; top:36.62%; width:16.75%; height:6.35%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.95</span></div><div class="box" style="left:52.53%; top:46.68%; width:14.41%; height:13.83%; border-color:#3b82f6;"><span class="box-label" style="background:#3b82f6;">top 0.91</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-19628449</div>
+        <div class="row"><b>styles</b> <span class="tag style">sporty</span><span class="tag style">minimal</span><span class="tag style">casual</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">gray</span><span class="tag color">blue</span><span class="tag color">white</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">outdoor</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">relaxed</span><span class="tag fit">oversized</span></div>
+        <div class="row"><b>materials</b> <span class="tag material">denim</span></div>
+        <div class="row unknown"><b>unknown_fields</b> 無</div>
+        <div class="row creator">creator: creator-demo-beyzaa-yurtkuran</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/33505922/pexels-photo-33505922.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:59.27%; top:55.07%; width:11.51%; height:7.58%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.49</span></div><div class="box" style="left:44.60%; top:75.24%; width:11.06%; height:7.50%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 1.00</span></div><div class="box" style="left:35.94%; top:30.41%; width:18.79%; height:34.66%; border-color:#ef4444;"><span class="box-label" style="background:#ef4444;">dress 0.64</span></div><div class="box" style="left:42.79%; top:30.97%; width:12.93%; height:10.75%; border-color:#3b82f6;"><span class="box-label" style="background:#3b82f6;">top 0.48</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-33505922</div>
+        <div class="row"><b>styles</b> <span class="tag style">vintage</span><span class="tag style">minimal</span><span class="tag style">casual</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">blue</span><span class="tag color">green</span><span class="tag color">brown</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">casual</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">relaxed</span><span class="tag fit">oversized</span></div>
+        <div class="row"><b>materials</b> <span class="tag material">denim</span></div>
+        <div class="row unknown"><b>unknown_fields</b> 無</div>
+        <div class="row creator">creator: creator-demo-mert-co-kun</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/37495285/pexels-photo-37495285.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:7.50%; top:10.35%; width:46.41%; height:15.67%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.61</span></div><div class="box" style="left:3.59%; top:29.83%; width:81.60%; height:45.24%; border-color:#3b82f6;"><span class="box-label" style="background:#3b82f6;">top 0.38</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-37495285</div>
+        <div class="row"><b>styles</b> <span class="tag style">vintage</span><span class="tag style">elegant</span><span class="tag style">casual</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">blue</span><span class="tag color">navy</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">outdoor</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">relaxed</span><span class="tag fit">regular</span></div>
+        <div class="row"><b>materials</b> <span class="tag material">denim</span></div>
+        <div class="row unknown"><b>unknown_fields</b> 無</div>
+        <div class="row creator">creator: creator-demo-mayara-caroline-mombelli</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/26762955/pexels-photo-26762955.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:37.35%; top:40.73%; width:10.07%; height:3.43%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.75</span></div><div class="box" style="left:24.85%; top:78.26%; width:11.21%; height:15.08%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 0.90</span></div><div class="box" style="left:35.58%; top:63.16%; width:19.83%; height:7.11%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.40</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-26762955</div>
+        <div class="row"><b>styles</b> <span class="tag style">vintage</span><span class="tag style">minimal</span><span class="tag style">casual</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">blue</span><span class="tag color">navy</span><span class="tag color">orange</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">outdoor</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">oversized</span></div>
+        <div class="row"><b>materials</b> <span class="tag material">denim</span></div>
+        <div class="row unknown"><b>unknown_fields</b> 無</div>
+        <div class="row creator">creator: creator-demo-hoang-anh</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/31321758/pexels-photo-31321758.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:31.19%; top:72.07%; width:15.00%; height:12.71%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 0.98</span></div><div class="box" style="left:21.00%; top:61.52%; width:51.16%; height:27.14%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.91</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-31321758</div>
+        <div class="row"><b>styles</b> <span class="tag style">street</span><span class="tag style">casual</span><span class="tag style">sporty</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">blue</span><span class="tag color">navy</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">outdoor</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">relaxed</span><span class="tag fit">oversized</span></div>
+        <div class="row"><b>materials</b> <span class="tag material">denim</span></div>
+        <div class="row unknown"><b>unknown_fields</b> 無</div>
+        <div class="row creator">creator: creator-demo-fernando-huelgas</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/28860054/pexels-photo-28860054.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:52.33%; top:56.26%; width:21.39%; height:10.05%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 0.87</span></div><div class="box" style="left:56.96%; top:49.96%; width:4.90%; height:3.03%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.54</span></div><div class="box" style="left:53.90%; top:54.32%; width:39.42%; height:16.50%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.54</span></div><div class="box" style="left:28.62%; top:39.58%; width:36.16%; height:20.70%; border-color:#a855f7;"><span class="box-label" style="background:#a855f7;">outerwear 0.36</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-28860054</div>
+        <div class="row"><b>styles</b> <span class="tag style">street</span><span class="tag style">casual</span><span class="tag style">minimal</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">gray</span><span class="tag color">charcoal</span><span class="tag color">blue</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">outdoor</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">oversized</span><span class="tag fit">relaxed</span></div>
+        <div class="row"><b>materials</b> <span class="tag material">denim</span></div>
+        <div class="row unknown"><b>unknown_fields</b> 無</div>
+        <div class="row creator">creator: creator-demo-alexander-mass</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/39010207/pexels-photo-39010207.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:10.79%; top:29.08%; width:67.84%; height:62.49%; border-color:#3b82f6;"><span class="box-label" style="background:#3b82f6;">top 0.84</span></div><div class="box" style="left:20.03%; top:83.41%; width:53.70%; height:16.54%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.88</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-39010207</div>
+        <div class="row"><b>styles</b> <span class="tag style">formal</span><span class="tag style">street</span><span class="tag style">preppy</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">red</span><span class="tag color">white</span><span class="tag color">orange</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">party</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">oversized</span><span class="tag fit">slim</span></div>
+        <div class="row"><b>materials</b> <span class="tag empty">（無）</span></div>
+        <div class="row unknown"><b>unknown_fields</b> materials</div>
+        <div class="row creator">creator: creator-demo-jerry-bulus</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/15870276/pexels-photo-15870276.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:40.18%; top:42.65%; width:18.21%; height:2.55%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.91</span></div><div class="box" style="left:49.78%; top:72.58%; width:8.03%; height:7.07%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 1.00</span></div><div class="box" style="left:37.78%; top:41.72%; width:21.69%; height:35.70%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.96</span></div><div class="box" style="left:34.41%; top:24.24%; width:28.46%; height:21.39%; border-color:#3b82f6;"><span class="box-label" style="background:#3b82f6;">top 0.65</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-15870276</div>
+        <div class="row"><b>styles</b> <span class="tag style">formal</span><span class="tag style">elegant</span><span class="tag style">street</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">navy</span><span class="tag color">white</span><span class="tag color">blue</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">work</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">slim</span><span class="tag fit">regular</span></div>
+        <div class="row"><b>materials</b> <span class="tag empty">（無）</span></div>
+        <div class="row unknown"><b>unknown_fields</b> materials</div>
+        <div class="row creator">creator: creator-demo-abhinav-kumar-sharma</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/39034241/pexels-photo-39034241.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:10.53%; top:42.53%; width:66.81%; height:57.08%; border-color:#ef4444;"><span class="box-label" style="background:#ef4444;">dress 0.96</span></div><div class="box" style="left:11.80%; top:77.22%; width:65.02%; height:21.51%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.62</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-39034241</div>
+        <div class="row"><b>styles</b> <span class="tag style">vintage</span><span class="tag style">elegant</span><span class="tag style">preppy</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">beige</span><span class="tag color">brown</span><span class="tag color">green</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">outdoor</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">oversized</span><span class="tag fit">relaxed</span></div>
+        <div class="row"><b>materials</b> <span class="tag material">silky</span></div>
+        <div class="row unknown"><b>unknown_fields</b> 無</div>
+        <div class="row creator">creator: creator-demo-brandon-retratos</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/3160996/pexels-photo-3160996.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:26.11%; top:57.58%; width:15.43%; height:28.02%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.50</span></div><div class="box" style="left:45.40%; top:25.81%; width:13.60%; height:23.11%; border-color:#3b82f6;"><span class="box-label" style="background:#3b82f6;">top 0.74</span></div><div class="box" style="left:34.04%; top:82.68%; width:11.23%; height:8.96%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 0.99</span></div><div class="box" style="left:32.10%; top:24.08%; width:39.87%; height:39.35%; border-color:#a855f7;"><span class="box-label" style="background:#a855f7;">outerwear 0.77</span></div><div class="box" style="left:39.33%; top:45.46%; width:19.75%; height:37.08%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.78</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-3160996</div>
+        <div class="row"><b>styles</b> <span class="tag style">formal</span><span class="tag style">elegant</span><span class="tag style">minimal</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">navy</span><span class="tag color">gray</span><span class="tag color">charcoal</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">formal</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">slim</span><span class="tag fit">regular</span></div>
+        <div class="row"><b>materials</b> <span class="tag material">denim</span></div>
+        <div class="row unknown"><b>unknown_fields</b> 無</div>
+        <div class="row creator">creator: creator-demo-manav-sharma</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/17748260/pexels-photo-17748260.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:0.96%; top:49.83%; width:87.39%; height:50.68%; border-color:#a855f7;"><span class="box-label" style="background:#a855f7;">outerwear 0.55</span></div><div class="box" style="left:31.85%; top:51.79%; width:33.37%; height:48.49%; border-color:#3b82f6;"><span class="box-label" style="background:#3b82f6;">top 0.62</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-17748260</div>
+        <div class="row"><b>styles</b> <span class="tag style">minimal</span><span class="tag style">formal</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">blue</span><span class="tag color">navy</span><span class="tag color">black</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">party</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">regular</span><span class="tag fit">slim</span></div>
+        <div class="row"><b>materials</b> <span class="tag empty">（無）</span></div>
+        <div class="row unknown"><b>unknown_fields</b> materials</div>
+        <div class="row creator">creator: creator-demo-the-earthy-jay</div>
+      </div>
+    </div>
+    
+
+    <div class="card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/20183906/pexels-photo-20183906.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" />
+        <div class="box" style="left:36.30%; top:48.28%; width:13.55%; height:13.68%; border-color:#ec4899;"><span class="box-label" style="background:#ec4899;">accessory 0.85</span></div><div class="box" style="left:48.26%; top:83.83%; width:11.64%; height:6.73%; border-color:#f97316;"><span class="box-label" style="background:#f97316;">shoes 0.99</span></div><div class="box" style="left:42.56%; top:68.63%; width:15.19%; height:17.25%; border-color:#22c55e;"><span class="box-label" style="background:#22c55e;">bottom 0.68</span></div><div class="box" style="left:37.95%; top:33.81%; width:28.61%; height:30.99%; border-color:#a855f7;"><span class="box-label" style="background:#a855f7;">outerwear 0.62</span></div>
+      </div>
+      <div class="meta">
+        <div class="post-id">post-pexels-20183906</div>
+        <div class="row"><b>styles</b> <span class="tag style">preppy</span><span class="tag style">vintage</span><span class="tag style">street</span></div>
+        <div class="row"><b>colors</b> <span class="tag color">navy</span><span class="tag color">red</span><span class="tag color">white</span></div>
+        <div class="row"><b>occasion</b> <span class="tag occasion">date</span></div>
+        <div class="row"><b>fits</b> <span class="tag fit">oversized</span><span class="tag fit">slim</span></div>
+        <div class="row"><b>materials</b> <span class="tag empty">（無）</span></div>
+        <div class="row unknown"><b>unknown_fields</b> materials</div>
+        <div class="row creator">creator: creator-demo-rocket-effect</div>
+      </div>
+    </div>
+    
+  </div>
+</body>
+</html>

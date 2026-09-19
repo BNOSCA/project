@@ -1,0 +1,21 @@
+# 本機合併版：origin/main 既有的後端依賴 + 貼文推薦 pipeline
+# （scripts/fetch_demo_posts.py、scripts/extract_post_attributes.py）需要的套件。
+# 只在本機這樣合併，還沒跟團隊討論、沒有推回 GitHub。
+#
+# torch/torchvision 建議先裝 CPU 版（避免抓到不必要的 CUDA 版本，安裝快很多）：
+#   pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+#   pip install -r requirements.txt
+
+# --- origin/main 既有（backend） ---
+fastapi>=0.115,<1
+pydantic>=2.7,<3
+uvicorn>=0.30,<1
+
+# --- 貼文推薦 pipeline 新增 ---
+requests
+python-dotenv
+transformers
+torchvision
+scipy
+pillow
+numpy
