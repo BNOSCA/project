@@ -227,3 +227,18 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Keep only the active project documentation in version control.
+*.md
+!README.md
+!draft2.md
+!frontend/README.md
+!GIT_WORKFLOW.md
+!POST_FEED_RECOMMENDER.md
+!BACKEND_README.md
+
+# Frontend build and dependency artifacts.
+node_modules/
+frontend/node_modules/
+frontend/dist/
+*.tsbuildinfo
