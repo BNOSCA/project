@@ -35,6 +35,7 @@ import {
   loadRecommendedFeed,
   loadPostProducts,
   recordPostInteraction,
+  recordPostImpression,
   recordPostLike,
   recordPostSave,
   recordProductClick,
@@ -249,12 +250,16 @@ export default function App() {
 
   async function refreshFeed() {
     const recommendedPosts = await loadRecommendedFeed()
-    if (recommendedPosts.length > 0) {
-      setPosts(current => [
-        ...current.filter(post => post.id.startsWith('post-user-')),
-        ...recommendedPosts,
-      ])
-    }
+    setPosts(current => [
+      ...current.filter(post => post.id.startsWith('post-user-')),
+      ...recommendedPosts,
+    ])
+    setNotice(recommendedPosts.length > 0 ? '已更新推薦貼文' : '你已看完目前所有貼文')
+  }
+
+  function recordImpression(postId: string, position: number) {
+    if (postId.startsWith('post-user-') || mockPosts.some(post => post.id === postId)) return
+    void recordPostImpression(postId, position).catch(() => {})
   }
 
   /*
@@ -798,6 +803,7 @@ export default function App() {
           navigate('post')
         }
         onRefreshFeed={refreshFeed}
+        onImpression={recordImpression}
       />
     )
   }

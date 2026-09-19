@@ -1,5 +1,5 @@
-import { ImagePlus } from 'lucide-react'
-import { useState } from 'react'
+import { ImagePlus, RefreshCw } from 'lucide-react'
+import { useRef, useState } from 'react'
 
 import { Avatar } from '../components/common/Avatar'
 import { OutfitPost } from '../components/post/OutfitPost'
@@ -43,6 +43,7 @@ interface HomePageProps {
   onCreatePost: () => void
 
   onRefreshFeed: () => Promise<void>
+  onImpression: (postId: string, position: number) => void
 }
 
 export function HomePage({
@@ -55,6 +56,7 @@ export function HomePage({
   onFindProducts,
   onCreatePost,
   onRefreshFeed,
+  onImpression,
 }: HomePageProps) {
   const [
     feedMode,
@@ -69,6 +71,20 @@ export function HomePage({
     useState('')
   const [isRecommending, setIsRecommending] =
     useState(false)
+  const [isRefreshing, setIsRefreshing] = useState(false)
+  const [pullDistance, setPullDistance] = useState(0)
+  const touchStartY = useRef<number | null>(null)
+
+  async function refresh() {
+    if (isRefreshing) return
+    setIsRefreshing(true)
+    try {
+      await onRefreshFeed()
+    } finally {
+      setIsRefreshing(false)
+      setPullDistance(0)
+    }
+  }
 
   /*
    * Demo 階段：
@@ -91,7 +107,24 @@ export function HomePage({
         )
 
   return (
-    <>
+    <div
+      className="home-page"
+      onTouchStart={event => {
+        if (window.scrollY <= 0) touchStartY.current = event.touches[0]?.clientY ?? null
+      }}
+      onTouchMove={event => {
+        if (touchStartY.current === null) return
+        setPullDistance(Math.min(72, Math.max(0, (event.touches[0]?.clientY ?? 0) - touchStartY.current)))
+      }}
+      onTouchEnd={() => {
+        touchStartY.current = null
+        if (pullDistance >= 56) void refresh()
+        else setPullDistance(0)
+      }}
+    >
+      <div className={`pull-refresh ${isRefreshing ? 'refreshing' : ''}`} style={{ height: pullDistance }} aria-hidden="true">
+        <RefreshCw size={18} />
+      </div>
       <header className="feed-tabs">
         <button
           type="button"
@@ -186,7 +219,9 @@ export function HomePage({
           <span>FOR YOU</span>
           <h2>穿搭靈感</h2>
         </div>
-        <p>來自社群的最新搭配</p>
+        <button className="feed-refresh-button" type="button" onClick={() => void refresh()} disabled={isRefreshing} aria-label="更新推薦貼文" title="更新推薦貼文">
+          <RefreshCw size={17} />
+        </button>
       </div>
 
       <section className="feed">
@@ -197,7 +232,7 @@ export function HomePage({
           </div>
         )}
         {visiblePosts.map(
-          post => (
+          (post, index) => (
             <OutfitPost
               key={post.id}
               post={post}
@@ -212,10 +247,11 @@ export function HomePage({
               onFindProducts={
                 onFindProducts
               }
+              onImpression={postId => onImpression(postId, index)}
             />
           ),
         )}
       </section>
-    </>
+    </div>
   )
 }

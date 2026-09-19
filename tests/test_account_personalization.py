@@ -2,7 +2,7 @@ from pathlib import Path
 
 from backend.db import EventStore
 from backend.mock import FixtureCatalog, MockServices
-from backend.schemas import FeedbackEvent
+from backend.schemas import FeedbackEvent, InteractionEvent
 
 
 def test_long_term_preferences_are_isolated_by_account(tmp_path: Path):
@@ -30,3 +30,30 @@ def test_long_term_preferences_are_isolated_by_account(tmp_path: Path):
     feed_b = services.feed("account-b", "session-b", None, 5)
     assert feed_a.profile_version == 1
     assert feed_b.profile_version == 0
+
+
+def test_impressions_hide_posts_only_for_the_same_account_across_sessions(tmp_path: Path):
+    services = MockServices(
+        FixtureCatalog(Path("data/catalog/combined")),
+        EventStore(tmp_path / "demo.sqlite3"),
+    )
+    first = services.feed("account-a", "session-a", None, 3)
+    seen_ids = [item.post_id for item in first.items]
+    services.record_interactions([
+        InteractionEvent(
+            event_id=f"seen-{index}",
+            session_id="session-a",
+            user_id="account-a",
+            event_type="impression",
+            target_type="post",
+            target_id=post_id,
+            position=index,
+        )
+        for index, post_id in enumerate(seen_ids)
+    ])
+
+    refreshed_a = services.feed("account-a", "session-a-next", None, 20)
+    first_b = services.feed("account-b", "session-b", None, 3)
+
+    assert set(seen_ids).isdisjoint(item.post_id for item in refreshed_a.items)
+    assert [item.post_id for item in first_b.items] == seen_ids
