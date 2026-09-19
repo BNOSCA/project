@@ -121,6 +121,16 @@ def test_implemented_search_modes_and_feed_events_are_reachable(tmp_path: Path):
         "event_id": "events-open", "session_id": "events", "event_type": "post_open",
         "target_type": "post", "target_id": post_id,
     }])
-    after = client.get("/api/v1/feed", params={"session_id": "events", "limit": 20}).json()
-    opened = next(item for item in after["items"] if item["post_id"] == post_id)
+    items = []
+    cursor = None
+    while True:
+        params = {"session_id": "events", "limit": 100}
+        if cursor:
+            params["cursor"] = cursor
+        page = client.get("/api/v1/feed", params=params).json()
+        items.extend(page["items"])
+        cursor = page["next_cursor"]
+        if not cursor:
+            break
+    opened = next(item for item in items if item["post_id"] == post_id)
     assert opened["score_breakdown"]["exploration"] == 0

@@ -56,12 +56,10 @@ def test_three_complete_mock_demo_runs(client: TestClient):
             {item["post_id"] for item in second["items"]})
         detail = client.get(f"/api/v1/posts/{feed['items'][0]['post_id']}")
         assert detail.status_code == 200
-        # Scraped mastodon posts don't carry resolved product tags yet (only
-        # detected_regions); tagged_products is legitimately empty for all of them.
         assert all(tag["match_type"] == "similar" for tag in detail.json()["tagged_products"])
 
         event = {"event_id": f"like-{index}", "session_id": session, "event_type": "like",
-                 "target_type": "post", "target_id": "mastodon-103595771947317306"}
+                 "target_type": "post", "target_id": feed["items"][0]["post_id"]}
         accepted = client.post("/api/v1/events/batch", json=[event, event]).json()
         assert accepted == {"accepted_count": 1, "duplicate_count": 1}
         feedback = {"event_id": f"feedback-{index}", "session_id": session,
@@ -76,18 +74,23 @@ def test_three_complete_mock_demo_runs(client: TestClient):
         assert client.get("/api/v1/profile/anonymous-demo", params={"session_id": session}).json()[
             "preference_weights"]["color:beige"] == -1.0
         assert client.post(f"/api/v1/session/{session}/reset").json()["reset"] is True
+        # Reset clears the temporary session, while account-level preferences
+        # remain available for future sessions.
         assert client.get("/api/v1/profile/anonymous-demo", params={"session_id": session}).json()[
-            "preference_weights"] == {}
+            "preference_weights"]["color:beige"] == -1.0
     insights = client.get("/api/v1/insights").json()
     assert insights["sample_size"] == 0
     assert insights["source_type"] == "demo"
 
 
 def test_dwell_gates_and_insights(client: TestClient):
+    feed = client.get("/api/v1/feed", params={"user_id": "anonymous-demo", "limit": 100}).json()
+    post_id = next(item["post_id"] for item in feed["items"] if "japanese" in item["post"]["styles"])
+
     def send(event_id, dwell_ms, foreground=True):
         return client.post("/api/v1/events/batch", json=[{
             "event_id": event_id, "session_id": "dwell", "event_type": "dwell",
-            "target_type": "post", "target_id": "mastodon-114172433221237977",
+            "target_type": "post", "target_id": post_id,
             "dwell_ms": dwell_ms, "is_foreground": foreground,
         }])
 
@@ -106,9 +109,11 @@ def test_dwell_gates_and_insights(client: TestClient):
 def test_explore_like_changes_shop_fixture_score(client: TestClient):
     request = {"session_id": "cross-surface", "text": "整套預算 3000 元"}
     before = client.post("/api/v1/recommend", json=request).json()["outfits"]
+    feed = client.get("/api/v1/feed", params={"user_id": "anonymous-demo", "limit": 100}).json()
+    post_id = next(item["post_id"] for item in feed["items"] if "beige" in item["post"]["colors"])
     assert client.post("/api/v1/events/batch", json=[{
         "event_id": "beige-like", "session_id": "cross-surface", "event_type": "like",
-        "target_type": "post", "target_id": "mastodon-103595771947317306",
+        "target_type": "post", "target_id": post_id,
     }]).status_code == 200
     after = client.post("/api/v1/recommend", json=request).json()["outfits"]
     beige_before = next(x for x in before if any("beige" in item["colors"] for item in x["items"]))
@@ -260,9 +265,10 @@ def test_live_orchestration_contract(monkeypatch, tmp_path: Path):
     assert feedback.status_code == 200, feedback.text
     assert calls["feedback_patch"] == {"excluded.colors": ["beige"]}
     assert feedback.json()["recommendation"]["outfits"]
+    post_id = client.get("/api/v1/feed", params={"limit": 1}).json()["items"][0]["post_id"]
     assert client.post("/api/v1/events/batch", json=[{
         "event_id": "live-like", "session_id": "live", "event_type": "like",
-        "target_type": "post", "target_id": "mastodon-103595771947317306"}]).json()["accepted_count"] == 1
+        "target_type": "post", "target_id": post_id}]).json()["accepted_count"] == 1
     assert client.get("/api/v1/insights").json()["sample_size"] == 1
 
 
