@@ -25,5 +25,10 @@
   "襯衫穿搭": "item:shirt",
   "針織穿搭": "item:knitwear",
   "丹寧穿搭": "item:denim",
-  "長裙穿搭": "item:long_skirt"
+  "長裙穿搭": "item:long_skirt",
+  "上班穿搭": "occasion:commute",
+  "OL穿搭": "occasion:commute",
+  "牛仔褲穿搭": "item:denim",
+  "機能風穿搭": "style:outdoor",
+  "芭蕾風穿搭": "style:balletcore"
 }
