@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 
 import pytest
 
-from backend.post_feed import rank_feed, trend_components, update_profile
+from backend.post_feed import BASE_WEIGHTS, RECOMMENDATION_WEIGHTS, rank_feed, trend_components, update_profile
 from backend.schemas import InteractionEvent, Post, PostEngagement, UserProfile
 
 
@@ -118,3 +118,9 @@ def test_recommendation_intent_has_its_own_higher_weight():
     assert response.items[0].post_id == "matching"
     assert response.items[0].score_breakdown.recommendation_intent > 0.5
     assert "符合本次穿搭需求" in response.items[0].ranking_reason
+
+
+def test_feed_without_recommendation_uses_full_standard_weights():
+    assert "recommendation_intent" not in BASE_WEIGHTS
+    assert sum(BASE_WEIGHTS.values()) == pytest.approx(1.0)
+    assert sum(RECOMMENDATION_WEIGHTS.values()) == pytest.approx(1.0)

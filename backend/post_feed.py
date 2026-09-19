@@ -9,6 +9,16 @@ from .schemas import FeedItem, FeedResponse, FeedScoreBreakdown, InteractionEven
 
 
 BASE_WEIGHTS = {
+    "long_term_preference": 0.25,
+    "session_intent": 0.15,
+    "social": 0.15,
+    "deep_engagement": 0.12,
+    "quality": 0.10,
+    "collaborative": 0.08,
+    "velocity": 0.05,
+    "exploration": 0.10,
+}
+RECOMMENDATION_WEIGHTS = {
     "long_term_preference": 0.08,
     "session_intent": 0.05,
     "recommendation_intent": 0.60,
@@ -123,6 +133,7 @@ def rank_feed(
         raise ValueError("profile user_id does not match feed user_id")
     session_weights = session_weights or {}
     recommendation_weights = recommendation_weights or {}
+    active_weights = RECOMMENDATION_WEIGHTS if recommendation_weights else BASE_WEIGHTS
     collaborative_scores = collaborative_scores or {}
     post_stats = post_stats or {}
     external_trend_scores = external_trend_scores or {}
@@ -176,7 +187,7 @@ def rank_feed(
             "velocity": _bounded(stats.get("velocity", 0.0)),
             "exploration": 0.0 if post.post_id in interacted else 1.0,
         }
-        base_score = sum(BASE_WEIGHTS[key] * values[key] for key in BASE_WEIGHTS)
+        base_score = sum(active_weights[key] * values[key] for key in active_weights)
         total = ((1 - EXTERNAL_TREND_WEIGHT) * base_score + EXTERNAL_TREND_WEIGHT * trend["external_trend"])
         total = total * fatigue * recency - negative
         breakdown = FeedScoreBreakdown(
