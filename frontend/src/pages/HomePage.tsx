@@ -171,6 +171,9 @@ export function HomePage({
           onResult={response => {
             setSearchResult(response)
             setIsSearching(false)
+            void onRefreshFeed().catch(() => {
+              setSearchError('商品結果已更新，但貼文推薦暫時無法刷新。')
+            })
           }}
           onError={message => {
             setSearchError(message)
@@ -280,6 +283,7 @@ export function HomePage({
 function describeSearchMethod(method: string, candidateCount: number) {
   const source = {
     fashion_clip_text: 'FashionCLIP 文字語意相似度',
+    fashion_clip_text_image: 'FashionCLIP 文字與商品圖片融合排序',
     fashion_clip_image: 'FashionCLIP 圖像視覺相似度',
     rrf: '文字與圖片的 RRF 排名融合',
     metadata_text: '文字欄位比對（FashionCLIP 暫時不可用）',

@@ -29,7 +29,7 @@ API 文件：`http://127.0.0.1:8000/docs`。測試：`.venv/bin/python -m pip in
 
 ## FashionCLIP 商品搜尋
 
-`/api/v1/search` 會先套用類別、價格、庫存、尺寸、排除顏色／版型等硬條件，再只對合法候選做 FashionCLIP cosine similarity。商品向量在 `data/embeddings/products/`，索引 metadata 必須和 query model 的 backend 相同；不同 encoder 的 512 維向量不可混用。
+`/api/v1/search` 會先套用類別、價格、庫存、尺寸、排除顏色／版型等硬條件，再只對合法候選做 FashionCLIP cosine similarity。文字搜尋融合商品文字向量（65%）與「查詢文字→商品圖片」向量（35%）；商品向量在 `data/embeddings/official_products/`，索引 metadata 必須和 query model 的 backend 相同；不同 encoder 的 512 維向量不可混用。
 
 本專案在 macOS/Python 3.11 使用 Transformers 版 `patrickjohncyh/fashion-clip`，而不是會因 `annoy` 原生擴充失敗的舊 `fashion-clip` PyPI 套件。第一次在有網路的機器設定模型快取時執行：
 
@@ -47,7 +47,9 @@ FASHIONCLIP_ALLOW_DOWNLOAD=true .venv/bin/python -c 'from scripts.build_embeddin
 
 貼文「找這套的相似商品」會先依偵測到的衣物框裁切原圖，再以 FashionCLIP 圖片向量在同類別、有庫存的商品中搜尋；低於相似度門檻的結果不會顯示。這些仍是視覺近似品，不保證為貼文同款。
 
-預設只讀本機快取，不會讓 API 請求臨時下載模型。若模型或索引無法載入，文字搜尋會明示為 `metadata_text` 降級；圖片搜尋會回 `embedding_unavailable_image`，不會產生假的相似度分數。
+預設只讀本機快取，不會讓 API 請求臨時下載模型。若模型或索引無法載入，文字搜尋會明示為 `metadata_text` 降級；圖片搜尋會回 `embedding_unavailable_image`，不會產生假的相似度分數。正常融合時回應為 `fashion_clip_text_image`；商品卡的「搜尋相關分數」是排序訊號，不是相似機率。
+
+搜尋文字會經由 `backend.intent` 轉成受 Pydantic 驗證的 Intent JSON；設定 `GROQ_API_KEY` 時使用 Groq 的 strict JSON schema，未設定或服務失敗時自動使用本機規則 parser。相似商品卡也以同一個 LLM 做一次批次短說明；沒有可用 LLM 時會明確顯示基於商品標籤的 fallback 說明。
 
 ## 前端啟動
 

@@ -29,6 +29,7 @@ from scripts.embedding_store import EmbeddingStore
 # Global cache for embedding store and encoder
 _GLOBAL_STORE: Optional[EmbeddingStore] = None
 _GLOBAL_MODEL: Optional[FashionCLIPWrapper] = None
+TEXT_TO_IMAGE_WEIGHT = 0.35
 
 
 def infer_query_categories(query_text: str) -> list[str]:
@@ -267,7 +268,7 @@ def compute_relevance(
                 # Fast matrix dot product from precomputed store
                 search_res = store.search(q_img_vec, modality="image", top_k=len(cand_ids), candidate_ids=cand_ids)
                 for pid, sim in search_res:
-                    # Cosine sim in [-1, 1] mapped to [0, 1]
+                    # Negative cosine values are clipped; positive values stay unchanged.
                     img_scores[pid] = max(0.0, float(sim))
             elif model.backend != "mock":
                 # There is no product-image encoder cache to calculate
@@ -283,9 +284,10 @@ def compute_relevance(
                 img_scores[pid] = 0.0
 
     # -------------------------------------------------------------
-    # 2. Text Cosine Similarity
+    # 2. Text-to-text and text-to-image similarity
     # -------------------------------------------------------------
     txt_scores: dict[str, float] = {}
+    text_image_scores: dict[str, float] = {}
     if mode in ("text", "mixed") and query_text and query_text.strip():
         q_txt = query_text.strip()
         q_txt_vec = model.encode_texts([q_txt])[0]
@@ -296,6 +298,15 @@ def compute_relevance(
             search_res = store.search(q_txt_vec, modality="text", top_k=len(cand_ids), candidate_ids=cand_ids)
             for pid, sim in search_res:
                 txt_scores[pid] = max(0.0, float(sim))
+
+        # FashionCLIP embeds text and images in one shared representation.
+        # Text-to-image retrieval captures visual attributes that a product's
+        # title may omit, while the text index remains the stronger signal for
+        # explicit names, materials, and category wording.
+        if use_store and store and store.image_embeddings is not None:
+            image_res = store.search(q_txt_vec, modality="image", top_k=len(cand_ids), candidate_ids=cand_ids)
+            for pid, sim in image_res:
+                text_image_scores[pid] = max(0.0, float(sim))
 
         # For any candidates not in precomputed store, compute on-the-fly
         missing_products = [p for p in candidates if p.product_id not in txt_scores]
@@ -312,7 +323,13 @@ def compute_relevance(
     # -------------------------------------------------------------
     if mode == "text":
         for pid in cand_ids:
-            relevance_scores[pid] = round(txt_scores.get(pid, 0.0), 4)
+            text_score = txt_scores.get(pid, 0.0)
+            image_score = text_image_scores.get(pid)
+            relevance_scores[pid] = round(
+                (1.0 - TEXT_TO_IMAGE_WEIGHT) * text_score + TEXT_TO_IMAGE_WEIGHT * image_score
+                if image_score is not None else text_score,
+                4,
+            )
 
     elif mode == "image":
         for pid in cand_ids:
@@ -425,7 +442,16 @@ def search_products(request: SearchRequest, catalog: list[Product]) -> SearchRes
     elif model_backend == "mock":
         fusion_name = "metadata_text" if request.query_text.strip() else "embedding_unavailable_image"
     else:
-        fusion_name = "rrf" if request.mode == "mixed" else f"fashion_clip_{request.mode}"
+        store = get_embedding_store()
+        has_text_image_index = bool(
+            request.mode == "text" and store and store.image_embeddings is not None and
+            store.metadata.get("backend") == model_backend
+        )
+        fusion_name = (
+            "rrf" if request.mode == "mixed"
+            else "fashion_clip_text_image" if has_text_image_index
+            else f"fashion_clip_{request.mode}"
+        )
     retrieval_info = RetrievalInfo(
         prefilter_count=len(catalog),
         image_candidates=len(catalog) if request.mode in ("image", "mixed") else 0,

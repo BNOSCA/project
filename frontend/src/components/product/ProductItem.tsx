@@ -96,7 +96,7 @@ export function ProductItem({
         {typeof product.similarity === 'number' && (
           <div className="product-similarity-pill">
             <Sparkles size={11} />
-            <span>{product.similarity}% 相似</span>
+            <span>搜尋相關分數 {product.similarity}/100</span>
           </div>
         )}
       </div>
@@ -120,6 +120,14 @@ export function ProductItem({
         >
           {product.name}
         </strong>
+
+        {product.similarityExplanation && (
+          <small>
+            {product.similarityExplanationSource === 'llm' ? 'AI 相似原因' : '相似原因'} ·
+            {' '}
+            {product.similarityExplanation}
+          </small>
+        )}
 
         <div className="product-footer-row">
           <div className="product-price-block">

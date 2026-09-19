@@ -136,6 +136,8 @@ interface ApiPostDetail {
     product: ApiCatalogProduct
   }>
   similar_products: ApiCatalogProduct[]
+  similar_product_explanations?: Record<string, string>
+  similar_product_explanation_sources?: Record<string, 'llm' | 'fallback'>
 }
 
 function catalogCategory(value: string): OutfitItemCategory {
@@ -146,7 +148,12 @@ function catalogCategory(value: string): OutfitItemCategory {
   return 'accessory'
 }
 
-function catalogProduct(item: ApiCatalogProduct, matchType?: 'exact' | 'similar'): Product | null {
+function catalogProduct(
+  item: ApiCatalogProduct,
+  matchType?: 'exact' | 'similar',
+  similarityExplanation?: string,
+  similarityExplanationSource?: 'llm' | 'fallback',
+): Product | null {
   if (item.price === null) return null
   const imageUrl = item.image_url
     ? (item.image_url.startsWith('http') || item.image_url.startsWith('/')
@@ -164,6 +171,8 @@ function catalogProduct(item: ApiCatalogProduct, matchType?: 'exact' | 'similar'
     productUrl: item.product_url ?? undefined,
     similarity: (item as any).similarity ?? (matchType === 'exact' ? 96 : 91),
     ...(matchType ? { matchType } : {}),
+    ...(similarityExplanation ? { similarityExplanation } : {}),
+    ...(similarityExplanationSource ? { similarityExplanationSource } : {}),
   }
 }
 
@@ -172,21 +181,28 @@ export async function loadPostProducts(postId: string): Promise<Product[]> {
   if (!response.ok) throw new Error(`Post detail failed (${response.status})`)
   const detail = (await response.json()) as ApiPostDetail
   const products = [
-    ...detail.tagged_products.map(tag => ({ item: tag.product, matchType: tag.match_type })),
-    ...detail.similar_products.map(item => ({ item, matchType: 'similar' as const })),
+    ...detail.tagged_products.map(tag => ({
+      item: tag.product,
+      matchType: tag.match_type,
+      explanation: undefined,
+      explanationSource: undefined,
+    })),
     ...detail.similar_products.map((item, idx) => ({
       item: {
         ...item,
-        similarity: (item as any).similarity ?? Math.max(78, 96 - idx * 3),
+        similarity: (item as ApiCatalogProduct & { similarity?: number }).similarity
+          ?? Math.max(78, 96 - idx * 3),
       },
       matchType: 'similar' as const,
+      explanation: detail.similar_product_explanations?.[item.product_id],
+      explanationSource: detail.similar_product_explanation_sources?.[item.product_id],
     })),
   ]
   const unique = new Set<string>()
-  return products.flatMap(({ item, matchType }) => {
+  return products.flatMap(({ item, matchType, explanation, explanationSource }) => {
     if (unique.has(item.product_id)) return []
     unique.add(item.product_id)
-    const product = catalogProduct(item, matchType)
+    const product = catalogProduct(item, matchType, explanation, explanationSource)
     return product ? [product] : []
   })
 }
@@ -259,14 +275,26 @@ export async function searchCatalogProducts(
     throw new Error(body?.error?.message ?? `商品搜尋失敗 (${response.status})`)
   }
   const data = await response.json() as {
-    products: Array<{ product: ApiCatalogProduct | null; score: number }>
+    products: Array<{
+      product: ApiCatalogProduct | null
+      score: number
+      explanation?: string | null
+      explanation_source?: 'llm' | 'fallback' | 'none'
+    }>
     retrieval: { fusion_method: string; prefilter_count: number }
   }
   return {
     products: data.products.flatMap(hit => {
       if (!hit.product) return []
       const product = catalogProduct(hit.product)
-      return product ? [{ ...product, similarity: Math.round(hit.score * 100) }] : []
+      return product ? [{
+        ...product,
+        similarity: Math.round(hit.score * 100),
+        ...(hit.explanation ? { similarityExplanation: hit.explanation } : {}),
+        ...(hit.explanation_source === 'llm' || hit.explanation_source === 'fallback'
+          ? { similarityExplanationSource: hit.explanation_source }
+          : {}),
+      }] : []
     }),
     fusionMethod: data.retrieval.fusion_method,
     candidateCount: data.retrieval.prefilter_count,

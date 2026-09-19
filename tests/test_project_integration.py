@@ -3,10 +3,19 @@
 from pathlib import Path
 import base64
 
+import pytest
+
 from fastapi.testclient import TestClient
 
 from backend.config import ROOT, Settings
 from backend.main import create_app
+
+
+@pytest.fixture(autouse=True)
+def disable_external_llm(monkeypatch):
+    """Integration tests must be deterministic and never call a paid API."""
+    monkeypatch.delenv("GROQ_API_KEY", raising=False)
+    monkeypatch.delenv("LLM_API_KEY", raising=False)
 
 
 def test_three_combined_catalog_demo_runs(tmp_path: Path):
@@ -72,7 +81,11 @@ def test_three_combined_catalog_demo_runs(tmp_path: Path):
         assert search_response.status_code == 200, search_response.text
         hits = search_response.json()["products"]
         assert hits
-        assert search_response.json()["retrieval"]["fusion_method"] in {"metadata_text", "fashion_clip_text"}
+        assert search_response.json()["retrieval"]["fusion_method"] in {
+            "metadata_text", "fashion_clip_text", "fashion_clip_text_image",
+        }
+        assert all(hit["explanation"] and hit["explanation_source"] in {"llm", "fallback"}
+                   for hit in hits)
         assert all(hit["product"]["category"] == "top" and
                    hit["product"]["price"] <= 1000 and
                    "beige" not in hit["product"]["colors"] for hit in hits)
@@ -172,6 +185,10 @@ def test_post_detail_populates_image_retrieved_similar_products(monkeypatch, tmp
     assert calls["excluded_product_ids"] == set()
     assert detail["tagged_products"] == []
     assert {item["category"] for item in detail["similar_products"]} == {"top", "bottom", "shoes"}
+    assert set(detail["similar_product_explanations"]) == {
+        item["product_id"] for item in detail["similar_products"]
+    }
+    assert set(detail["similar_product_explanation_sources"].values()) <= {"llm", "fallback"}
 
 
 def test_shop_search_infers_garment_category_without_explicit_filter(tmp_path: Path):
