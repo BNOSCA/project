@@ -2,7 +2,6 @@ import { ImagePlus } from 'lucide-react'
 import { useState } from 'react'
 
 import { Avatar } from '../components/common/Avatar'
-import { TestAccountPanel } from '../components/common/TestAccountPanel'
 import { OutfitPost } from '../components/post/OutfitPost'
 import { AIQueryBar } from '../components/search/AIQueryBar'
 import {
@@ -93,7 +92,6 @@ export function HomePage({
 
   return (
     <>
-      <TestAccountPanel />
       <header className="feed-tabs">
         <button
           type="button"
