@@ -196,20 +196,34 @@ def _to_shared_intent(extraction: IntentExtraction, *, text: str, previous_inten
     if needs_clarification and not question:
         question = "你的需求中有互相衝突的偏好，請確認希望保留哪一項？"
 
-    result = {
-        "occasion": occasions,
-        "budget_total": extraction.budget_total,
-        "currency": "TWD",
-        "required_categories": previous_intent.required_categories if previous_intent else ["top", "bottom", "shoes"],
-        "preferred": {"styles": p_styles, "colors": p_colors, "fits": p_fits, "materials": p_materials},
-        "excluded": {"colors": e_colors, "fits": e_fits, "materials": e_materials},
-        "hard_constraints": hard,
-        "soft_constraints": soft,
-        "unknown_fields": extraction.unknown_fields,
-        "needs_clarification": needs_clarification,
-        "clarifying_question": question,
-        "semantic_query": "；".join(semantic_parts),
-        "source_text": text,
+    unknown_fields = list(extraction.unknown_fields)
+
+    if "size" not in unknown_fields:
+        unknown_fields.append("size")
+
+    result = { 
+        "occasion": occasions, 
+        "budget_total": extraction.budget_total, 
+        "currency": "TWD", 
+        "required_categories": previous_intent.required_categories if previous_intent else ["top", "bottom", "shoes"], 
+        "preferred": {
+            "styles": p_styles,
+            "colors": p_colors,
+            "fits": p_fits,
+            "materials": p_materials,
+        }, 
+        "excluded": {
+            "colors": e_colors,
+            "fits": e_fits,
+            "materials": e_materials,
+        }, 
+        "hard_constraints": hard, 
+        "soft_constraints": soft, 
+        "unknown_fields": unknown_fields, 
+        "needs_clarification": needs_clarification, 
+        "clarifying_question": question, 
+        "semantic_query": "；".join(semantic_parts), 
+        "source_text": text, 
     }
     return result
 

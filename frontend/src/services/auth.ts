@@ -23,7 +23,6 @@ export interface AuthState {
   configured: boolean
 }
 
-let identityPromise: Promise<RequestIdentity> | null = null
 
 export function observeAuthState(listener: (state: AuthState) => void) {
   if (!auth || !isFirebaseConfigured) {
@@ -33,7 +32,6 @@ export function observeAuthState(listener: (state: AuthState) => void) {
 
   listener({ user: auth.currentUser, loading: true, configured: true })
   return onAuthStateChanged(auth, user => {
-    identityPromise = null
     listener({ user, loading: false, configured: true })
   })
 }
@@ -51,7 +49,6 @@ export async function createAccount(
   if (!auth) throw new Error('Firebase 尚未設定')
   const credential = await createUserWithEmailAndPassword(auth, email, password)
   await updateProfile(credential.user, { displayName })
-  identityPromise = null
   return credential.user
 }
 
@@ -76,27 +73,13 @@ export async function saveFirebaseProfile(displayName: string, photoURL?: string
 export async function signOutCurrentUser() {
   if (!auth) return
   await signOut(auth)
-  identityPromise = null
 }
 
-export function getRequestIdentity(): Promise<RequestIdentity> {
-  if (identityPromise) return identityPromise
-
-  identityPromise = (async () => {
-    if (!auth?.currentUser) {
-      return { userId: 'anonymous-demo', token: null }
-    }
-
-    return {
-      userId: auth.currentUser.uid,
-      token: await auth.currentUser.getIdToken(),
-    }
-  })().catch(error => {
-    identityPromise = null
-    throw error
-  })
-
-  return identityPromise
+export async function getRequestIdentity(): Promise<RequestIdentity> {
+  await auth?.authStateReady()
+  const user = auth?.currentUser
+  if (!user || user.isAnonymous) return { userId: 'anonymous-demo', token: null }
+  return { userId: user.uid, token: await user.getIdToken() }
 }
 
 export async function authenticatedHeaders(): Promise<HeadersInit> {

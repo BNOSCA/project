@@ -17,7 +17,6 @@ import { SimilarProducts } from './components/product/SimilarProducts'
 
 import {
   currentUser as demoUser,
-  mockPosts,
   mockProducts,
 } from './data'
 
@@ -38,17 +37,17 @@ import {
   loadPostProducts,
   recordPostInteraction,
   recordPostImpression,
-  recordPostLike,
-  recordPostSave,
   recordProductClick,
 } from './services/feed'
 import {
   observeAuthState,
-  saveFirebaseProfile,
   signOutCurrentUser,
 } from './services/auth'
 import { loadAdminStatus } from './services/admin'
-import { loadUserProfile, saveOnboardingProfile, type AgeRange, type StyleOption } from './services/profile'
+import { loadAccount, savePublicProfile, saveOnboardingProfile, type AgeRange, type StyleOption } from './services/profile'
+import { loadAccountPosts } from './services/feed'
+import { changePostState, publishCloudPost } from './services/postState'
+import { flushEvents } from './services/eventQueue'
 
 import type {
   AppPage,
@@ -56,58 +55,6 @@ import type {
   Product,
   User,
 } from './types/index'
-
-function profileStorageKey(userId: string) {
-  return `loop:public-profile:${userId}:v1`
-}
-
-function readLocalProfile(userId: string): Partial<User> {
-  try {
-    return JSON.parse(localStorage.getItem(profileStorageKey(userId)) ?? '{}')
-  } catch {
-    return {}
-  }
-}
-
-function likedStorageKey(userId: string) {
-  return `loop:liked-posts:${userId}:v1`
-}
-
-function savedStorageKey(userId: string) {
-  return `loop:saved-posts:${userId}:v1`
-}
-
-function readStoredIds(
-  key: string,
-): string[] {
-  try {
-    const raw =
-      localStorage.getItem(
-        key,
-      )
-
-    if (!raw) {
-      return []
-    }
-
-    const parsed: unknown =
-      JSON.parse(raw)
-
-    if (!Array.isArray(parsed)) {
-      return []
-    }
-
-    return parsed.filter(
-      (
-        value,
-      ): value is string =>
-        typeof value ===
-        'string',
-    )
-  } catch {
-    return []
-  }
-}
 
 function updateIdList(
   current: string[],
@@ -145,7 +92,7 @@ export default function App() {
     setPosts,
   ] =
     useState<OutfitPost[]>(
-      mockPosts,
+      [],
     )
 
   const [
@@ -161,6 +108,13 @@ export default function App() {
   const [activeUserId, setActiveUserId] = useState('anonymous-demo')
   const [currentUser, setCurrentUser] = useState<User>(demoUser)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [accountPosts, setAccountPosts] = useState<OutfitPost[]>([])
+  const [followedCreatorIds, setFollowedCreatorIds] = useState<string[]>([])
+  const [accountError, setAccountError] = useState('')
+  const [accountReload, setAccountReload] = useState(0)
+  const currentUid = useRef('anonymous-demo')
+  const authGeneration = useRef(0)
+  const changingStates = useRef(new Set<string>())
   const [authConfigured, setAuthConfigured] = useState(false)
   const [authDialogOpen, setAuthDialogOpen] = useState(false)
   const [isAdmin, setIsAdmin] = useState(false)
@@ -188,70 +142,90 @@ export default function App() {
     setNotice,
   ] = useState('')
 
-  /*
-   * Demo 上傳的圖片使用 Object URL。
-   *
-   * App unmount 時統一釋放，
-   * 避免長時間開發時累積 memory。
-   */
-  const generatedImageUrls =
-    useRef<string[]>([])
-
   useEffect(() => {
-    return () => {
-      generatedImageUrls
-        .current
-        .forEach(url => {
-          URL.revokeObjectURL(
-            url,
-          )
-        })
-    }
-  }, [])
-
-  useEffect(() => observeAuthState(({ user, configured }) => {
-    setAuthConfigured(configured)
-    setIsAuthenticated(Boolean(user && !user.isAnonymous))
-
-    if (!user || user.isAnonymous) {
-      setActiveUserId('anonymous-demo')
-      setCurrentUser(demoUser)
+    let disposed = false
+    const unsubscribe = observeAuthState(({ user, configured, loading }) => {
+      if (loading) return
+      const generation = ++authGeneration.current
+      const stillCurrent = () => !disposed && authGeneration.current === generation
+      const signedIn = Boolean(user && !user.isAnonymous)
+      currentUid.current = signedIn && user ? user.uid : 'anonymous-demo'
+      setAuthConfigured(configured)
+      setIsAuthenticated(signedIn)
       setIsAdmin(false)
+      setLikedIds([])
+      setSavedIds([])
+      setPosts([])
+      setAccountPosts([])
+      setFollowedCreatorIds([])
       setOnboardingOpen(false)
       setOnboardingUserId('')
-      return
-    }
-
-    const saved = readLocalProfile(user.uid)
-    const emailName = user.email?.split('@')[0] || 'loop.user'
-    const displayName = saved.displayName || user.displayName || emailName
-    setActiveUserId(user.uid)
-    setCurrentUser({
-      id: user.uid,
-      username: saved.username || emailName.replace(/[^a-zA-Z0-9._]/g, ''),
-      displayName,
-      avatarText: displayName.slice(0, 1).toUpperCase(),
-      avatarUrl: saved.avatarUrl || user.photoURL || undefined,
-      bio: saved.bio || '正在建立我的風格檔案。',
-      postCount: saved.postCount ?? 0,
-      followerCount: saved.followerCount ?? 0,
-      followingCount: saved.followingCount ?? 0,
+      setAccountError('')
+      if (!signedIn || !user) {
+        setCurrentPage('home')
+        setActiveUserId('anonymous-demo')
+        setCurrentUser(demoUser)
+        return
+      }
+      setActiveUserId(user.uid)
+      const emailName = user.email?.split('@')[0] || 'loop.user'
+      const fallback: User = {
+        id: user.uid, username: emailName.replace(/[^a-zA-Z0-9._]/g, ''),
+        displayName: user.displayName || emailName,
+        avatarText: (user.displayName || emailName).slice(0, 1).toUpperCase(),
+        avatarUrl: user.photoURL || undefined, bio: '',
+        postCount: 0, followerCount: 0, followingCount: 0,
+      }
+      setCurrentUser(fallback)
+      void loadAdminStatus().then(status => {
+        if (stillCurrent()) setIsAdmin(status.is_admin)
+      }).catch(error => {
+        if (stillCurrent()) setAccountError(error instanceof Error ? error.message : '管理權限無法確認')
+      })
+      void loadAccount(user.uid).then(async account => {
+        if (!stillCurrent()) return
+        const publicProfile = account.profile?.public_profile
+        if (!publicProfile) {
+          await savePublicProfile(user.uid, {
+            displayName: fallback.displayName, username: fallback.username, bio: '',
+            avatarUrl: fallback.avatarUrl,
+          })
+          if (!stillCurrent()) return
+        }
+        setCurrentUser({ ...fallback, ...publicProfile,
+          avatarText: (publicProfile?.displayName || fallback.displayName).slice(0, 1).toUpperCase(),
+          followingCount: account.profile?.followed_creator_ids?.length ?? 0 })
+        setLikedIds(account.liked_ids)
+        setSavedIds(account.saved_ids)
+        setFollowedCreatorIds(account.profile?.followed_creator_ids ?? [])
+        setOnboardingUserId(user.uid)
+        setOnboardingOpen(!account.profile?.onboarding_completed)
+      }).catch(error => {
+        if (stillCurrent()) setAccountError(error instanceof Error ? error.message : '帳號資料無法載入')
+      })
     })
-
-    void Promise.all([
-      loadAdminStatus().then(status => status.is_admin).catch(() => false),
-      loadUserProfile(user.uid).catch(() => null),
-    ]).then(([admin, profile]) => {
-      setIsAdmin(admin)
-      setOnboardingUserId(user.uid)
-      setOnboardingOpen(!profile?.onboarding_completed)
-    })
-  }), [])
+    return () => { disposed = true; unsubscribe() }
+  }, [accountReload])
 
   useEffect(() => {
-    setLikedIds(readStoredIds(likedStorageKey(activeUserId)))
-    setSavedIds(readStoredIds(savedStorageKey(activeUserId)))
-  }, [activeUserId])
+    if (!isAuthenticated) return
+    let active = true
+    void Promise.all([loadAccountPosts('saved'), loadAccountPosts('own')]).then(([saved, own]) => {
+      if (!active) return
+      setAccountPosts([...new Map([...saved, ...own].map(post => [post.id, post])).values()])
+      setCurrentUser(user => ({ ...user, postCount: own.length }))
+    }).catch(error => { if (active) setAccountError(error instanceof Error ? error.message : '貼文無法載入') })
+    return () => { active = false }
+  }, [activeUserId, isAuthenticated, savedIds, accountReload])
+
+  useEffect(() => {
+    if (!isAuthenticated) return
+    const retry = () => { void flushEvents().catch(() => setNotice('互動尚未同步，連線恢復後會重試')) }
+    retry()
+    const timer = window.setInterval(retry, 15000)
+    window.addEventListener('online', retry)
+    return () => { window.clearInterval(timer); window.removeEventListener('online', retry) }
+  }, [activeUserId, isAuthenticated])
 
   useEffect(() => {
     function trackVisibility() {
@@ -268,43 +242,29 @@ export default function App() {
   }, [selectedProductPost])
 
   async function refreshFeed() {
-    const recommendedPosts = await loadRecommendedFeed()
-    setPosts(current => [
-      ...current.filter(post => post.id.startsWith('post-user-')),
-      ...recommendedPosts,
-    ])
-    setNotice(recommendedPosts.length > 0 ? '已更新推薦貼文' : '你已看完目前所有貼文')
+    const uid = currentUid.current
+    try {
+      const recommendedPosts = await loadRecommendedFeed()
+      if (currentUid.current !== uid) return
+      setPosts(recommendedPosts)
+      setNotice(recommendedPosts.length > 0 ? '已更新推薦貼文' : '你已看完目前所有貼文')
+    } catch (error) {
+      setAccountError(error instanceof Error ? error.message : '推薦載入失敗')
+    }
   }
 
   function recordImpression(postId: string, position: number) {
-    if (postId.startsWith('post-user-') || mockPosts.some(post => post.id === postId)) return
-    void recordPostImpression(postId, position).catch(() => {})
+    if (!isAuthenticated) return
+    void recordPostImpression(postId, position).catch(() => setNotice('曝光紀錄等待同步'))
   }
 
-  /*
-   * 優先使用本機 FastAPI 的推薦 feed；後端未啟動時保留
-   * 內建 mock，讓純前端開發仍可使用。
-   */
   useEffect(() => {
+    if (!isAuthenticated) return
     let active = true
-
-    loadRecommendedFeed()
-      .then(recommendedPosts => {
-        if (active) {
-          setPosts(current => [
-            ...current.filter(post => post.id.startsWith('post-user-')),
-            ...recommendedPosts,
-          ])
-        }
-      })
-      .catch(() => {
-        if (active) setNotice('後端未連線，顯示本機示範貼文')
-      })
-
-    return () => {
-      active = false
-    }
-  }, [])
+    loadRecommendedFeed().then(data => { if (active) setPosts(data) })
+      .catch(error => { if (active) setAccountError(error instanceof Error ? error.message : '推薦載入失敗') })
+    return () => { active = false }
+  }, [activeUserId, isAuthenticated, accountReload])
 
   /*
    * Toast 自動消失。
@@ -331,8 +291,7 @@ export default function App() {
   useEffect(() => {
     if (!selectedProductPost) return
     let active = true
-    const localPost = selectedProductPost.id.startsWith('post-user-') ||
-      mockPosts.some(post => post.id === selectedProductPost.id)
+    const localPost = false
     if (localPost) {
       setSimilarProducts(demoProductsForPost(selectedProductPost))
       setProductsAreDemo(true)
@@ -378,19 +337,15 @@ export default function App() {
   async function updateCurrentProfile(
     profile: Pick<User, 'displayName' | 'username' | 'bio' | 'avatarUrl'>,
   ) {
-    await saveFirebaseProfile(profile.displayName, profile.avatarUrl)
-    const next = {
-      ...currentUser,
-      ...profile,
-      avatarText: profile.displayName.slice(0, 1).toUpperCase(),
-    }
-    localStorage.setItem(profileStorageKey(activeUserId), JSON.stringify(next))
-    setCurrentUser(next)
+    const uid = activeUserId
+    await savePublicProfile(uid, profile)
+    if (currentUid.current !== uid) return
+    setCurrentUser(current => ({ ...current, ...profile, avatarText: profile.displayName.slice(0, 1).toUpperCase() }))
     setNotice('個人檔案已更新')
   }
 
   async function signOutUser() {
-    await signOutCurrentUser()
+    try { await signOutCurrentUser() } catch { setNotice('登出失敗，請重試'); return }
     setCurrentPage('home')
     setNotice('已登出帳號')
     setIsAdmin(false)
@@ -401,84 +356,29 @@ export default function App() {
     await saveOnboardingProfile(onboardingUserId, { age_range: ageRange, preferred_styles: styles })
     setOnboardingOpen(false)
     setNotice('偏好已儲存，開始探索吧')
+    await refreshFeed()
   }
 
-  function toggleLike(
-    postId: string,
-  ) {
-    const isAdding =
-      !likedIds.includes(postId)
-
-    setLikedIds(
-      current => {
-        const next =
-          updateIdList(
-            current,
-            postId,
-          )
-
-        localStorage.setItem(
-          likedStorageKey(activeUserId),
-          JSON.stringify(
-            next,
-          ),
-        )
-
-        return next
-      },
-    )
-
-    if (isAdding && !postId.startsWith('post-user-') &&
-        !mockPosts.some(post => post.id === postId)) {
-      void recordPostLike(postId).then(refreshFeed).catch(() => {
-        setNotice('已在本機按讚；推薦回饋暫時無法送出')
-      })
-    }
+  async function updatePostState(postId: string, field: 'liked' | 'saved') {
+    if (!isAuthenticated) { setAuthDialogOpen(true); return }
+    const uid = activeUserId
+    const lock = `${uid}:${postId}:${field}`
+    if (changingStates.current.has(lock)) return
+    changingStates.current.add(lock)
+    const ids = field === 'liked' ? likedIds : savedIds
+    const value = !ids.includes(postId)
+    try {
+      await changePostState(uid, postId, field, value)
+      if (currentUid.current !== uid) return
+      const setter = field === 'liked' ? setLikedIds : setSavedIds
+      setter(current => current.includes(postId) === value ? current : updateIdList(current, postId))
+      setNotice(field === 'saved' ? (value ? '已收藏' : '已取消收藏') : (value ? '已按讚' : '已取消按讚'))
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : '儲存失敗，請重試')
+    } finally { changingStates.current.delete(lock) }
   }
-
-  function toggleSave(
-    postId: string,
-  ) {
-    const isAdding =
-      !savedIds.includes(postId)
-
-    setSavedIds(
-      current => {
-        const wasSaved =
-          current.includes(
-            postId,
-          )
-
-        const next =
-          updateIdList(
-            current,
-            postId,
-          )
-
-        localStorage.setItem(
-          savedStorageKey(activeUserId),
-          JSON.stringify(
-            next,
-          ),
-        )
-
-        setNotice(
-          wasSaved
-            ? '已從收藏移除'
-            : '已收藏這套穿搭',
-        )
-
-        return next
-      },
-    )
-
-    if (isAdding && !postId.startsWith('post-user-') &&
-        !mockPosts.some(post => post.id === postId)) {
-      void recordPostSave(postId).then(refreshFeed).catch(() => {
-        setNotice('已儲存在瀏覽器；收藏互動暫時無法送出')
-      })
-    }
-  }
+  function toggleLike(postId: string) { void updatePostState(postId, 'liked') }
+  function toggleSave(postId: string) { void updatePostState(postId, 'saved') }
 
   function openProducts(
     post: OutfitPost,
@@ -487,7 +387,7 @@ export default function App() {
       activeFrom: document.visibilityState === 'visible' ? Date.now() : null,
       elapsedMs: 0,
     }
-    if (!post.id.startsWith('post-user-') && !mockPosts.some(item => item.id === post.id)) {
+    if (isAuthenticated) {
       void recordPostInteraction(post.id, 'post_open').catch(() => {})
     }
     setSelectedProductPost(
@@ -500,8 +400,7 @@ export default function App() {
     const dwell = productDwell.current
     const dwellMs = Math.min(dwell.elapsedMs +
       (dwell.activeFrom === null ? 0 : Date.now() - dwell.activeFrom), 30000)
-    if (post &&
-        !post.id.startsWith('post-user-') && !mockPosts.some(item => item.id === post.id)) {
+    if (post && isAuthenticated) {
       if (dwellMs >= 2000) {
         void recordPostInteraction(post.id, 'dwell', dwellMs).catch(() => {})
       }
@@ -518,7 +417,7 @@ export default function App() {
     if (
       product.productUrl
     ) {
-      if (!product.id.startsWith('product-')) {
+      if (isAuthenticated) {
         void recordProductClick(product.id).catch(() => {})
       }
       window.open(
@@ -537,161 +436,12 @@ export default function App() {
     )
   }
 
-  /*
-   * Demo Publish
-   *
-   * 現在：
-   * 1. 使用者上傳圖片
-   * 2. 建立本地 Object URL
-   * 3. 建立一篇 OutfitPost
-   *
-   * 未來：
-   *
-   * Image
-   * ↓
-   * Supabase Storage
-   * ↓
-   * Vision AI
-   * ↓
-   * Outfit Parsing
-   * ↓
-   * posts / outfits / outfit_items
-   */
-  function publishPost(
-    draft: CreatePostDraft,
-  ) {
-    const imageUrl =
-      URL.createObjectURL(
-        draft.imageFile,
-      )
-
-    generatedImageUrls
-      .current
-      .push(imageUrl)
-
-    const timestamp =
-      Date.now()
-
-    const newPost: OutfitPost =
-      {
-        id: `post-user-${timestamp}`,
-
-        author:
-          currentUser,
-
-        caption:
-          draft.caption ||
-          '今天的 OOTD。',
-
-        imageUrl,
-
-        outfit: {
-          id: `outfit-user-${timestamp}`,
-
-          name:
-            'My Daily OOTD',
-
-          description:
-            '使用者分享的穿搭。AI Vision 尚未串接，目前使用示範標籤。',
-
-          styles: [
-            'Personal',
-            'Daily',
-          ],
-
-          occasions: [
-            'Daily',
-          ],
-
-          season: [
-            'All Season',
-          ],
-
-          formality:
-            0.5,
-
-          items: [
-            {
-              id: `item-user-${timestamp}-top`,
-
-              category:
-                'top',
-
-              name:
-                'Detected Top',
-
-              color:
-                '#e4e1da',
-
-              style:
-                'Pending AI',
-            },
-
-            {
-              id: `item-user-${timestamp}-bottom`,
-
-              category:
-                'bottom',
-
-              name:
-                'Detected Bottom',
-
-              color:
-                '#55575a',
-
-              style:
-                'Pending AI',
-            },
-
-            {
-              id: `item-user-${timestamp}-shoes`,
-
-              category:
-                'shoes',
-
-              name:
-                'Detected Shoes',
-
-              color:
-                '#d8d6d0',
-
-              style:
-                'Pending AI',
-            },
-          ],
-        },
-
-        stats: {
-          likeCount: 0,
-          commentCount: 0,
-          saveCount: 0,
-        },
-
-        viewerState: {
-          liked: false,
-          saved: false,
-        },
-
-        /*
-         * 自己的貼文不需要
-         * Personalized Match Score。
-         */
-        createdAt:
-          new Date()
-            .toISOString(),
-      }
-
-    setPosts(
-      current => [
-        newPost,
-        ...current,
-      ],
-    )
-
-    setNotice(
-      '穿搭已發布',
-    )
-
+  async function publishPost(draft: CreatePostDraft) {
+    const uid = activeUserId
+    await publishCloudPost(uid, draft.postId, draft.caption, draft.imageFile)
+    if (currentUid.current !== uid) return
+    setNotice('穿搭已發布')
+    setAccountReload(value => value + 1)
     navigate('home')
   }
 
@@ -748,7 +498,7 @@ export default function App() {
     ) {
       return (
         <SavedPage
-          posts={posts}
+          posts={accountPosts}
           likedIds={
             likedIds
           }
@@ -780,9 +530,7 @@ export default function App() {
           user={
             currentUser
           }
-          posts={
-            posts
-          }
+          posts={accountPosts}
           likedIds={
             likedIds
           }
@@ -808,11 +556,12 @@ export default function App() {
     }
 
     if (currentPage === 'insights') {
-      return <InsightsPage />
+      return isAdmin ? <InsightsPage /> : null
     }
 
     return (
       <HomePage
+        followedCreatorIds={followedCreatorIds}
         currentUser={
           currentUser
         }
@@ -875,9 +624,12 @@ export default function App() {
             navigate
           }
           onAuthClick={() => setAuthDialogOpen(true)}
+          onSignOut={signOutUser}
         />
 
         <main className="main-column">
+          {accountError && <div className="form-error" role="alert">{accountError} <button type="button" onClick={() => setAccountReload(value => value + 1)}>重新連線</button></div>}
+          {!isAuthenticated && <button className="primary-button" type="button" onClick={() => setAuthDialogOpen(true)}>登入 / 註冊</button>}
           <MobileHeader
             onSearch={() =>
               navigate(

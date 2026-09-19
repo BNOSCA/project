@@ -166,6 +166,9 @@ activemq-data/
 !.env.example
 !frontend/.env.example
 .envrc
+secrets/
+*serviceAccount*.json
+*-firebase-adminsdk-*.json
 .venv
 env/
 venv/
@@ -243,6 +246,7 @@ __marimo__/
 !POST_FEED_RECOMMENDER.md
 !BACKEND_README.md
 !WEB_IMPLEMENTATION_HANDOFF.md
+!FIRESTORE_READINESS.md
 
 # Frontend build and dependency artifacts.
 node_modules/

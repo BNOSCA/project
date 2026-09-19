@@ -1543,6 +1543,29 @@ p {
   font-size: 25px;
 }
 
+.sidebar-account {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sidebar-signout {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #666;
+  cursor: pointer;
+}
+
+.sidebar-signout:hover {
+  background: #f0f0f0;
+  color: #111;
+}
+
 .onboarding-backdrop {
   position: fixed;
   inset: 0;

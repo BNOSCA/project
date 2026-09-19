@@ -21,6 +21,7 @@ type FeedMode =
   | 'following'
 
 interface HomePageProps {
+  followedCreatorIds: string[]
   currentUser: User
 
   posts: OutfitPostModel[]
@@ -47,6 +48,7 @@ interface HomePageProps {
 }
 
 export function HomePage({
+  followedCreatorIds,
   currentUser,
   posts,
   likedIds,
@@ -102,8 +104,7 @@ export function HomePage({
     feedMode === 'for-you'
       ? posts
       : posts.filter(
-          (_, index) =>
-            index % 2 === 0,
+          post => followedCreatorIds.includes(post.author.id),
         )
 
   return (

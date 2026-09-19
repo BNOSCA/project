@@ -26,6 +26,8 @@ PROFILE_SIGNAL_WEIGHTS = {
     "post_open": 0.03,
     "like": 0.15,
     "save": 0.20,
+    "unlike": -0.15,
+    "unsave": -0.20,
     "follow": 0.30,
     "product_click": 0.10,
     "dislike": -0.30,

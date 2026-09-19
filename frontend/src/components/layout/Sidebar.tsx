@@ -3,6 +3,7 @@ import {
   BarChart3,
   Compass,
   Home,
+  LogOut,
   Plus,
   ShoppingBag,
   User as UserIcon,
@@ -25,6 +26,7 @@ interface SidebarProps {
 
   onNavigate: (page: AppPage) => void
   onAuthClick: () => void
+  onSignOut: () => Promise<void>
 }
 
 const navigationItems: Array<{
@@ -71,6 +73,7 @@ export function Sidebar({
   isAdmin,
   onNavigate,
   onAuthClick,
+  onSignOut,
 }: SidebarProps) {
   return (
     <aside className="left-sidebar">
@@ -118,6 +121,7 @@ export function Sidebar({
         發佈穿搭
       </button>
 
+      <div className="sidebar-account">
       <button
         className="mini-profile"
         onClick={() => isAuthenticated ? onNavigate('profile') : onAuthClick()}
@@ -137,6 +141,8 @@ export function Sidebar({
           </small>
         </span>
       </button>
+      {isAuthenticated && <button className="sidebar-signout" type="button" title="登出帳號" aria-label="登出帳號" onClick={() => void onSignOut()}><LogOut size={18} strokeWidth={1.8} /></button>}
+      </div>
     </aside>
   )
 }

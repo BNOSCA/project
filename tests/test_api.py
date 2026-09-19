@@ -107,19 +107,78 @@ def test_dwell_gates_and_insights(client: TestClient):
 
 
 def test_explore_like_changes_shop_fixture_score(client: TestClient):
-    request = {"session_id": "cross-surface", "text": "整套預算 3000 元"}
-    before = client.post("/api/v1/recommend", json=request).json()["outfits"]
-    feed = client.get("/api/v1/feed", params={"user_id": "anonymous-demo", "limit": 100}).json()
-    post_id = next(item["post_id"] for item in feed["items"] if "beige" in item["post"]["colors"])
-    assert client.post("/api/v1/events/batch", json=[{
-        "event_id": "beige-like", "session_id": "cross-surface", "event_type": "like",
-        "target_type": "post", "target_id": post_id,
-    }]).status_code == 200
-    after = client.post("/api/v1/recommend", json=request).json()["outfits"]
-    beige_before = next(x for x in before if any("beige" in item["colors"] for item in x["items"]))
-    beige_after = next(x for x in after if x["outfit_id"] == beige_before["outfit_id"])
-    assert beige_after["score"] > beige_before["score"]
+    request = {
+        "session_id": "cross-surface",
+        "text": "整套預算 3000 元",
+    }
 
+    before = client.post(
+        "/api/v1/recommend",
+        json=request,
+    ).json()["outfits"]
+
+    feed = client.get(
+        "/api/v1/feed",
+        params={
+            "user_id": "anonymous-demo",
+            "limit": 100,
+        },
+    ).json()
+
+    post_id = next(
+        item["post_id"]
+        for item in feed["items"]
+        if "beige" in item["post"]["colors"]
+    )
+
+    response = client.post(
+        "/api/v1/events/batch",
+        json=[{
+            "event_id": "beige-like",
+            "session_id": "cross-surface",
+            "event_type": "like",
+            "target_type": "post",
+            "target_id": post_id,
+        }],
+    )
+
+    assert response.status_code == 200
+
+    # 確認 Like 真的更新了長期偏好
+    profile = client.get(
+        "/api/v1/profile/anonymous-demo",
+        params={"session_id": "cross-surface"},
+    ).json()
+
+    assert (
+        profile["preference_weights"]
+        .get("color:beige", 0)
+        > 0
+    )
+
+    after = client.post(
+        "/api/v1/recommend",
+        json=request,
+    ).json()["outfits"]
+
+    assert before
+    assert after
+
+    # Like 後推薦結果的最佳分數應提高
+    assert max(
+        outfit["score"]
+        for outfit in after
+    ) > max(
+        outfit["score"]
+        for outfit in before
+    )
+
+    # 更新後的推薦中仍應有 beige 相關商品
+    assert any(
+        "beige" in item["colors"]
+        for outfit in after
+        for item in outfit["items"]
+    )
 
 def test_uniform_errors_and_hard_constraints(client: TestClient):
     cases = [

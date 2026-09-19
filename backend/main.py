@@ -98,6 +98,9 @@ def error_response(status: int, code: str, message: str, retryable: bool = False
 
 def create_app(settings: Settings | None = None) -> FastAPI:
     settings = settings or Settings.from_env()
+    if settings.storage_backend == "firestore":
+        from .cloud_api import create_cloud_app
+        return create_cloud_app(settings)
     app = FastAPI(title="Outfit demo API", version="0.1.0")
     app.add_middleware(CORSMiddleware, allow_origins=list(settings.cors_origins), allow_methods=["GET", "POST", "PUT"], allow_headers=["Content-Type", "Authorization"])
     local_images = settings.data_dir / "images"

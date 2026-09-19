@@ -99,7 +99,7 @@ class InteractionEvent(Contract):
     user_id: str = "anonymous-demo"
     event_type: Literal[
         "impression", "dwell", "post_open", "like", "dislike", "save", "follow",
-        "product_click", "not_interested", "hide", "quick_skip", "explicit",
+        "product_click", "not_interested", "hide", "quick_skip", "explicit", "unlike", "unsave",
     ]
     target_type: Literal["post", "product"]
     target_id: str

@@ -15,6 +15,7 @@ import type {
 } from '../types/index'
 
 export interface CreatePostDraft {
+  postId: string
   caption: string
   imageFile: File
 }
@@ -24,13 +25,16 @@ interface CreatePostPageProps {
 
   onPublish: (
     draft: CreatePostDraft,
-  ) => void
+  ) => Promise<void>
 }
 
 export function CreatePostPage({
   currentUser,
   onPublish,
 }: CreatePostPageProps) {
+  const [postId, setPostId] = useState(() => `post-user-${crypto.randomUUID()}`)
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
   const [
     caption,
     setCaption,
@@ -83,12 +87,16 @@ export function CreatePostPage({
     setPreviewUrl(nextUrl)
   }
 
-  function handlePublish() {
+  async function handlePublish() {
     if (!imageFile) {
       return
     }
 
-    onPublish({
+    setSaving(true)
+    setError('')
+    try {
+    await onPublish({
+      postId,
       caption:
         caption.trim(),
       imageFile,
@@ -104,6 +112,10 @@ export function CreatePostPage({
     }
 
     setPreviewUrl(null)
+    setPostId(`post-user-${crypto.randomUUID()}`)
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : '發布失敗，請重試')
+    } finally { setSaving(false) }
   }
 
   return (
@@ -230,14 +242,15 @@ export function CreatePostPage({
             type="button"
             className="primary-button"
             disabled={
-              !imageFile
+              !imageFile || saving
             }
             onClick={
               handlePublish
             }
           >
-            發布穿搭
+            {saving ? '發布中...' : '發布穿搭'}
           </button>
+          {error && <div className="form-error" role="alert">{error}</div>}
         </div>
       </div>
     </section>

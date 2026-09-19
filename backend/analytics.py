@@ -44,7 +44,8 @@ def build_admin_insights(client: Client | None = None, now: datetime | None = No
     active_users = {
         event.get("user_id")
         for event in interactions
-        if event.get("user_id") and (_as_datetime(event.get("created_at")) or now) >= week_ago
+        if event.get("user_id") and (timestamp := _as_datetime(event.get("created_at"))) is not None
+        and week_ago <= timestamp <= now
     }
     sessions = {event.get("session_id") for event in interactions if event.get("session_id")}
     impressions = engagement.get("impression", 0)

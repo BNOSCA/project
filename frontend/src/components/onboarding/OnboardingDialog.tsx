@@ -37,8 +37,9 @@ export function OnboardingDialog({ open, onComplete }: OnboardingDialogProps) {
     setError('')
     try {
       await onComplete(ageRange, styles)
-    } catch {
-      setError('儲存偏好失敗，請稍後再試。')
+    } catch (caughtError) {
+      const detail = caughtError instanceof Error ? caughtError.message : ''
+      setError(detail ? `儲存偏好失敗：${detail}` : '儲存偏好失敗，請稍後再試。')
     } finally {
       setSaving(false)
     }

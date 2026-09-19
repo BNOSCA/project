@@ -34,6 +34,7 @@ class Settings:
     data_dir: Path
     llm_timeout_seconds: float
     admin_uids: tuple[str, ...] = ()
+    storage_backend: str = "sqlite"
 
     @classmethod
     def from_env(cls) -> "Settings":
@@ -44,4 +45,7 @@ class Settings:
         db_path = Path(os.getenv("APP_DB_PATH", str(ROOT / "runtime" / "demo.sqlite3"))).expanduser()
         data_dir = Path(os.getenv("APP_DATA_DIR", str(ROOT / "data" / "fixtures"))).expanduser()
         admin_uids = tuple(uid.strip() for uid in os.getenv("ADMIN_UIDS", "").split(",") if uid.strip())
-        return cls(mode, origins, db_path, data_dir, float(os.getenv("LLM_TIMEOUT_SECONDS", "8")), admin_uids)
+        storage = os.getenv("STORAGE_BACKEND", "sqlite").lower()
+        if storage not in {"sqlite", "firestore"}:
+            raise ValueError("STORAGE_BACKEND must be sqlite or firestore")
+        return cls(mode, origins, db_path, data_dir, float(os.getenv("LLM_TIMEOUT_SECONDS", "8")), admin_uids, storage)
