@@ -158,11 +158,32 @@ def rank_post_image_products(
     selected: list[Product] = []
     width, height = image.size
 
-    for region in regions:
-        if sum(item.category == region.label for item in selected) >= per_region:
+    # Support default crops when no regions are provided
+    active_regions = list(regions) if regions else [
+        DetectedRegion(label="top", bbox=(0.15, 0.15, 0.85, 0.55)),
+        DetectedRegion(label="bottom", bbox=(0.15, 0.50, 0.85, 0.95)),
+    ]
+
+    REGION_LABEL_MAP: dict[str, list[str]] = {
+        "dress": ["top", "bottom"],
+        "onepiece": ["top", "bottom"],
+        "suit": ["outerwear", "top"],
+        "jacket": ["outerwear"],
+        "coat": ["outerwear"],
+        "pants": ["bottom"],
+        "trousers": ["bottom"],
+        "shirt": ["top"],
+    }
+
+    for region in active_regions:
+        target_labels = REGION_LABEL_MAP.get(region.label, [region.label])
+        if sum(item.category in target_labels for item in selected) >= per_region:
             continue
-        category_products = [product for product in by_category.get(region.label, ())
-                             if product.product_id not in excluded]
+        category_products = [
+            product for lbl in target_labels
+            for product in by_category.get(lbl, ())
+            if product.product_id not in excluded
+        ]
         if not category_products:
             continue
         x1, y1, x2, y2 = region.bbox
@@ -179,7 +200,7 @@ def rank_post_image_products(
             continue
         for product in ranked:
             score = scores.get(product.product_id, 0.0)
-            if score < min_similarity or score < best_score - 0.05:
+            if score < min_similarity or score < best_score - 0.12:
                 break
             image_key = str(product.image_url or product.product_id)
             if image_key in selected_images:
@@ -187,7 +208,7 @@ def rank_post_image_products(
             selected.append(product)
             excluded.add(product.product_id)
             selected_images.add(image_key)
-            if len(selected) >= limit or sum(item.category == region.label for item in selected) >= per_region:
+            if len(selected) >= limit or sum(item.category in target_labels for item in selected) >= per_region:
                 break
         if len(selected) >= limit:
             break

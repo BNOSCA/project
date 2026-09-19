@@ -21,3 +21,8 @@ export type {
 export type {
   AppPage,
 } from './navigation'
+
+export type {
+  Friend,
+  SharedOutfit,
+} from './social'

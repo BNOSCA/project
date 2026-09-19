@@ -27,6 +27,10 @@ interface SavedPageProps {
   ) => void
 
   onGoHome: () => void
+
+  onShare?: (
+    post: OutfitPostModel,
+  ) => void
 }
 
 export function SavedPage({
@@ -37,6 +41,7 @@ export function SavedPage({
   onSave,
   onFindProducts,
   onGoHome,
+  onShare,
 }: SavedPageProps) {
   const savedPosts =
     posts.filter(post =>
@@ -81,6 +86,7 @@ export function SavedPage({
                 onFindProducts={
                   onFindProducts
                 }
+                onShare={onShare ? () => onShare(post) : undefined}
               />
             ),
           )}

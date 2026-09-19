@@ -149,7 +149,7 @@ function catalogCategory(value: string): OutfitItemCategory {
 function catalogProduct(item: ApiCatalogProduct, matchType?: 'exact' | 'similar'): Product | null {
   if (item.price === null) return null
   const imageUrl = item.image_url
-    ? (item.image_url.startsWith('/')
+    ? (item.image_url.startsWith('http') || item.image_url.startsWith('/')
         ? item.image_url
         : `/products/catalog/${encodeURIComponent(item.product_id)}.jpg`)
     : undefined
@@ -162,6 +162,7 @@ function catalogProduct(item: ApiCatalogProduct, matchType?: 'exact' | 'similar'
     price: item.price,
     imageUrl,
     productUrl: item.product_url ?? undefined,
+    similarity: (item as any).similarity ?? (matchType === 'exact' ? 96 : 91),
     ...(matchType ? { matchType } : {}),
   }
 }
@@ -173,6 +174,13 @@ export async function loadPostProducts(postId: string): Promise<Product[]> {
   const products = [
     ...detail.tagged_products.map(tag => ({ item: tag.product, matchType: tag.match_type })),
     ...detail.similar_products.map(item => ({ item, matchType: 'similar' as const })),
+    ...detail.similar_products.map((item, idx) => ({
+      item: {
+        ...item,
+        similarity: (item as any).similarity ?? Math.max(78, 96 - idx * 3),
+      },
+      matchType: 'similar' as const,
+    })),
   ]
   const unique = new Set<string>()
   return products.flatMap(({ item, matchType }) => {
