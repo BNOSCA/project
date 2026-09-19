@@ -278,27 +278,31 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         if request.mode in {"text", "mixed"} and not request.query_text.strip():
             raise APIError(422, "INVALID_INPUT", "文字或圖文搜尋需要 query_text。")
         service = require_mock()
+        session_data = store.get_intent(request.session_id) if store else None
+        previous_intent = Intent.model_validate(session_data) if session_data else None
         if settings.mode == "live":
             try:
-                parsed = await call_module("intent", "parse_intent", request.query_text, None)
+                parsed = await call_module("intent", "parse_intent", request.query_text, previous_intent)
                 if isinstance(parsed, dict):
                     parsed = {"session_id": request.session_id, **parsed}
                 query_intent = Intent.model_validate(parsed)
             except (APIError, ValueError) as exc:
                 if isinstance(exc, APIError) and exc.code not in {"LLM_TIMEOUT", "DATA_UNAVAILABLE"}:
                     raise
-                query_intent = parse_demo_intent(request.query_text, request.session_id)
+                query_intent = parse_demo_intent(request.query_text, request.session_id, previous_intent)
         else:
-            query_intent = parse_demo_intent(request.query_text, request.session_id)
+            query_intent = parse_demo_intent(request.query_text, request.session_id, previous_intent)
+        query_intent.session_id = request.session_id
+        if store:
+            store.save_intent(request.session_id, "anonymous-demo", query_intent.model_dump(mode="json"))
         merged = request.model_copy(deep=True)
         merged.filters.excluded_colors = sorted(set(merged.filters.excluded_colors + query_intent.excluded.colors))
         merged.filters.excluded_fits = sorted(set(merged.filters.excluded_fits + query_intent.excluded.fits))
         if query_intent.budget_total is not None and "budget_total" in query_intent.hard_constraints:
             limit = query_intent.budget_total
             merged.filters.price_max = min(merged.filters.price_max, limit) if merged.filters.price_max is not None else limit
-        session_data = store.get_intent(request.session_id) if store else None
-        if session_data:
-            session_intent = Intent.model_validate(session_data)
+        if previous_intent:
+            session_intent = previous_intent
             merged.filters.excluded_colors = sorted(set(merged.filters.excluded_colors + session_intent.excluded.colors))
             merged.filters.excluded_fits = sorted(set(merged.filters.excluded_fits + session_intent.excluded.fits))
         if settings.mode == "mock":

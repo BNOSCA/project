@@ -88,3 +88,18 @@ def test_interacted_post_loses_exploration_bonus_but_is_not_rejected():
     assert response.items[0].post_id == "p1"
     assert response.items[0].score_breakdown.exploration == 0
     assert "探索／尚未互動內容" not in response.items[0].ranking_reason
+
+
+def test_search_session_weights_boost_matching_post():
+    matching = make_post("matching", "japanese", "black", "shirt", "c1")
+    different = make_post("different", "street", "red", "denim", "c2")
+    profile = UserProfile(user_id="u1")
+
+    response = rank_feed(
+        "u1", [matching, different], profile, [], current_time=NOW,
+        session_weights={"style:japanese": 1.0, "color:black": 1.0, "occasion:commute": 1.0},
+    )
+
+    assert response.items[0].post_id == "matching"
+    assert response.items[0].score_breakdown.session_intent > 0.5
+    assert "符合本次瀏覽意圖" in response.items[0].ranking_reason
