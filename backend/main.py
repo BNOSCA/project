@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import hashlib
 import importlib
 import logging
 import os
@@ -12,7 +13,7 @@ from typing import Any
 from fastapi import FastAPI, Header, Query, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 
 from .config import ROOT, Settings
@@ -21,7 +22,8 @@ from .explanation import build_explanation
 from .firebase import initialize_firebase
 from .feed_debug import build_debug_router
 from .mock import FixtureCatalog, MockServices, filter_products, parse_demo_intent
-from .search import search_products
+from .search import embedding_runtime, get_embedding_store, infer_query_categories, rank_post_image_products, search_products
+from .search_explanations import add_search_explanations, visual_search_explanations
 from .schemas import (
     ErrorBody, ErrorResponse, EventBatchResult, FeedbackEvent, FeedbackResponse,
     FeedResponse, InsightsResponse, Intent, InteractionEvent, Outfit, PostDetail,
@@ -80,7 +82,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app = FastAPI(title="Outfit demo API", version="0.1.0")
     app.add_middleware(CORSMiddleware, allow_origins=list(settings.cors_origins), allow_methods=["GET", "POST"], allow_headers=["Content-Type"])
     local_images = settings.data_dir / "images"
-    if local_images.is_dir():
+    if settings.data_dir.name != "combined" and local_images.is_dir():
         app.mount("/products/kaggle", StaticFiles(directory=local_images), name="catalog-images")
     catalog_error = db_error = None
     try:
@@ -96,6 +98,26 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         db_error = type(exc).__name__
         logger.exception("database unavailable")
     mock = MockServices(catalog, store) if catalog is not None and store is not None else None
+    # Post-image retrieval is computed once per static post for the lifetime of
+    # this process.  The first drawer open remains a real FashionCLIP image
+    # query; caching prevents repeated clicks from re-encoding the same photo.
+    post_image_results: dict[str, list] = {}
+    image_catalog_products = catalog.products if catalog is not None else []
+    image_catalog_by_id = {product.product_id: product for product in image_catalog_products}
+    image_store = get_embedding_store()
+    # The small fixture catalog intentionally has no product images or image
+    # embeddings.  Its Pexels posts still need to be demonstrable, so retrieve
+    # against the checked-in official catalog whenever the active catalog has
+    # no compatible image vectors.
+    if image_store and image_store.image_embeddings is not None and not any(
+        image_store.contains(product.product_id) for product in image_catalog_products
+    ):
+        try:
+            official_catalog = FixtureCatalog(ROOT / "data" / "catalog" / "combined")
+            image_catalog_products = official_catalog.products
+            image_catalog_by_id = official_catalog.products_by_id
+        except (OSError, ValueError):
+            logger.exception("official image catalog unavailable")
 
     @app.exception_handler(APIError)
     async def handle_api_error(_request: Request, exc: APIError) -> JSONResponse:
@@ -121,6 +143,51 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             raise APIError(503, "DATA_UNAVAILABLE", "展示資料或資料庫無法使用。", True,
                            {"catalog": catalog_error, "database": db_error})
         return mock
+
+    def searchable_products(filters: SearchFilters) -> list:
+        products = filter_products(catalog.products, filters)
+        # Official catalog categories are normalized during catalog build.
+        # A product without a successfully fetched image has no
+        # trustworthy visual vector and would render a broken storefront card.
+        # Fixture products are retained for the explicit fixture test mode.
+        if image_store and image_store.image_embeddings is not None:
+            products = [product for product in products
+                        if product.source != "official_brand_catalog" or image_store.contains(product.product_id)]
+        return products
+
+    def image_similar_products(post: Any) -> list:
+        if post.post_id in post_image_results:
+            return post_image_results[post.post_id]
+        if not post.image_url:
+            return []
+
+        runtime = embedding_runtime()
+        # Do not fill the drawer with arbitrary product-ID order if the real
+        # encoder or its compatible product index is unavailable.
+        if not runtime["store_compatible"]:
+            return []
+
+        store = get_embedding_store()
+        candidates = [
+            product for product in image_catalog_products
+            if product.price is not None and product.availability == "available"
+            and store and store.image_embeddings is not None and store.contains(product.product_id)
+        ]
+        if not candidates:
+            return []
+        try:
+            selected = rank_post_image_products(
+                image_input=str(post.image_url),
+                regions=post.detected_regions,
+                candidates=candidates,
+                excluded_product_ids={tag.product_id for tag in post.tagged_products},
+            )
+        except Exception:
+            logger.exception("post image retrieval failed for %s", post.post_id)
+            return []
+
+        post_image_results[post.post_id] = selected
+        return selected
 
     def get_module(name: str) -> Any:
         try:
@@ -232,6 +299,42 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                 "mode": settings.mode, "catalog": "ok" if catalog else "unavailable", "database": "ok" if store else "unavailable",
                 "dependencies": dependencies}
 
+    @app.get("/products/catalog/{product_id}.jpg")
+    def catalog_image(product_id: str) -> Response:
+        """Proxy catalog CDN images so product cards remain visible in-app."""
+        product = image_catalog_by_id.get(product_id) or (catalog.products_by_id.get(product_id) if catalog else None)
+        image_urls = dict.fromkeys(
+            str(url) for url in ([product.image_url, *product.image_urls] if product else []) if url
+        )
+        if not any(url.startswith(("http://", "https://")) for url in image_urls):
+            raise APIError(404, "DATA_UNAVAILABLE", "找不到商品圖片。")
+        import requests
+
+        for image_url in image_urls:
+            if not image_url.startswith(("http://", "https://")):
+                continue
+            cache_name = hashlib.sha256(image_url.encode("utf-8")).hexdigest() + ".jpg"
+            cache_file = ROOT / "data" / "embeddings" / "official_products" / ".cache_images" / cache_name
+            if cache_file.is_file():
+                return FileResponse(cache_file, media_type="image/jpeg",
+                                    headers={"Cache-Control": "public, max-age=86400"})
+            try:
+                upstream = requests.get(
+                    image_url, timeout=(3, 6),
+                    headers={"User-Agent": "Mozilla/5.0 (compatible; OutfitDemo/1.0)"},
+                )
+                upstream.raise_for_status()
+                media_type = upstream.headers.get("content-type", "")
+                if media_type.startswith("image/"):
+                    return Response(
+                        content=upstream.content,
+                        media_type=media_type,
+                        headers={"Cache-Control": "public, max-age=86400"},
+                    )
+            except requests.RequestException:
+                logger.warning("catalog image unavailable for %s", product_id)
+        raise APIError(502, "DATA_UNAVAILABLE", "商品圖片暫時無法載入。", True)
+
     @app.post("/api/v1/recommend", response_model=RecommendationResponse)
     async def recommend(request: RecommendRequest,
                         authorization: str | None = Header(default=None)) -> RecommendationResponse:
@@ -274,14 +377,22 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     @app.post("/api/v1/search", response_model=SearchResponse)
     async def search(request: SearchRequest) -> SearchResponse:
+        has_text = bool(request.query_text.strip())
+        has_filters = bool(
+            request.filters.categories or request.filters.price_max is not None or
+            request.filters.available_only or request.filters.excluded_colors or
+            request.filters.excluded_fits or request.filters.sizes
+        )
         if request.mode in {"image", "mixed"} and not request.query_image:
             raise APIError(422, "INVALID_INPUT", "圖片或圖文搜尋需要 query_image。")
-        if request.mode in {"text", "mixed"} and not request.query_text.strip():
+        if request.mode == "mixed" and not has_text:
             raise APIError(422, "INVALID_INPUT", "文字或圖文搜尋需要 query_text。")
+        if request.mode == "text" and not has_text and not has_filters:
+            raise APIError(422, "INVALID_INPUT", "請輸入搜尋文字，或至少選擇一項篩選條件。")
         service = require_mock()
         session_data = store.get_intent(request.session_id) if store else None
         previous_intent = Intent.model_validate(session_data) if session_data else None
-        if settings.mode == "live":
+        if has_text:
             try:
                 parsed = await call_module("intent", "parse_intent", request.query_text, previous_intent)
                 if isinstance(parsed, dict):
@@ -292,12 +403,14 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                     raise
                 query_intent = parse_demo_intent(request.query_text, request.session_id, previous_intent)
         else:
-            query_intent = parse_demo_intent(request.query_text, request.session_id, previous_intent)
+            query_intent = Intent(session_id=request.session_id)
         query_intent.session_id = request.session_id
         query_intent.origin = "search"
         if store:
             store.save_intent(request.session_id, "anonymous-demo", query_intent.model_dump(mode="json"))
         merged = request.model_copy(deep=True)
+        if has_text and not merged.filters.categories:
+            merged.filters.categories = infer_query_categories(request.query_text)
         merged.filters.excluded_colors = sorted(set(merged.filters.excluded_colors + query_intent.excluded.colors))
         merged.filters.excluded_fits = sorted(set(merged.filters.excluded_fits + query_intent.excluded.fits))
         if query_intent.budget_total is not None and "budget_total" in query_intent.hard_constraints:
@@ -308,16 +421,17 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             merged.filters.excluded_colors = sorted(set(merged.filters.excluded_colors + session_intent.excluded.colors))
             merged.filters.excluded_fits = sorted(set(merged.filters.excluded_fits + session_intent.excluded.fits))
         if settings.mode == "mock":
-            candidates = filter_products(catalog.products, merged.filters)
-            return search_products(merged, candidates)
-        candidates = filter_products(catalog.products, merged.filters)
+            candidates = searchable_products(merged.filters)
+            response = search_products(merged, candidates)
+            return await asyncio.to_thread(add_search_explanations, response, query_intent.semantic_query)
+        candidates = searchable_products(merged.filters)
         response = SearchResponse.model_validate(await call_module("search", "search_products", merged, candidates))
         product_ids = {p.product_id for p in candidates}
         for hit in response.products:
             if hit.product_id not in product_ids:
                 raise APIError(500, "INTERNAL_ERROR", "搜尋結果違反硬篩選。")
             hit.product = catalog.products_by_id[hit.product_id]
-        return response
+        return await asyncio.to_thread(add_search_explanations, response, query_intent.semantic_query)
 
     app.include_router(build_debug_router(require_mock))
 
@@ -337,7 +451,15 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         detail = require_mock().catalog.post_detail(post_id)
         if detail is None:
             raise APIError(404, "DATA_UNAVAILABLE", "找不到這篇貼文。")
-        return detail
+        similar_products = image_similar_products(detail.post)
+        explanations, sources = visual_search_explanations(
+            similar_products, [region.label for region in detail.post.detected_regions],
+        )
+        return detail.model_copy(update={
+            "similar_products": similar_products,
+            "similar_product_explanations": explanations,
+            "similar_product_explanation_sources": sources,
+        })
 
     @app.post("/api/v1/events/batch", response_model=EventBatchResult)
     async def events_batch(events: list[InteractionEvent],

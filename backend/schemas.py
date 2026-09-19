@@ -198,6 +198,8 @@ class SearchHit(Contract):
     product_id: str
     score: float = 0
     score_breakdown: dict[str, float] = Field(default_factory=dict)
+    explanation: str | None = None
+    explanation_source: Literal["llm", "fallback", "none"] = "none"
     matched_filters: list[str] = Field(default_factory=list)
     warnings: list[str] = Field(default_factory=list)
     product: Product | None = None
@@ -330,6 +332,8 @@ class PostDetail(Contract):
     creator: Creator
     tagged_products: list[TaggedProductDetail]
     similar_products: list[Product] = Field(default_factory=list)
+    similar_product_explanations: dict[str, str] = Field(default_factory=dict)
+    similar_product_explanation_sources: dict[str, Literal["llm", "fallback"]] = Field(default_factory=dict)
 
 
 class FeedbackResponse(Contract):

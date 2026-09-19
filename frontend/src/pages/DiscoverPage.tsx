@@ -32,6 +32,10 @@ interface DiscoverPageProps {
   onFindProducts: (
     post: OutfitPostModel,
   ) => void
+
+  onShare?: (
+    post: OutfitPostModel,
+  ) => void
 }
 
 const styleTags = [
@@ -60,6 +64,7 @@ export function DiscoverPage({
   onLike,
   onSave,
   onFindProducts,
+  onShare,
 }: DiscoverPageProps) {
   const [
     search,
@@ -237,6 +242,7 @@ export function DiscoverPage({
                 onFindProducts={
                   onFindProducts
                 }
+                onShare={onShare ? () => onShare(post) : undefined}
               />
             ),
           )}

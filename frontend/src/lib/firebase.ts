@@ -3,13 +3,17 @@ import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
+// `import.meta.env` is injected by Vite. Keep the service module importable in
+// the Node contract tests as well, where it is intentionally absent.
+const runtimeEnv = (import.meta.env ?? {}) as Record<string, string | undefined>
+
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  apiKey: runtimeEnv.VITE_FIREBASE_API_KEY,
+  authDomain: runtimeEnv.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: runtimeEnv.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: runtimeEnv.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: runtimeEnv.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: runtimeEnv.VITE_FIREBASE_APP_ID,
 };
 
 const hasFirebaseConfig = Object.values(firebaseConfig).every(Boolean);

@@ -10,7 +10,7 @@ import {
   type User as FirebaseUser,
 } from 'firebase/auth'
 
-import { auth, isFirebaseConfigured } from '../lib/firebase'
+import { auth, isFirebaseConfigured } from '../lib/firebase.ts'
 
 export interface RequestIdentity {
   userId: string
@@ -24,6 +24,23 @@ export interface AuthState {
 }
 
 let identityPromise: Promise<RequestIdentity> | null = null
+const AUTH_REQUEST_TIMEOUT_MS = 15_000
+
+async function withAuthTimeout<T>(operation: Promise<T>): Promise<T> {
+  let timeoutId: ReturnType<typeof setTimeout> | undefined
+  const timeout = new Promise<never>((_, reject) => {
+    timeoutId = setTimeout(() => {
+      const error = new Error('Firebase 驗證服務逾時，請確認網路與 Firebase Authentication 設定。')
+      Object.assign(error, { code: 'auth/timeout' })
+      reject(error)
+    }, AUTH_REQUEST_TIMEOUT_MS)
+  })
+  try {
+    return await Promise.race([operation, timeout])
+  } finally {
+    if (timeoutId) clearTimeout(timeoutId)
+  }
+}
 
 export function observeAuthState(listener: (state: AuthState) => void) {
   if (!auth || !isFirebaseConfigured) {
@@ -40,7 +57,7 @@ export function observeAuthState(listener: (state: AuthState) => void) {
 
 export async function signInWithEmail(email: string, password: string) {
   if (!auth) throw new Error('Firebase 尚未設定')
-  return (await signInWithEmailAndPassword(auth, email, password)).user
+  return (await withAuthTimeout(signInWithEmailAndPassword(auth, email, password))).user
 }
 
 export async function createAccount(
@@ -49,20 +66,20 @@ export async function createAccount(
   displayName: string,
 ) {
   if (!auth) throw new Error('Firebase 尚未設定')
-  const credential = await createUserWithEmailAndPassword(auth, email, password)
-  await updateProfile(credential.user, { displayName })
+  const credential = await withAuthTimeout(createUserWithEmailAndPassword(auth, email, password))
+  await withAuthTimeout(updateProfile(credential.user, { displayName }))
   identityPromise = null
   return credential.user
 }
 
 export async function signInWithGoogle() {
   if (!auth) throw new Error('Firebase 尚未設定')
-  return (await signInWithPopup(auth, new GoogleAuthProvider())).user
+  return (await withAuthTimeout(signInWithPopup(auth, new GoogleAuthProvider()))).user
 }
 
 export async function requestPasswordReset(email: string) {
   if (!auth) throw new Error('Firebase 尚未設定')
-  await sendPasswordResetEmail(auth, email)
+  await withAuthTimeout(sendPasswordResetEmail(auth, email))
 }
 
 export async function saveFirebaseProfile(displayName: string, photoURL?: string) {

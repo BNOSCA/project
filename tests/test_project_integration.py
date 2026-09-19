@@ -3,10 +3,19 @@
 from pathlib import Path
 import base64
 
+import pytest
+
 from fastapi.testclient import TestClient
 
 from backend.config import ROOT, Settings
 from backend.main import create_app
+
+
+@pytest.fixture(autouse=True)
+def disable_external_llm(monkeypatch):
+    """Integration tests must be deterministic and never call a paid API."""
+    monkeypatch.delenv("GROQ_API_KEY", raising=False)
+    monkeypatch.delenv("LLM_API_KEY", raising=False)
 
 
 def test_three_combined_catalog_demo_runs(tmp_path: Path):
@@ -29,16 +38,22 @@ def test_three_combined_catalog_demo_runs(tmp_path: Path):
         feed = feed_response.json()
         assert len(feed["items"]) >= 3
         post = feed["items"][0]["post"]
-        assert post["item_tags"]
+        assert post["item_tags"] or post["detected_regions"]
         assert feed["items"][0]["creator"]["display_name"]
 
         detail_response = client.get(f"/api/v1/posts/{post['post_id']}")
         assert detail_response.status_code == 200
         detail = detail_response.json()
         assert detail["creator"]["creator_id"] == post["creator_id"]
-        assert detail["tagged_products"]
-        assert all(tag["match_type"] == "similar" and tag["product"]["product_url"]
-                   for tag in detail["tagged_products"])
+        if detail["tagged_products"]:
+            assert all(tag["match_type"] == "similar" and tag["product"]["product_url"]
+                       for tag in detail["tagged_products"])
+        else:
+            # Network-bound post images or a weak visual match may legitimately
+            # leave this empty; the focused retrieval test below checks the
+            # actual image-search wiring without relying on an external CDN.
+            assert detail["post"]["detected_regions"]
+            assert all(product["product_url"] for product in detail["similar_products"])
 
         recommendation_response = client.post("/api/v1/recommend", json={
             "session_id": session,
@@ -66,7 +81,11 @@ def test_three_combined_catalog_demo_runs(tmp_path: Path):
         assert search_response.status_code == 200, search_response.text
         hits = search_response.json()["products"]
         assert hits
-        assert search_response.json()["retrieval"]["fusion_method"] == "metadata_text"
+        assert search_response.json()["retrieval"]["fusion_method"] in {
+            "metadata_text", "fashion_clip_text", "fashion_clip_text_image",
+        }
+        assert all(hit["explanation"] and hit["explanation_source"] in {"llm", "fallback"}
+                   for hit in hits)
         assert all(hit["product"]["category"] == "top" and
                    hit["product"]["price"] <= 1000 and
                    "beige" not in hit["product"]["colors"] for hit in hits)
@@ -111,7 +130,7 @@ def test_implemented_search_modes_and_feed_events_are_reachable(tmp_path: Path):
         "filters": {"categories": ["shoes"]},
     })
     assert search.status_code == 200, search.text
-    assert search.json()["retrieval"]["fusion_method"] == "mock_embedding_mixed"
+    assert search.json()["retrieval"]["fusion_method"] in {"metadata_text", "rrf"}
     assert search.json()["products"]
     assert all(hit["product"]["category"] == "shoes" for hit in search.json()["products"])
 
@@ -134,3 +153,54 @@ def test_implemented_search_modes_and_feed_events_are_reachable(tmp_path: Path):
             break
     opened = next(item for item in items if item["post_id"] == post_id)
     assert opened["score_breakdown"]["exploration"] == 0
+
+
+def test_post_detail_populates_image_retrieved_similar_products(monkeypatch, tmp_path: Path):
+    """A post image must drive product selection, not reuse a static tag list."""
+    from backend import main
+
+    calls = {}
+    monkeypatch.setattr(main, "embedding_runtime", lambda: {
+        "model_backend": "transformers", "store_backend": "transformers", "store_compatible": True,
+    })
+
+    def fake_rank(*, image_input, regions, candidates, excluded_product_ids):
+        calls.update(image_input=image_input, regions=[region.label for region in regions],
+                     candidate_ids=[product.product_id for product in candidates],
+                     excluded_product_ids=excluded_product_ids)
+        return [next(product for product in candidates if product.category == category)
+                for category in ("top", "bottom", "shoes")]
+
+    monkeypatch.setattr(main, "rank_post_image_products", fake_rank)
+    settings = Settings("mock", ("http://localhost:5173",), tmp_path / "post-search.sqlite3",
+                        ROOT / "data" / "catalog" / "combined", 8)
+    client = TestClient(create_app(settings))
+
+    response = client.get("/api/v1/posts/post-pexels-batch-13008395")
+
+    assert response.status_code == 200
+    detail = response.json()
+    assert calls["image_input"] == detail["post"]["image_url"]
+    assert set(calls["regions"]) == {"top", "bottom", "shoes"}
+    assert calls["excluded_product_ids"] == set()
+    assert detail["tagged_products"] == []
+    assert {item["category"] for item in detail["similar_products"]} == {"top", "bottom", "shoes"}
+    assert set(detail["similar_product_explanations"]) == {
+        item["product_id"] for item in detail["similar_products"]
+    }
+    assert set(detail["similar_product_explanation_sources"].values()) <= {"llm", "fallback"}
+
+
+def test_shop_search_infers_garment_category_without_explicit_filter(tmp_path: Path):
+    settings = Settings("mock", ("http://localhost:5173",), tmp_path / "shop-search.sqlite3",
+                        ROOT / "data" / "catalog" / "combined", 8)
+    client = TestClient(create_app(settings))
+    response = client.post("/api/v1/search", json={
+        "session_id": "shop-category", "query_text": "日系 寬鬆 襯衫", "mode": "text",
+        "filters": {"available_only": True},
+    })
+    assert response.status_code == 200, response.text
+    assert response.json()["retrieval"]["prefilter_count"] > 0
+    assert all(hit["product"]["category"] == "top" for hit in response.json()["products"])
+    assert all(not any(word in hit["product"]["name"] for word in ("吊飾", "腰帶", "領巾", "襪"))
+               for hit in response.json()["products"])

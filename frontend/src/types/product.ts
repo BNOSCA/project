@@ -17,5 +17,8 @@ export interface Product {
 
   similarity?: number
 
+  similarityExplanation?: string
+  similarityExplanationSource?: 'llm' | 'fallback'
+
   matchType?: 'exact' | 'similar'
 }

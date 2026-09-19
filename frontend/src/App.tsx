@@ -34,6 +34,7 @@ import { ShopPage } from './pages/ShopPage'
 import {
   loadRecommendedFeed,
   loadPostProducts,
+  searchCatalogProducts,
   recordPostInteraction,
   recordPostImpression,
   recordPostLike,
@@ -48,10 +49,14 @@ import {
 
 import type {
   AppPage,
+  Friend,
   OutfitPost,
   Product,
   User,
 } from './types/index'
+import { ShareOutfitDialog } from './components/social/ShareOutfitDialog'
+import { getFriends, shareOutfitToFriend } from './services/social'
+
 
 function profileStorageKey(userId: string) {
   return `loop:public-profile:${userId}:v1`
@@ -120,9 +125,28 @@ function updateIdList(
 }
 
 function demoProductsForPost(post: OutfitPost): Product[] {
-  const categories = new Set(post.outfit.items.map(item => item.category))
-  return mockProducts
-    .filter(product => categories.has(product.category))
+  const targetCats = new Set<string>()
+  if (post.outfit?.items) {
+    for (const item of post.outfit.items) {
+      targetCats.add(item.category)
+      if (item.category === 'outerwear') targetCats.add('top')
+      if (item.category === 'top') targetCats.add('outerwear')
+    }
+  }
+  const styles = (post.outfit?.styles ?? []).map(s => s.toLowerCase())
+  if (styles.some(s => s.includes('outdoor') || s.includes('workwear') || s.includes('機能') || s.includes('風衣') || s.includes('山系'))) {
+    targetCats.add('outerwear')
+  }
+
+  // Filter candidates matching target categories
+  let matched = mockProducts.filter(p => targetCats.has(p.category))
+  if (matched.length < 4) {
+    // Fill up so user always has rich interactive items to browse
+    const remaining = mockProducts.filter(p => !matched.some(m => m.id === p.id))
+    matched = [...matched, ...remaining]
+  }
+
+  return matched
     .sort((a, b) => (b.similarity ?? 0) - (a.similarity ?? 0))
     .slice(0, 8)
 }
@@ -234,6 +258,23 @@ export default function App() {
     setSavedIds(readStoredIds(savedStorageKey(activeUserId)))
   }, [activeUserId])
 
+  // Share Outfit Dialog State
+  const [sharePost, setSharePost] = useState<OutfitPost | null>(null)
+  const [socialFriends, setSocialFriends] = useState<Friend[]>([])
+
+  useEffect(() => {
+    void getFriends(activeUserId).then(setSocialFriends)
+  }, [activeUserId])
+
+  function handleOpenShare(post: OutfitPost) {
+    setSharePost(post)
+  }
+
+  async function handleShareToFriend(friend: Friend, post: OutfitPost, message?: string) {
+    await shareOutfitToFriend(activeUserId, currentUser, friend, post, message)
+    setNotice(`已成功將穿搭分享給 ${friend.displayName}！`)
+  }
+
   useEffect(() => {
     function trackVisibility() {
       const dwell = productDwell.current
@@ -312,28 +353,61 @@ export default function App() {
   useEffect(() => {
     if (!selectedProductPost) return
     let active = true
-    const localPost = selectedProductPost.id.startsWith('post-user-') ||
-      mockPosts.some(post => post.id === selectedProductPost.id)
-    if (localPost) {
-      setSimilarProducts(demoProductsForPost(selectedProductPost))
-      setProductsAreDemo(true)
-      setProductsLoading(false)
-    } else {
-      setSimilarProducts([])
-      setProductsAreDemo(false)
-      setProductsLoading(true)
-      loadPostProducts(selectedProductPost.id)
-        .then(products => {
-          if (active) setSimilarProducts(products)
-        })
-        .catch(() => {
-          if (active) setNotice('目前無法取得這篇貼文的商品')
-        })
-        .finally(() => {
-          if (active) setProductsLoading(false)
-        })
+
+    setSimilarProducts([])
+    setProductsAreDemo(false)
+    setProductsLoading(true)
+
+    async function fetchSimilar() {
+      if (!selectedProductPost) return
+
+      // Tier 1: If post has a catalog ID, query backend /api/v1/posts/{id} (same as Home page)
+      if (!selectedProductPost.id.startsWith('post-user-') && !selectedProductPost.id.startsWith('share-')) {
+        try {
+          const products = await loadPostProducts(selectedProductPost.id)
+          if (active && products.length > 0) {
+            setSimilarProducts(products)
+            setProductsAreDemo(false)
+            setProductsLoading(false)
+            return
+          }
+        } catch {
+          // If 404 or backend unavailable for this post ID, proceed to visual AI search
+        }
+      }
+
+      // Tier 2: If post has imageUrl, use FashionCLIP visual image search via /api/v1/search
+      if (selectedProductPost.imageUrl) {
+        try {
+          const result = await searchCatalogProducts({
+            queryImage: selectedProductPost.imageUrl,
+            queryText: selectedProductPost.outfit?.name || selectedProductPost.caption || undefined,
+            imageWeight: 0.7,
+          })
+          if (active && result.products.length > 0) {
+            setSimilarProducts(result.products)
+            setProductsAreDemo(false)
+            setProductsLoading(false)
+            return
+          }
+        } catch {
+          // Proceed to demo fallback
+        }
+      }
+
+      // Tier 3: Offline / local fallback
+      if (active) {
+        setSimilarProducts(demoProductsForPost(selectedProductPost))
+        setProductsAreDemo(true)
+        setProductsLoading(false)
+      }
     }
-    return () => { active = false }
+
+    void fetchSimilar()
+
+    return () => {
+      active = false
+    }
   }, [selectedProductPost])
 
   function navigate(
@@ -691,6 +765,7 @@ export default function App() {
           onFindProducts={
             openProducts
           }
+          onShare={handleOpenShare}
         />
       )
     }
@@ -736,6 +811,7 @@ export default function App() {
           onGoHome={() =>
             navigate('home')
           }
+          onShare={handleOpenShare}
         />
       )
     }
@@ -770,6 +846,7 @@ export default function App() {
           onGoSaved={() =>
             navigate('saved')
           }
+          onShare={handleOpenShare}
           onUpdateProfile={updateCurrentProfile}
           onSignOut={signOutUser}
         />
@@ -804,6 +881,8 @@ export default function App() {
         }
         onRefreshFeed={refreshFeed}
         onImpression={recordImpression}
+        onOpenProduct={openProduct}
+        onShare={handleOpenShare}
       />
     )
   }
@@ -819,6 +898,15 @@ export default function App() {
         configured={authConfigured}
         onClose={() => setAuthDialogOpen(false)}
         onSuccess={setNotice}
+      />
+
+      <ShareOutfitDialog
+        isOpen={Boolean(sharePost)}
+        post={sharePost}
+        friends={socialFriends}
+        onClose={() => setSharePost(null)}
+        onShareToFriend={handleShareToFriend}
+        onNotify={setNotice}
       />
 
       <div className="app-layout">
@@ -868,6 +956,7 @@ export default function App() {
 
       {selectedProductPost && (
         <SimilarProducts
+          post={selectedProductPost}
           sourceItems={
             selectedProductPost
               .outfit

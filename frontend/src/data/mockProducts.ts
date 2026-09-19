@@ -3,181 +3,218 @@ import type { Product } from '../types/index'
 export const mockProducts: Product[] = [
   {
     id: 'product-001',
-
     brand: 'UNIQLO',
-    name: 'Oxford Oversized Shirt',
-
+    name: 'Oxford Oversized Shirt 牛津寬版長袖襯衫',
     category: 'top',
-
     color: '#f2f1ed',
-
     price: 990,
-
-    similarity: 96,
+    similarity: 97,
+    matchType: 'similar',
+    imageUrl: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=500&auto=format&fit=crop&q=80',
+    productUrl: 'https://www.uniqlo.com/tw/zh_TW/product-detail.html?productCode=u0000000052697',
   },
-
   {
     id: 'product-002',
-
-    brand: 'MUJI',
-    name: 'Washed Cotton Shirt',
-
+    brand: 'MUJI 無印良品',
+    name: 'Washed Linen Shirt 水洗亞麻長袖襯衫',
     category: 'top',
-
     color: '#e8e4dc',
-
     price: 1290,
-
-    similarity: 91,
+    similarity: 94,
+    matchType: 'similar',
+    imageUrl: 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=500&auto=format&fit=crop&q=80',
+    productUrl: 'https://www.muji.com/tw/',
   },
-
   {
     id: 'product-003',
-
     brand: 'GU',
-    name: 'Easy Care Shirt',
-
+    name: 'Easy Care Relaxed Shirt 寬版免燙短袖襯衫',
     category: 'top',
-
     color: '#eeeeeb',
-
     price: 790,
-
-    similarity: 88,
+    similarity: 91,
+    matchType: 'similar',
+    imageUrl: 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=500&auto=format&fit=crop&q=80',
+    productUrl: 'https://www.gu-global.com/tw/',
   },
-
   {
     id: 'product-004',
-
     brand: 'UNIQLO',
-    name: 'Wide Fit Pleated Pants',
-
+    name: 'Wide Fit Pleated Pants 寬版打褶打褶休閒長褲',
     category: 'bottom',
-
     color: '#303844',
-
     price: 1490,
-
-    similarity: 95,
+    similarity: 96,
+    matchType: 'exact',
+    imageUrl: 'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=500&auto=format&fit=crop&q=80',
+    productUrl: 'https://www.uniqlo.com/tw/',
   },
-
   {
     id: 'product-005',
-
-    brand: 'MUJI',
-    name: 'Tapered Trousers',
-
+    brand: 'MUJI 無印良品',
+    name: 'Tapered Easy Trousers 彈性錐形休閒九分褲',
     category: 'bottom',
-
     color: '#363a3d',
-
     price: 1690,
-
-    similarity: 90,
+    similarity: 93,
+    matchType: 'similar',
+    imageUrl: 'https://images.unsplash.com/photo-1506629082955-511b1aa562c8?w=500&auto=format&fit=crop&q=80',
+    productUrl: 'https://www.muji.com/tw/',
   },
-
   {
     id: 'product-006',
-
     brand: 'GU',
-    name: 'Wide Slacks',
-
+    name: 'Wide Slacks 垂墜感打褶寬版西裝褲',
     category: 'bottom',
-
     color: '#323232',
-
     price: 990,
-
-    similarity: 86,
+    similarity: 89,
+    matchType: 'similar',
+    imageUrl: 'https://images.unsplash.com/photo-1517445312882-bc9910d016b7?w=500&auto=format&fit=crop&q=80',
+    productUrl: 'https://www.gu-global.com/tw/',
   },
-
   {
     id: 'product-007',
-
     brand: 'ZARA',
-    name: 'Leather Loafers',
-
+    name: 'Classic Leather Loafers 經典厚底牛皮樂福鞋',
     category: 'shoes',
-
     color: '#49372c',
-
     price: 2990,
-
-    similarity: 94,
+    similarity: 95,
+    matchType: 'similar',
+    imageUrl: 'https://images.unsplash.com/photo-1533867617858-e7b97e060509?w=500&auto=format&fit=crop&q=80',
+    productUrl: 'https://www.zara.com/tw/',
   },
-
   {
     id: 'product-008',
-
     brand: 'New Balance',
-    name: '530 Sneakers',
-
+    name: '530 Retro Running Shoes 復古老爹鞋',
     category: 'shoes',
-
     color: '#d7d5cf',
-
     price: 3280,
-
-    similarity: 92,
+    similarity: 93,
+    matchType: 'similar',
+    imageUrl: 'https://images.unsplash.com/photo-1551107696-a4b0c5a0d9a2?w=500&auto=format&fit=crop&q=80',
+    productUrl: 'https://www.newbalance.com.tw/',
   },
-
   {
     id: 'product-009',
-
-    brand: 'adidas',
-    name: 'Samba OG',
-
+    brand: 'adidas Originals',
+    name: 'Samba OG 德訓經典休閒鞋',
     category: 'shoes',
-
     color: '#eeeeea',
-
     price: 3690,
-
-    similarity: 89,
+    similarity: 91,
+    matchType: 'similar',
+    imageUrl: 'https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?w=500&auto=format&fit=crop&q=80',
+    productUrl: 'https://www.adidas.com.tw/',
   },
-
   {
     id: 'product-010',
-
     brand: 'UNIQLO',
-    name: 'AIRism Cotton T-Shirt',
-
+    name: 'AIRism Cotton Oversized T-Shirt 重磅涼感寬版短T',
     category: 'top',
-
     color: '#1c1c1c',
-
     price: 590,
-
-    similarity: 93,
+    similarity: 95,
+    matchType: 'exact',
+    imageUrl: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=500&auto=format&fit=crop&q=80',
+    productUrl: 'https://www.uniqlo.com/tw/',
   },
-
   {
     id: 'product-011',
-
-    brand: 'MUJI',
-    name: 'Canvas Shoulder Bag',
-
+    brand: 'MUJI 無印良品',
+    name: 'Canvas Shoulder Tote Bag 水洗帆布單肩托特包',
     category: 'bag',
-
     color: '#d7cfbd',
-
     price: 890,
-
-    similarity: 90,
+    similarity: 92,
+    matchType: 'similar',
+    imageUrl: 'https://images.unsplash.com/photo-1544816155-12df9643f363?w=500&auto=format&fit=crop&q=80',
+    productUrl: 'https://www.muji.com/tw/',
   },
-
   {
     id: 'product-012',
-
     brand: 'GU',
-    name: 'Utility Crossbody Bag',
-
+    name: 'Utility Crossbody Bag 尼龍機能隨身斜背包',
     category: 'bag',
-
     color: '#242524',
-
     price: 790,
-
-    similarity: 87,
+    similarity: 90,
+    matchType: 'similar',
+    imageUrl: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500&auto=format&fit=crop&q=80',
+    productUrl: 'https://www.gu-global.com/tw/',
+  },
+  {
+    id: 'product-013',
+    brand: 'Patagonia',
+    name: 'Torrentshell 3L 防風防水機能連帽登山外套',
+    category: 'outerwear',
+    color: '#435334',
+    price: 5980,
+    similarity: 97,
+    matchType: 'similar',
+    imageUrl: 'https://images.unsplash.com/photo-1544441893-675973e31985?w=500&auto=format&fit=crop&q=80',
+    productUrl: 'https://www.patagonia.com/',
+  },
+  {
+    id: 'product-014',
+    brand: 'Carhartt WIP',
+    name: 'Detroit Jacket 經典帆布工裝夾克',
+    category: 'outerwear',
+    color: '#8b5a2b',
+    price: 6880,
+    similarity: 94,
+    matchType: 'similar',
+    imageUrl: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=500&auto=format&fit=crop&q=80',
+    productUrl: 'https://www.carhartt-wip.com/',
+  },
+  {
+    id: 'product-015',
+    brand: 'COS',
+    name: 'Relaxed Belted Trench Coat 垂墜感腰帶風衣外套',
+    category: 'outerwear',
+    color: '#cfc4b6',
+    price: 7500,
+    similarity: 92,
+    matchType: 'similar',
+    imageUrl: 'https://images.unsplash.com/photo-1539533018447-63fcce2678e3?w=500&auto=format&fit=crop&q=80',
+    productUrl: 'https://www.cos.com/',
+  },
+  {
+    id: 'product-016',
+    brand: 'Snow Peak',
+    name: 'Ripstop Field Cargo Pants 多口袋抗撕裂束口工裝褲',
+    category: 'bottom',
+    color: '#2d3329',
+    price: 4980,
+    similarity: 96,
+    matchType: 'similar',
+    imageUrl: 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=500&auto=format&fit=crop&q=80',
+    productUrl: 'https://www.snowpeak.com.tw/',
+  },
+  {
+    id: 'product-017',
+    brand: 'MUJI 無印良品',
+    name: 'Washed Cotton Bucket Hat 防紫外線水洗棉質漁夫帽',
+    category: 'accessory',
+    color: '#dcd6cd',
+    price: 690,
+    similarity: 93,
+    matchType: 'similar',
+    imageUrl: 'https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=500&auto=format&fit=crop&q=80',
+    productUrl: 'https://www.muji.com/tw/',
+  },
+  {
+    id: 'product-018',
+    brand: 'CITIZEN 星辰表',
+    name: 'Eco-Drive Minimalist Leather Watch 簡約光動能皮革腕錶',
+    category: 'accessory',
+    color: '#2a2826',
+    price: 5200,
+    similarity: 91,
+    matchType: 'similar',
+    imageUrl: 'https://images.unsplash.com/photo-1524805444758-089113d48a6d?w=500&auto=format&fit=crop&q=80',
+    productUrl: 'https://www.citizenwatch.com.tw/',
   },
 ]

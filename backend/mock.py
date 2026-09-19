@@ -25,9 +25,21 @@ from .schemas import (
 
 class FixtureCatalog:
     def __init__(self, data_dir: Path):
-        self.products = [Product.model_validate(x) for x in self._read(data_dir / "products.json")]
-        self.posts = [Post.model_validate(x) for x in self._read(data_dir / "posts.json")]
-        self.creators = [Creator.model_validate(x) for x in self._read(data_dir / "creators.json")]
+        product_rows = self._read(data_dir / "products.json")
+        post_rows = self._read(data_dir / "posts.json")
+        creator_rows = self._read(data_dir / "creators.json")
+        # The generated combined catalog contains official products, but an
+        # interrupted data build can leave its editorial post files empty.
+        # Keep the default app demonstrable by using the checked-in Pexels
+        # fixture feed in that one case; products still come from the combined
+        # official catalog and are the FashionCLIP retrieval candidates.
+        if not post_rows and data_dir.name == "combined":
+            fixture_dir = Path(__file__).resolve().parents[1] / "data" / "fixtures"
+            post_rows = self._read(fixture_dir / "posts.json")
+            creator_rows = self._read(fixture_dir / "creators.json")
+        self.products = [Product.model_validate(x) for x in product_rows]
+        self.posts = [Post.model_validate(x) for x in post_rows]
+        self.creators = [Creator.model_validate(x) for x in creator_rows]
         self.products_by_id = {p.product_id: p for p in self.products}
         self.posts_by_id = {p.post_id: p for p in self.posts}
         self.creators_by_id = {c.creator_id: c for c in self.creators}

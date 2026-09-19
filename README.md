@@ -1,6 +1,6 @@
 # Outfit demo backend (E / P0)
 
-依照 [draft2.md](draft2.md) 的 E 職責建立 FastAPI 入口、共用 Pydantic 契約、SQLite session 資料、固定展示 fixtures 與可替換 B/C/D 的整合點。預設 `BACKEND_MODE=mock`，並載入 500 筆 Kaggle 圖片資料及 512 筆 GU／UNIQLO 官方品牌商品快照；這些是展示用快照，不代表即時價格或庫存。`/health` 會標示 fixture/live 狀態。
+依照 [draft2.md](draft2.md) 的 E 職責建立 FastAPI 入口、共用 Pydantic 契約、SQLite session 資料、固定展示 fixtures 與可替換 B/C/D 的整合點。預設 `BACKEND_MODE=mock`，並載入 GU／UNIQLO 官方品牌商品快照；這些是展示用快照，不代表即時價格或庫存。`/health` 會標示 fixture/live 狀態。
 
 ## 本機啟動
 
@@ -12,7 +12,9 @@ python3.11 -m venv .venv
 .venv/bin/python -m uvicorn backend.main:app --host 127.0.0.1 --port 8000
 ```
 
-預設 `APP_DATA_DIR=./data/catalog/combined`，同時含 Kaggle 與官方品牌資料。Kaggle 商品沒有可核對價格與商城頁，因此可在搜尋中出現，但不參與有預算的完整穿搭推薦；官方商品才會用於總價計算。Kaggle JPG 經後端 `/products/kaggle/<id>.jpg` 提供，官方圖片與商品頁則保留 HTTPS URL。若要回到原本 6 筆合成 fixture，可設定 `APP_DATA_DIR=./data/fixtures`。
+預設 `APP_DATA_DIR=./data/catalog/combined`，只含官方品牌商品快照，並保留官方 HTTPS 圖片與商品頁。若要回到原本 6 筆合成 fixture，可設定 `APP_DATA_DIR=./data/fixtures`。
+
+目前快照有 512 筆官方商品（GU 509、UNIQLO 3），其中 488 筆在資料中標記為 `available`；這不是即時庫存。`data/embeddings/official_products/` 是與此商品庫對應的 FashionCLIP 索引，目前 509 筆有成功取得的圖片向量，3 筆 UNIQLO 圖片下載逾時而排除。商城和首頁搜尋預設只顯示可購買且有圖片向量的商品，因此目前可搜尋的有圖且標記有庫存商品是 485 筆。
 
 另開終端：
 
@@ -24,6 +26,30 @@ curl -X POST http://127.0.0.1:8000/api/v1/recommend \
 ```
 
 API 文件：`http://127.0.0.1:8000/docs`。測試：`.venv/bin/python -m pip install -r requirements-dev.txt` 後執行 `.venv/bin/python -m pytest -q`。既有 `.venv` 若仍是 Python 3.8，須以 Python 3.11 重建。
+
+## FashionCLIP 商品搜尋
+
+`/api/v1/search` 會先套用類別、價格、庫存、尺寸、排除顏色／版型等硬條件，再只對合法候選做 FashionCLIP cosine similarity。文字搜尋融合商品文字向量（65%）與「查詢文字→商品圖片」向量（35%）；商品向量在 `data/embeddings/official_products/`，索引 metadata 必須和 query model 的 backend 相同；不同 encoder 的 512 維向量不可混用。
+
+本專案在 macOS/Python 3.11 使用 Transformers 版 `patrickjohncyh/fashion-clip`，而不是會因 `annoy` 原生擴充失敗的舊 `fashion-clip` PyPI 套件。第一次在有網路的機器設定模型快取時執行：
+
+```bash
+FASHIONCLIP_ALLOW_DOWNLOAD=true .venv/bin/python -c 'from scripts.build_embeddings import FashionCLIPWrapper; print(FashionCLIPWrapper(device="cpu").backend)'
+```
+
+正式品牌索引可用下列指令重建；失敗圖片會直接排除，不會用佔位圖產生誤導性的相似度。舊的 `data/embeddings/products/` 混合索引含 Kaggle 商品，應用程式不再讀取。
+
+```bash
+.venv/bin/python scripts/build_embeddings.py --input data/catalog/combined/products.json --output-dir data/embeddings/official_products --skip-failed-images --download-workers 6 --batch-size 16
+```
+
+商品卡不直接載入外站圖片，而走 `/products/catalog/{product_id}.jpg`：後端先讀本機圖片快取，沒有快取時再依序嘗試商品的官方圖片 URL。快取圖檔不納入 Git；新環境可先執行上述索引重建指令，或讓 proxy 即時向官方 CDN 取圖。
+
+貼文「找這套的相似商品」會先依偵測到的衣物框裁切原圖，再以 FashionCLIP 圖片向量在同類別、有庫存的商品中搜尋；低於相似度門檻的結果不會顯示。這些仍是視覺近似品，不保證為貼文同款。
+
+預設只讀本機快取，不會讓 API 請求臨時下載模型。若模型或索引無法載入，文字搜尋會明示為 `metadata_text` 降級；圖片搜尋會回 `embedding_unavailable_image`，不會產生假的相似度分數。正常融合時回應為 `fashion_clip_text_image`；商品卡的「搜尋相關分數」是排序訊號，不是相似機率。
+
+搜尋文字會經由 `backend.intent` 轉成受 Pydantic 驗證的 Intent JSON；設定 `GROQ_API_KEY` 時使用 Groq 的 strict JSON schema，未設定或服務失敗時自動使用本機規則 parser。相似商品卡也以同一個 LLM 做一次批次短說明；沒有可用 LLM 時會明確顯示基於商品標籤的 fallback 說明。
 
 ## 前端啟動
 
