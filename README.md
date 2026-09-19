@@ -40,6 +40,8 @@ VITE_USE_MOCK_RECOMMENDATION=false npm run dev
 
 Windows PowerShell 可使用 `$env:VITE_USE_MOCK_RECOMMENDATION='false'; npm run dev`。Production build 不使用 Mock，並預期 `/api/v1/recommend` 與前端位於同網域。API 金鑰只能留在後端，不得放入 `VITE_*`。
 
+若要啟用前端 Firebase JS SDK，複製 `frontend/.env.example` 為 `frontend/.env.local`，填入 Firebase Web App config。這組 config 只給前端初始化 Auth / Firestore / Storage，不可拿來初始化 Python backend。
+
 前端建置與 contract 測試：
 
 ```bash
@@ -81,6 +83,39 @@ npm test
 設定 `BACKEND_MODE=live`。E 將呼叫 [draft2.md](draft2.md) 第 8 節所列函式：`intent.parse_intent(text, previous_intent)`、`intent.parse_feedback(text, current_intent)`、`search.search_products(request, catalog)`、`recommender.recommend(intent, profile, catalog)`、`feedback.get_profile(user_id)`、`feedback.record_feedback(event)`、`events.record_interactions(events)`、`feedback.get_insights()`。Session reset 另需 D 提供 `feedback.reset_session(session_id)`。Feed P0 仍用固定貼文。B 超時或無法取得時，E 使用可觀察的規則 fallback；缺少 C/D 則回 `DATA_UNAVAILABLE`。真實 catalog 可由 `APP_DATA_DIR` 指向包含 `products.json`、`posts.json`、`creators.json` 的目錄。
 
 環境變數範例見 [.env.example](.env.example)。`CORS_ORIGINS` 以逗號分隔；預設只接受 `http://localhost:5173`。`APP_DB_PATH` 預設在被 Git 忽略的 `runtime/`。API key 僅由 B 模組讀取環境變數，不放進 repo。
+
+## Firebase deployment prep
+
+Firebase project ID: `bnosca-outfit-demo`。
+
+前端使用 Firebase JS SDK：
+
+- `frontend/src/lib/firebase.ts` 從 Vite env 初始化 `auth`、`db`、`storage`。
+- `frontend/.env.local` 僅供本機使用，不提交；範本在 `frontend/.env.example`。
+- 現有推薦 UI 仍保留 `VITE_USE_MOCK_RECOMMENDATION=true` fallback。
+
+後端使用 Firebase Admin SDK：
+
+- `backend/firebase.py` 透過 Application Default Credentials 初始化 Admin SDK。
+- Cloud Run / Google Cloud 執行環境應由 IAM 提供 credentials，不要 commit service account JSON。
+- 本機 seed 前可先執行 `gcloud auth application-default login`，或暫時設定 `GOOGLE_APPLICATION_CREDENTIALS` 指到本機 service account JSON。
+
+Firestore repository layer 位於 `backend/repositories/`，目前先提供 `products`、`posts`、`creators`、`users`、`sessions`、`interactions` 封裝；主推薦流程尚未改成直接依賴 Firestore，避免破壞既有 mock demo。
+
+匯入初始 fixture：
+
+```bash
+python scripts/seed_firestore.py
+```
+
+seed 會把 `data/fixtures/products.json`、`posts.json`、`creators.json` 寫入 Firestore collection，document id 分別使用 `product_id`、`post_id`、`creator_id`。
+
+安全規則草案：
+
+- Firestore: `firebase/firestore.rules`
+- Storage: `firebase/storage.rules`
+
+預期策略是 `products` / `posts` / `creators` 公開讀、client 不可寫；`users` 僅使用者本人可讀寫；`sessions` / `interactions` 必須登入且 `user_id == request.auth.uid`。後端 Admin SDK 由 Google Cloud IAM 控制，不受 Firestore rules 限制。
 
 ## 部署與現況
 
