@@ -23,6 +23,8 @@ eggs/
 .eggs/
 lib/
 lib64/
+!frontend/src/lib/
+!frontend/src/lib/**
 parts/
 sdist/
 var/
@@ -160,6 +162,9 @@ activemq-data/
 
 # Environments
 .env
+.env.*
+!.env.example
+!frontend/.env.example
 .envrc
 .venv
 env/
@@ -237,6 +242,7 @@ __marimo__/
 !GIT_WORKFLOW.md
 !POST_FEED_RECOMMENDER.md
 !BACKEND_README.md
+!WEB_IMPLEMENTATION_HANDOFF.md
 
 # Frontend build and dependency artifacts.
 node_modules/

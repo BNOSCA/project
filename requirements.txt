@@ -8,6 +8,7 @@
 
 # --- origin/main 既有（backend） ---
 fastapi>=0.115,<1
+firebase-admin>=6.5,<7
 pydantic>=2.7,<3
 uvicorn>=0.30,<1
 
