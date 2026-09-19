@@ -171,6 +171,9 @@ export function HomePage({
           onResult={response => {
             setSearchResult(response)
             setIsSearching(false)
+            void onRefreshFeed().catch(() => {
+              setSearchError('商品結果已更新，但貼文推薦暫時無法刷新。')
+            })
           }}
           onError={message => {
             setSearchError(message)
