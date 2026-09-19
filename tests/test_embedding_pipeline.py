@@ -88,6 +88,27 @@ class TestEmbeddingPipeline(unittest.TestCase):
         self.assertNotIn("p-top-001", returned_ids)
         self.assertIn("p-top-002", returned_ids)
 
+    def test_skip_failed_images_keeps_mapping_aligned(self):
+        data_file = self.data_dir / "products.json"
+        items = json.loads(data_file.read_text(encoding="utf-8"))[:1]
+        items.append({"product_id": "missing-image", "name": "missing", "image_url": "not-here.jpg"})
+        data_file.write_text(json.dumps(items), encoding="utf-8")
+        output_dir = self.base_path / "filtered-embeddings"
+
+        run_pipeline(
+            input_file=data_file,
+            output_dir=output_dir,
+            image_dir=self.data_dir / "sample_images",
+            mock=True,
+            skip_failed_images=True,
+        )
+
+        mapping = json.loads((output_dir / "id_mapping.json").read_text(encoding="utf-8"))
+        enhanced = json.loads((output_dir / "products_with_embeddings.json").read_text(encoding="utf-8"))
+        self.assertEqual(mapping["index_to_id"], [items[0]["product_id"]])
+        self.assertEqual([item["product_id"] for item in enhanced], mapping["index_to_id"])
+        self.assertEqual(np.load(output_dir / "image_embeddings.npy").shape[0], 1)
+
 
 if __name__ == "__main__":
     unittest.main()

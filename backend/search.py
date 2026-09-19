@@ -21,7 +21,7 @@ import numpy as np
 from PIL import Image
 
 from .config import ROOT
-from .schemas import Product, RetrievalInfo, SearchHit, SearchRequest, SearchResponse
+from .schemas import DetectedRegion, Product, RetrievalInfo, SearchHit, SearchRequest, SearchResponse
 from scripts.build_embeddings import FashionCLIPWrapper, extract_search_text, l2_normalize
 from scripts.embedding_store import EmbeddingStore
 
@@ -31,11 +31,52 @@ _GLOBAL_STORE: Optional[EmbeddingStore] = None
 _GLOBAL_MODEL: Optional[FashionCLIPWrapper] = None
 
 
+def infer_query_categories(query_text: str) -> list[str]:
+    """Apply unambiguous garment nouns as a hard category filter."""
+    text = query_text.casefold()
+    if "吊飾" in text:
+        return ["accessory"]
+    terms = {
+        "top": ("襯衫", "t恤", "tee", "上衣", "背心", "針織", "毛衣"),
+        "bottom": ("褲", "裙"),
+        "shoes": ("鞋", "靴"),
+        "outerwear": ("外套", "夾克", "大衣"),
+        "accessory": ("包包", "背包", "肩背包", "帽子", "襪", "圍巾", "眼鏡", "腰帶"),
+    }
+    return [category for category, keywords in terms.items()
+            if any(keyword in text for keyword in keywords)]
+
+
+def embedding_runtime() -> dict[str, str | bool | None]:
+    """Describe the actually usable retrieval runtime.
+
+    The vectors committed with the project record the encoder that created
+    them.  A query vector from a different encoder must never be compared to
+    those vectors: identical dimensions do not make two embedding spaces
+    compatible.
+    """
+    store = get_embedding_store()
+    model = get_model()
+    store_backend = str(store.metadata.get("backend")) if store else None
+    compatible = bool(
+        store
+        and store_backend == model.backend
+        and model.backend != "mock"
+    )
+    return {
+        "model_backend": model.backend,
+        "store_backend": store_backend,
+        "store_compatible": compatible,
+    }
+
+
 def get_embedding_store() -> Optional[EmbeddingStore]:
     """Retrieve or load cached EmbeddingStore."""
     global _GLOBAL_STORE
     if _GLOBAL_STORE is None:
-        store_path = ROOT / "data" / "embeddings" / "products"
+        # The older `products` index mixes 500 Kaggle IDs with just 12 official
+        # products.  Search only the index built from this app's official catalog.
+        store_path = ROOT / "data" / "embeddings" / "official_products"
         if store_path.is_dir() and (store_path / "id_mapping.json").is_file():
             try:
                 _GLOBAL_STORE = EmbeddingStore.load(store_path)
@@ -53,8 +94,10 @@ def get_model() -> FashionCLIPWrapper:
     return _GLOBAL_MODEL
 
 
-def load_query_image(image_input: str) -> Optional[Image.Image]:
-    """Load query image from Base64 string, local path, or remote URL."""
+def load_query_image(image_input: str | Image.Image) -> Optional[Image.Image]:
+    """Load query image from an in-memory crop, Base64, local path, or URL."""
+    if isinstance(image_input, Image.Image):
+        return image_input.convert("RGB")
     if not image_input:
         return None
 
@@ -88,9 +131,72 @@ def load_query_image(image_input: str) -> Optional[Image.Image]:
     return None
 
 
+def rank_post_image_products(
+    image_input: str,
+    regions: list[DetectedRegion],
+    candidates: list[Product],
+    excluded_product_ids: set[str] | None = None,
+    min_similarity: float = 0.40,
+    per_region: int = 2,
+    limit: int = 8,
+) -> list[Product]:
+    """Retrieve products from garment crops, never from the whole outfit image.
+
+    Full-person backgrounds and unrelated garments skew FashionCLIP image
+    similarity. The detector's normalized boxes identify the item to compare;
+    each crop is searched only against products of its category. Weak matches
+    are omitted instead of filling the drawer with arbitrary nearest neighbors.
+    """
+    image = load_query_image(image_input)
+    if image is None:
+        return []
+    by_category: dict[str, list[Product]] = {}
+    for product in candidates:
+        by_category.setdefault(product.category, []).append(product)
+    excluded = set(excluded_product_ids or ())
+    selected_images: set[str] = set()
+    selected: list[Product] = []
+    width, height = image.size
+
+    for region in regions:
+        if sum(item.category == region.label for item in selected) >= per_region:
+            continue
+        category_products = [product for product in by_category.get(region.label, ())
+                             if product.product_id not in excluded]
+        if not category_products:
+            continue
+        x1, y1, x2, y2 = region.bbox
+        x1, y1 = max(0.0, x1), max(0.0, y1)
+        x2, y2 = min(1.0, x2), min(1.0, y2)
+        box = (round(x1 * width), round(y1 * height), round(x2 * width), round(y2 * height))
+        if box[2] - box[0] < 24 or box[3] - box[1] < 24:
+            continue
+        crop = image.crop(box)
+        scores = compute_relevance(query_image=crop, candidates=category_products, mode="image")
+        ranked = sorted(category_products, key=lambda product: (-scores.get(product.product_id, 0.0), product.product_id))
+        best_score = scores.get(ranked[0].product_id, 0.0)
+        if best_score < min_similarity:
+            continue
+        for product in ranked:
+            score = scores.get(product.product_id, 0.0)
+            if score < min_similarity or score < best_score - 0.05:
+                break
+            image_key = str(product.image_url or product.product_id)
+            if image_key in selected_images:
+                continue
+            selected.append(product)
+            excluded.add(product.product_id)
+            selected_images.add(image_key)
+            if len(selected) >= limit or sum(item.category == region.label for item in selected) >= per_region:
+                break
+        if len(selected) >= limit:
+            break
+    return selected
+
+
 def compute_relevance(
     query_text: Optional[str] = None,
-    query_image: Optional[str] = None,
+    query_image: Optional[str | Image.Image] = None,
     candidates: Optional[list[Product]] = None,
     mode: str = "text",
     image_weight: float = 0.5,
@@ -105,8 +211,23 @@ def compute_relevance(
     if not candidates:
         return {}
 
-    store = get_embedding_store()
     model = get_model()
+    store = get_embedding_store()
+    # Never mix vectors produced by different encoders.  In particular, a
+    # mock query vector against the committed Transformers index would return
+    # plausible-looking but meaningless rankings.
+    use_store = bool(
+        store
+        and store.metadata.get("backend") == model.backend
+        and model.backend != "mock"
+    )
+
+    # The deterministic mock encoder exists only to keep development and
+    # tests operational.  For text it has no semantic meaning, so use the
+    # transparent metadata fallback instead of presenting random vectors as
+    # relevance.  Image scores remain unavailable until FashionCLIP loads.
+    if model.backend == "mock" and query_text and query_text.strip():
+        return _metadata_text_scores(query_text, candidates)
 
     cand_ids = [p.product_id for p in candidates]
     relevance_scores: dict[str, float] = {}
@@ -121,16 +242,21 @@ def compute_relevance(
             q_img_vec = model.encode_images([q_img])[0]
             q_img_vec = l2_normalize(q_img_vec)
 
-            if store and store.image_embeddings is not None:
+            if use_store and store and store.image_embeddings is not None:
                 # Fast matrix dot product from precomputed store
                 search_res = store.search(q_img_vec, modality="image", top_k=len(cand_ids), candidate_ids=cand_ids)
                 for pid, sim in search_res:
                     # Cosine sim in [-1, 1] mapped to [0, 1]
                     img_scores[pid] = max(0.0, float(sim))
-            else:
-                # Fallback: compute on the fly if store not built
+            elif model.backend != "mock":
+                # There is no product-image encoder cache to calculate
+                # against.  Returning no visual score is preferable to a
+                # fabricated constant score.
                 for p in candidates:
-                    img_scores[p.product_id] = 0.5
+                    img_scores[p.product_id] = 0.0
+            else:
+                for p in candidates:
+                    img_scores[p.product_id] = 0.0
         else:
             for pid in cand_ids:
                 img_scores[pid] = 0.0
@@ -144,7 +270,7 @@ def compute_relevance(
         q_txt_vec = model.encode_texts([q_txt])[0]
         q_txt_vec = l2_normalize(q_txt_vec)
 
-        if store and store.text_embeddings is not None:
+        if use_store and store and store.text_embeddings is not None:
             # Fast matrix dot product from precomputed store
             search_res = store.search(q_txt_vec, modality="text", top_k=len(cand_ids), candidate_ids=cand_ids)
             for pid, sim in search_res:
@@ -227,17 +353,25 @@ def search_products(request: SearchRequest, catalog: list[Product]) -> SearchRes
             retrieval=RetrievalInfo(prefilter_count=0, fusion_method="none"),
         )
 
-    # 1. Compute relevance scores
-    relevance_map = compute_relevance(
-        query_text=request.query_text,
-        query_image=request.query_image,
-        candidates=catalog,
-        mode=request.mode,
-        image_weight=request.image_weight,
-    )
-    model_backend = get_model().backend
-    if request.mode == "text" and model_backend == "mock":
-        relevance_map = _metadata_text_scores(request.query_text, catalog)
+    has_text = bool(request.query_text.strip())
+    has_image = bool(request.query_image)
+    # A filter-only browse keeps deterministic metadata order and avoids
+    # loading a large encoder merely to give every candidate a score of zero.
+    if not has_text and not has_image:
+        relevance_map = {product.product_id: 0.0 for product in catalog}
+        model_backend = "filters_only"
+    else:
+        # 1. Compute relevance scores
+        relevance_map = compute_relevance(
+            query_text=request.query_text,
+            query_image=request.query_image,
+            candidates=catalog,
+            mode=request.mode,
+            image_weight=request.image_weight,
+        )
+        model_backend = get_model().backend
+        if request.query_text.strip() and model_backend == "mock":
+            relevance_map = _metadata_text_scores(request.query_text, catalog)
 
     # 2. Build SearchHits
     hits: list[SearchHit] = []
@@ -265,8 +399,10 @@ def search_products(request: SearchRequest, catalog: list[Product]) -> SearchRes
     # Sort descending by relevance score, ties broken by product_id
     hits.sort(key=lambda h: (-h.score, h.product_id))
 
-    if model_backend == "mock":
-        fusion_name = "metadata_text" if request.mode == "text" else f"mock_embedding_{request.mode}"
+    if model_backend == "filters_only":
+        fusion_name = "filters_only"
+    elif model_backend == "mock":
+        fusion_name = "metadata_text" if request.query_text.strip() else "embedding_unavailable_image"
     else:
         fusion_name = "rrf" if request.mode == "mixed" else f"fashion_clip_{request.mode}"
     retrieval_info = RetrievalInfo(

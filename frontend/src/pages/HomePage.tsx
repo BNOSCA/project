@@ -3,16 +3,13 @@ import { useRef, useState } from 'react'
 
 import { Avatar } from '../components/common/Avatar'
 import { OutfitPost } from '../components/post/OutfitPost'
+import { ProductItem } from '../components/product/ProductItem'
 import { AIQueryBar } from '../components/search/AIQueryBar'
-import {
-  RecommendationResults,
-  RecommendationSkeleton,
-} from '../components/search/RecommendationResults'
-
-import type { RecommendResponse } from '../services/recommendation'
+import type { CatalogSearchResult } from '../services/feed'
 
 import type {
   OutfitPost as OutfitPostModel,
+  Product,
   User,
 } from '../types/index'
 
@@ -44,6 +41,7 @@ interface HomePageProps {
 
   onRefreshFeed: () => Promise<void>
   onImpression: (postId: string, position: number) => void
+  onOpenProduct: (product: Product) => void
 }
 
 export function HomePage({
@@ -57,6 +55,7 @@ export function HomePage({
   onCreatePost,
   onRefreshFeed,
   onImpression,
+  onOpenProduct,
 }: HomePageProps) {
   const [
     feedMode,
@@ -65,11 +64,11 @@ export function HomePage({
     'for-you',
   )
 
-  const [recommendation, setRecommendation] =
-    useState<RecommendResponse | null>(null)
-  const [recommendationError, setRecommendationError] =
+  const [searchResult, setSearchResult] =
+    useState<CatalogSearchResult | null>(null)
+  const [searchError, setSearchError] =
     useState('')
-  const [isRecommending, setIsRecommending] =
+  const [isSearching, setIsSearching] =
     useState(false)
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [pullDistance, setPullDistance] = useState(0)
@@ -161,31 +160,50 @@ export function HomePage({
 
       <section className="home-ai-section">
         <AIQueryBar
-          isLoading={isRecommending}
+          isLoading={isSearching}
           onStart={() => {
-            setIsRecommending(true)
-            setRecommendationError('')
-            setRecommendation(null)
+            setIsSearching(true)
+            setSearchError('')
+            setSearchResult(null)
           }}
           onResult={response => {
-            setRecommendation(response)
-            setIsRecommending(false)
-            void onRefreshFeed()
+            setSearchResult(response)
+            setIsSearching(false)
           }}
           onError={message => {
-            setRecommendationError(message)
-            setIsRecommending(false)
+            setSearchError(message)
+            setIsSearching(false)
           }}
         />
 
-        {isRecommending && <RecommendationSkeleton />}
-        {recommendationError && (
+        {isSearching && <SearchResultSkeleton />}
+        {searchError && (
           <div className="recommendation-error" role="alert">
-            {recommendationError}
+            {searchError}
           </div>
         )}
-        {recommendation && (
-          <RecommendationResults response={recommendation} />
+        {searchResult && (
+          <section className="home-search-results" aria-live="polite">
+            <div className="recommendation-heading-row">
+              <h2>相似商品</h2>
+              <span>{searchResult.products.length} 件結果</span>
+            </div>
+            <p className="search-result-method">
+              {describeSearchMethod(searchResult.fusionMethod, searchResult.candidateCount)}
+            </p>
+            {searchResult.products.length > 0 ? (
+              <div className="shop-product-list">
+                {searchResult.products.map(product => (
+                  <ProductItem key={product.id} product={product} onOpenProduct={onOpenProduct} />
+                ))}
+              </div>
+            ) : (
+              <div className="recommendation-empty">
+                <strong>找不到相似商品</strong>
+                <p>試試調整描述，或改用更清楚的參考圖片。</p>
+              </div>
+            )}
+          </section>
         )}
       </section>
 
@@ -253,5 +271,26 @@ export function HomePage({
         )}
       </section>
     </div>
+  )
+}
+
+function describeSearchMethod(method: string, candidateCount: number) {
+  const source = {
+    fashion_clip_text: 'FashionCLIP 文字語意相似度',
+    fashion_clip_image: 'FashionCLIP 圖像視覺相似度',
+    rrf: '文字與圖片的 RRF 排名融合',
+    metadata_text: '文字欄位比對（FashionCLIP 暫時不可用）',
+    embedding_unavailable_image: '圖片相似度暫時不可用',
+    filters_only: '依條件篩選',
+  }[method] ?? method
+  return `${source} · 在 ${candidateCount} 件符合條件的商品中排序`
+}
+
+function SearchResultSkeleton() {
+  return (
+    <section className="recommendation-section" aria-busy="true">
+      <div className="recommendation-title"><span>正在搜尋相似商品…</span></div>
+      <div className="recommendation-skeleton"><div /><span /><span /></div>
+    </section>
   )
 }

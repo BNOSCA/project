@@ -409,6 +409,48 @@ p {
   cursor: default;
 }
 
+.ai-query-form .query-image-button {
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(35, 38, 32, 0.12);
+  border-radius: 11px;
+  background: transparent;
+  color: #68705e;
+}
+
+.ai-query-form .query-image-button:hover:not(:disabled) {
+  transform: none;
+  background: #f0f2ed;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.query-image-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 9px;
+  color: #68705e;
+  font-size: 11px;
+}
+
+.query-image-status button {
+  color: inherit;
+  font-size: inherit;
+  text-decoration: underline;
+}
+
 .query-suggestions {
   margin-top: 12px;
   display: flex;
@@ -441,6 +483,19 @@ p {
   margin: 22px auto 0;
   padding-top: 20px;
   border-top: 1px solid rgba(49, 54, 44, 0.1);
+}
+
+.home-search-results {
+  max-width: 590px;
+  margin: 22px auto 0;
+  padding-top: 20px;
+  border-top: 1px solid rgba(49, 54, 44, 0.1);
+}
+
+.search-result-method {
+  margin: -2px 0 10px;
+  color: var(--muted);
+  font-size: 10px;
 }
 
 .recommendation-title > span,
@@ -1185,6 +1240,25 @@ p {
   opacity: 0.55;
 }
 
+.shop-advanced-filters {
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.shop-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 38px;
+  padding: 0 4px;
+  color: #52544f;
+  font-size: 12px;
+}
+
+.shop-checkbox input {
+  accent-color: #1b1d19;
+}
+
 .shop-method {
   margin: 16px 0 8px;
   color: var(--muted);
@@ -1194,6 +1268,24 @@ p {
 .shop-product-list {
   margin: 15px -10px 0;
   border-top: 1px solid var(--line);
+}
+
+.product-image-fallback {
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 7px;
+  color: rgba(35, 38, 32, 0.52);
+}
+
+.product-image-fallback span {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
 }
 
 .tag-row {

@@ -10,7 +10,7 @@ import {
   type User as FirebaseUser,
 } from 'firebase/auth'
 
-import { auth, isFirebaseConfigured } from '../lib/firebase'
+import { auth, isFirebaseConfigured } from '../lib/firebase.ts'
 
 export interface RequestIdentity {
   userId: string

@@ -16,8 +16,15 @@ groq
 # --- 貼文推薦 pipeline 新增 ---
 requests
 python-dotenv
-transformers
-torchvision
+# FashionCLIP is loaded through the Transformers implementation below.  The
+# legacy `fashion-clip` PyPI package is optional and currently cannot build
+# its `annoy` extension on this macOS toolchain.
+# This project supports macOS/Python 3.11, where the latest available wheel is
+# PyTorch 2.2. Transformers 4.x remains compatible; Transformers 5 requires
+# PyTorch 2.5 and would silently disable the model in this environment.
+transformers>=4.30,<4.47
+torch>=2.2,<2.3
+torchvision>=0.17,<0.18
 scipy
 pillow
-numpy
+numpy>=1.24,<2

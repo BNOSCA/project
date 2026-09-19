@@ -129,7 +129,7 @@ test('商城搜尋使用共用 session，並把 API 商品映射為可開啟商�
           price: 690, colors: ['black'], product_url: 'https://example.com/gu-1',
         },
       }],
-      retrieval: { fusion_method: 'metadata_text' },
+      retrieval: { fusion_method: 'metadata_text', prefilter_count: 1 },
     }), { status: 200 })
   }) as typeof fetch
 
@@ -137,6 +137,8 @@ test('商城搜尋使用共用 session，並把 API 商品映射為可開啟商�
     const result = await searchCatalogProducts('寬鬆 襯衫', { category: 'top', priceMax: 1000 })
     assert.equal(body?.session_id, demoSessionId())
     assert.deepEqual(body?.filters, { categories: ['top'], price_max: 1000 })
+    assert.equal(body?.mode, 'text')
+    assert.equal(body?.query_image, null)
     assert.equal(result.fusionMethod, 'metadata_text')
     assert.equal(result.products[0].id, 'gu-1')
     assert.equal(result.products[0].similarity, 82)

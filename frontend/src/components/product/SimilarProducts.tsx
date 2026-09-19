@@ -81,7 +81,9 @@ export function SimilarProducts({
               )
               .join(' · ')}
           </span>
-          <small>{isDemo ? '本機示範商品' : '依貼文資訊配對的相似商品；非創作者同款'}</small>
+          <small>{isDemo
+            ? '本機示範商品'
+            : '以貼文圖片透過 FashionCLIP 找到的相似商品；非創作者同款'}</small>
         </div>
 
         <div className="product-list">
@@ -104,7 +106,7 @@ export function SimilarProducts({
               </h2>
 
               <p>
-                商品資料庫之後會持續擴充。
+                這張貼文目前沒有達到相似門檻的有圖商品。
               </p>
             </div>
           )}

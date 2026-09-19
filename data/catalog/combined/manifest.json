@@ -1,19 +1,15 @@
 {
-  "total_products": 1012,
+  "total_products": 512,
   "sources": {
-    "kaggle": 500,
-    "official_brands": 512
+    "GU Taiwan": 509,
+    "UNIQLO Taiwan": 3
   },
   "categories": {
-    "accessory": 59,
-    "bottom": 281,
-    "outerwear": 82,
-    "shoes": 173,
-    "top": 417
+    "accessory": 87,
+    "bottom": 103,
+    "outerwear": 83,
+    "shoes": 7,
+    "top": 232
   },
-  "priced_products": 512,
-  "local_kaggle_images": 500,
-  "posts": 500,
-  "creators": 264,
-  "posts_with_similar_product": 500
+  "priced_products": 512
 }
