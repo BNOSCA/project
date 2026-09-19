@@ -42,6 +42,7 @@ interface HomePageProps {
   onRefreshFeed: () => Promise<void>
   onImpression: (postId: string, position: number) => void
   onOpenProduct: (product: Product) => void
+  onShare?: (post: OutfitPostModel) => void
 }
 
 export function HomePage({
@@ -56,6 +57,7 @@ export function HomePage({
   onRefreshFeed,
   onImpression,
   onOpenProduct,
+  onShare,
 }: HomePageProps) {
   const [
     feedMode,
@@ -265,6 +267,7 @@ export function HomePage({
               onFindProducts={
                 onFindProducts
               }
+              onShare={onShare ? () => onShare(post) : undefined}
               onImpression={postId => onImpression(postId, index)}
             />
           ),
