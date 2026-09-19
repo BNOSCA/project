@@ -23,7 +23,7 @@ from .firebase import initialize_firebase
 from .feed_debug import build_debug_router
 from .mock import FixtureCatalog, MockServices, filter_products, parse_demo_intent
 from .search import embedding_runtime, get_embedding_store, infer_query_categories, rank_post_image_products, search_products
-from .search_explanations import add_search_explanations
+from .search_explanations import add_search_explanations, visual_search_explanations
 from .schemas import (
     ErrorBody, ErrorResponse, EventBatchResult, FeedbackEvent, FeedbackResponse,
     FeedResponse, InsightsResponse, Intent, InteractionEvent, Outfit, PostDetail,
@@ -451,7 +451,15 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         detail = require_mock().catalog.post_detail(post_id)
         if detail is None:
             raise APIError(404, "DATA_UNAVAILABLE", "找不到這篇貼文。")
-        return detail.model_copy(update={"similar_products": image_similar_products(detail.post)})
+        similar_products = image_similar_products(detail.post)
+        explanations, sources = visual_search_explanations(
+            similar_products, [region.label for region in detail.post.detected_regions],
+        )
+        return detail.model_copy(update={
+            "similar_products": similar_products,
+            "similar_product_explanations": explanations,
+            "similar_product_explanation_sources": sources,
+        })
 
     @app.post("/api/v1/events/batch", response_model=EventBatchResult)
     async def events_batch(events: list[InteractionEvent],

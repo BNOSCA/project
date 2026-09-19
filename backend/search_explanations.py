@@ -103,3 +103,22 @@ def add_search_explanations(response: SearchResponse, query_text: str) -> Search
             hit.explanation = _fallback(hit.product)
             hit.explanation_source = "fallback"
     return response
+
+
+def visual_search_explanations(products: list[Product], categories: list[str]) -> tuple[dict[str, str], dict[str, str]]:
+    """Explain visual matches without claiming that they are the original item."""
+    if not products:
+        return {}, {}
+    category_context = "、".join(dict.fromkeys(categories)) or "穿搭單品"
+    query = f"貼文中偵測到的單品類別：{category_context}；結果由 FashionCLIP 視覺相似檢索取得。"
+    try:
+        explanations = _llm_explanations(query, products)
+    except (LLMUnavailableError, LLMResponseError):
+        explanations = {}
+
+    text, sources = {}, {}
+    for product in products:
+        explanation = explanations.get(product.product_id)
+        text[product.product_id] = explanation or f"與貼文中的 {product.category} 同類別，並通過視覺相似檢索。"
+        sources[product.product_id] = "llm" if explanation else "fallback"
+    return text, sources

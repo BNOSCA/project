@@ -332,6 +332,8 @@ class PostDetail(Contract):
     creator: Creator
     tagged_products: list[TaggedProductDetail]
     similar_products: list[Product] = Field(default_factory=list)
+    similar_product_explanations: dict[str, str] = Field(default_factory=dict)
+    similar_product_explanation_sources: dict[str, Literal["llm", "fallback"]] = Field(default_factory=dict)
 
 
 class FeedbackResponse(Contract):

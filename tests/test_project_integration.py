@@ -185,6 +185,10 @@ def test_post_detail_populates_image_retrieved_similar_products(monkeypatch, tmp
     assert calls["excluded_product_ids"] == set()
     assert detail["tagged_products"] == []
     assert {item["category"] for item in detail["similar_products"]} == {"top", "bottom", "shoes"}
+    assert set(detail["similar_product_explanations"]) == {
+        item["product_id"] for item in detail["similar_products"]
+    }
+    assert set(detail["similar_product_explanation_sources"].values()) <= {"llm", "fallback"}
 
 
 def test_shop_search_infers_garment_category_without_explicit_filter(tmp_path: Path):
