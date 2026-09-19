@@ -198,6 +198,23 @@ def compute_relevance(
     return relevance_scores
 
 
+def _metadata_text_scores(query_text: str, candidates: list[Product]) -> dict[str, float]:
+    """Deterministic fallback when the real FashionCLIP runtime is unavailable.
+
+    The committed embedding files may have been produced with the same mock
+    encoder, but their scores do not preserve useful Chinese keyword matches.
+    This keeps the HTTP search useful and makes the fallback observable.
+    """
+    terms = [term for term in re.split(r"[\s,，、；;]+", query_text.casefold()) if term]
+    scores: dict[str, float] = {}
+    for product in candidates:
+        haystack = " ".join((product.name, product.search_text, *product.styles, *product.colors)).casefold()
+        scores[product.product_id] = round(
+            sum(term in haystack for term in terms) / max(len(terms), 1), 4
+        )
+    return scores
+
+
 def search_products(request: SearchRequest, catalog: list[Product]) -> SearchResponse:
     """
     Search API implementation conforming to draft2.md and backend/main.py contracts.
@@ -218,6 +235,9 @@ def search_products(request: SearchRequest, catalog: list[Product]) -> SearchRes
         mode=request.mode,
         image_weight=request.image_weight,
     )
+    model_backend = get_model().backend
+    if request.mode == "text" and model_backend == "mock":
+        relevance_map = _metadata_text_scores(request.query_text, catalog)
 
     # 2. Build SearchHits
     hits: list[SearchHit] = []
@@ -237,7 +257,7 @@ def search_products(request: SearchRequest, catalog: list[Product]) -> SearchRes
                 score=score,
                 score_breakdown={"relevance": score},
                 matched_filters=matched_filters,
-                warnings=[],
+                warnings=["embedding_fallback"] if model_backend == "mock" else [],
                 product=p,
             )
         )
@@ -245,7 +265,10 @@ def search_products(request: SearchRequest, catalog: list[Product]) -> SearchRes
     # Sort descending by relevance score, ties broken by product_id
     hits.sort(key=lambda h: (-h.score, h.product_id))
 
-    fusion_name = "rrf" if request.mode == "mixed" else f"fashion_clip_{request.mode}"
+    if model_backend == "mock":
+        fusion_name = "metadata_text" if request.mode == "text" else f"mock_embedding_{request.mode}"
+    else:
+        fusion_name = "rrf" if request.mode == "mixed" else f"fashion_clip_{request.mode}"
     retrieval_info = RetrievalInfo(
         prefilter_count=len(catalog),
         image_candidates=len(catalog) if request.mode in ("image", "mixed") else 0,

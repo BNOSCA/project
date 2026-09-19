@@ -46,16 +46,32 @@ class Product(Contract):
     product_id: str
     name: str
     category: str
-    price: int = Field(ge=0)
+    # Dataset imports may not provide a price. Those products remain searchable,
+    # but cannot be used to construct a budgeted outfit.
+    price: int | None = Field(default=None, ge=0)
     currency: Literal["TWD"] = "TWD"
     colors: list[str] = Field(default_factory=list)
     styles: list[str] = Field(default_factory=list)
     fit: str | None = None
     materials: list[str] = Field(default_factory=list)
     sizes: list[str] = Field(default_factory=list)
-    image_url: HttpUrl | None = None
+    # A catalog can provide either an official HTTPS URL or an app-served local
+    # path such as /products/kaggle/54933.jpg.
+    image_url: HttpUrl | str | None = None
     product_url: HttpUrl | None = None
     source: str
+    source_name: str | None = None
+    brand: str | None = None
+    brand_product_code: str | None = None
+    gender: Literal["women", "men", "unisex", "kids"] | None = None
+    original_price: int | None = Field(default=None, ge=0)
+    image_urls: list[HttpUrl | str] = Field(default_factory=list)
+    description: str | None = None
+    material_composition: str | None = None
+    care_instructions: str | None = None
+    country_of_origin: str | None = None
+    category_path: list[str] = Field(default_factory=list)
+    attributes: dict[str, str | bool | int | float | list[str]] = Field(default_factory=dict)
     source_checked_at: str | None = None
     availability: Literal["unknown", "demo_only", "available", "unavailable"] = "unknown"
     search_text: str = ""
@@ -279,6 +295,7 @@ class FeedItem(Contract):
     ranking_reason: list[str] = Field(default_factory=list)
     score_breakdown: FeedScoreBreakdown = Field(default_factory=FeedScoreBreakdown)
     post: Post | None = None
+    creator: Creator | None = None
 
 
 class FeedResponse(Contract):

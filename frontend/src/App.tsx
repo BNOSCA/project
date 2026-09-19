@@ -1,6 +1,5 @@
 import {
   useEffect,
-  useMemo,
   useRef,
   useState,
 } from 'react'
@@ -29,12 +28,17 @@ import { DiscoverPage } from './pages/DiscoverPage'
 import { HomePage } from './pages/HomePage'
 import { ProfilePage } from './pages/ProfilePage'
 import { SavedPage } from './pages/SavedPage'
+import { ShopPage } from './pages/ShopPage'
 
 import {
   loadRecommendedFeed,
+  loadPostProducts,
+  recordPostInteraction,
   recordPostLike,
   recordPostSave,
+  recordProductClick,
 } from './services/feed'
+import { getRequestIdentity } from './services/auth'
 
 import type {
   AppPage,
@@ -42,11 +46,13 @@ import type {
   Product,
 } from './types/index'
 
-const likedStorageKey =
-  'loop:liked-posts:v1'
+function likedStorageKey(userId: string) {
+  return `loop:liked-posts:${userId}:v1`
+}
 
-const savedStorageKey =
-  'loop:saved-posts:v1'
+function savedStorageKey(userId: string) {
+  return `loop:saved-posts:${userId}:v1`
+}
 
 function readStoredIds(
   key: string,
@@ -94,6 +100,14 @@ function updateIdList(
       ]
 }
 
+function demoProductsForPost(post: OutfitPost): Product[] {
+  const categories = new Set(post.outfit.items.map(item => item.category))
+  return mockProducts
+    .filter(product => categories.has(product.category))
+    .sort((a, b) => (b.similarity ?? 0) - (a.similarity ?? 0))
+    .slice(0, 8)
+}
+
 export default function App() {
   const [
     currentPage,
@@ -114,22 +128,14 @@ export default function App() {
   const [
     likedIds,
     setLikedIds,
-  ] = useState<string[]>(
-    () =>
-      readStoredIds(
-        likedStorageKey,
-      ),
-  )
+  ] = useState<string[]>([])
 
   const [
     savedIds,
     setSavedIds,
-  ] = useState<string[]>(
-    () =>
-      readStoredIds(
-        savedStorageKey,
-      ),
-  )
+  ] = useState<string[]>([])
+
+  const [activeUserId, setActiveUserId] = useState('anonymous-demo')
 
   const [
     selectedProductPost,
@@ -138,6 +144,14 @@ export default function App() {
     useState<OutfitPost | null>(
       null,
     )
+
+  const [similarProducts, setSimilarProducts] = useState<Product[]>([])
+  const [productsLoading, setProductsLoading] = useState(false)
+  const [productsAreDemo, setProductsAreDemo] = useState(false)
+  const productDwell = useRef<{ activeFrom: number | null; elapsedMs: number }>({
+    activeFrom: null,
+    elapsedMs: 0,
+  })
 
   const [
     notice,
@@ -165,6 +179,47 @@ export default function App() {
     }
   }, [])
 
+  useEffect(() => {
+    let active = true
+    void getRequestIdentity()
+      .then(identity => {
+        if (active) setActiveUserId(identity.userId)
+      })
+      .catch(() => {
+        // Keep the local fallback identity when Firebase is unavailable.
+      })
+    return () => { active = false }
+  }, [])
+
+  useEffect(() => {
+    setLikedIds(readStoredIds(likedStorageKey(activeUserId)))
+    setSavedIds(readStoredIds(savedStorageKey(activeUserId)))
+  }, [activeUserId])
+
+  useEffect(() => {
+    function trackVisibility() {
+      const dwell = productDwell.current
+      if (document.visibilityState === 'hidden' && dwell.activeFrom !== null) {
+        dwell.elapsedMs += Date.now() - dwell.activeFrom
+        dwell.activeFrom = null
+      } else if (document.visibilityState === 'visible' && dwell.activeFrom === null && selectedProductPost) {
+        dwell.activeFrom = Date.now()
+      }
+    }
+    document.addEventListener('visibilitychange', trackVisibility)
+    return () => document.removeEventListener('visibilitychange', trackVisibility)
+  }, [selectedProductPost])
+
+  async function refreshFeed() {
+    const recommendedPosts = await loadRecommendedFeed()
+    if (recommendedPosts.length > 0) {
+      setPosts(current => [
+        ...current.filter(post => post.id.startsWith('post-user-')),
+        ...recommendedPosts,
+      ])
+    }
+  }
+
   /*
    * 優先使用本機 FastAPI 的推薦 feed；後端未啟動時保留
    * 內建 mock，讓純前端開發仍可使用。
@@ -174,12 +229,15 @@ export default function App() {
 
     loadRecommendedFeed()
       .then(recommendedPosts => {
-        if (active && recommendedPosts.length > 0) {
-          setPosts(recommendedPosts)
+        if (active) {
+          setPosts(current => [
+            ...current.filter(post => post.id.startsWith('post-user-')),
+            ...recommendedPosts,
+          ])
         }
       })
       .catch(() => {
-        // Intentional local fallback to mockPosts.
+        if (active) setNotice('後端未連線，顯示本機示範貼文')
       })
 
     return () => {
@@ -209,58 +267,32 @@ export default function App() {
       )
   }, [notice])
 
-  /*
-   * 找與目前 Outfit Item category
-   * 相符的商品。
-   *
-   * 目前：
-   * category filter
-   * → similarity sort
-   *
-   * 未來：
-   * embedding search
-   * → vector similarity
-   */
-  const similarProducts =
-    useMemo(() => {
-      if (
-        !selectedProductPost
-      ) {
-        return []
-      }
-
-      const categories =
-        new Set(
-          selectedProductPost
-            .outfit
-            .items
-            .map(
-              item =>
-                item.category,
-            ),
-        )
-
-      return mockProducts
-        .filter(product =>
-          categories.has(
-            product.category,
-          ),
-        )
-        .sort(
-          (a, b) =>
-            (
-              b.similarity ??
-              0
-            ) -
-            (
-              a.similarity ??
-              0
-            ),
-        )
-        .slice(0, 8)
-    }, [
-      selectedProductPost,
-    ])
+  useEffect(() => {
+    if (!selectedProductPost) return
+    let active = true
+    const localPost = selectedProductPost.id.startsWith('post-user-') ||
+      mockPosts.some(post => post.id === selectedProductPost.id)
+    if (localPost) {
+      setSimilarProducts(demoProductsForPost(selectedProductPost))
+      setProductsAreDemo(true)
+      setProductsLoading(false)
+    } else {
+      setSimilarProducts([])
+      setProductsAreDemo(false)
+      setProductsLoading(true)
+      loadPostProducts(selectedProductPost.id)
+        .then(products => {
+          if (active) setSimilarProducts(products)
+        })
+        .catch(() => {
+          if (active) setNotice('目前無法取得這篇貼文的商品')
+        })
+        .finally(() => {
+          if (active) setProductsLoading(false)
+        })
+    }
+    return () => { active = false }
+  }, [selectedProductPost])
 
   function navigate(
     page: AppPage,
@@ -288,7 +320,7 @@ export default function App() {
           )
 
         localStorage.setItem(
-          likedStorageKey,
+          likedStorageKey(activeUserId),
           JSON.stringify(
             next,
           ),
@@ -298,8 +330,9 @@ export default function App() {
       },
     )
 
-    if (isAdding) {
-      void recordPostLike(postId).catch(() => {
+    if (isAdding && !postId.startsWith('post-user-') &&
+        !mockPosts.some(post => post.id === postId)) {
+      void recordPostLike(postId).then(refreshFeed).catch(() => {
         setNotice('已在本機按讚；推薦回饋暫時無法送出')
       })
     }
@@ -325,7 +358,7 @@ export default function App() {
           )
 
         localStorage.setItem(
-          savedStorageKey,
+          savedStorageKey(activeUserId),
           JSON.stringify(
             next,
           ),
@@ -341,8 +374,9 @@ export default function App() {
       },
     )
 
-    if (isAdding) {
-      void recordPostSave(postId).catch(() => {
+    if (isAdding && !postId.startsWith('post-user-') &&
+        !mockPosts.some(post => post.id === postId)) {
+      void recordPostSave(postId).then(refreshFeed).catch(() => {
         setNotice('已儲存在瀏覽器；收藏互動暫時無法送出')
       })
     }
@@ -351,12 +385,30 @@ export default function App() {
   function openProducts(
     post: OutfitPost,
   ) {
+    productDwell.current = {
+      activeFrom: document.visibilityState === 'visible' ? Date.now() : null,
+      elapsedMs: 0,
+    }
+    if (!post.id.startsWith('post-user-') && !mockPosts.some(item => item.id === post.id)) {
+      void recordPostInteraction(post.id, 'post_open').catch(() => {})
+    }
     setSelectedProductPost(
       post,
     )
   }
 
   function closeProducts() {
+    const post = selectedProductPost
+    const dwell = productDwell.current
+    const dwellMs = Math.min(dwell.elapsedMs +
+      (dwell.activeFrom === null ? 0 : Date.now() - dwell.activeFrom), 30000)
+    if (post &&
+        !post.id.startsWith('post-user-') && !mockPosts.some(item => item.id === post.id)) {
+      if (dwellMs >= 2000) {
+        void recordPostInteraction(post.id, 'dwell', dwellMs).catch(() => {})
+      }
+    }
+    productDwell.current = { activeFrom: null, elapsedMs: 0 }
     setSelectedProductPost(
       null,
     )
@@ -368,6 +420,9 @@ export default function App() {
     if (
       product.productUrl
     ) {
+      if (!product.id.startsWith('product-')) {
+        void recordProductClick(product.id).catch(() => {})
+      }
       window.open(
         product.productUrl,
         '_blank',
@@ -543,6 +598,10 @@ export default function App() {
   }
 
   function renderPage() {
+    if (currentPage === 'shop') {
+      return <ShopPage onOpenProduct={openProduct} />
+    }
+
     if (
       currentPage ===
       'discover'
@@ -674,6 +733,7 @@ export default function App() {
         onCreatePost={() =>
           navigate('post')
         }
+        onRefreshFeed={refreshFeed}
       />
     )
   }
@@ -737,6 +797,8 @@ export default function App() {
           products={
             similarProducts
           }
+          isLoading={productsLoading}
+          isDemo={productsAreDemo}
           onClose={
             closeProducts
           }

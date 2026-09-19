@@ -1,16 +1,18 @@
 # Outfit demo backend (E / P0)
 
-依照 [draft2.md](draft2.md) 的 E 職責建立 FastAPI 入口、共用 Pydantic 契約、SQLite session 資料、固定展示 fixtures 與可替換 B/C/D 的整合點。預設 `BACKEND_MODE=mock`，所有展示商品與貼文都是合成資料，無真實圖片、購買連結或即時庫存。`/health` 會標示 fixture/live 狀態。
+依照 [draft2.md](draft2.md) 的 E 職責建立 FastAPI 入口、共用 Pydantic 契約、SQLite session 資料、固定展示 fixtures 與可替換 B/C/D 的整合點。預設 `BACKEND_MODE=mock`，並載入 500 筆 Kaggle 圖片資料及 512 筆 GU／UNIQLO 官方品牌商品快照；這些是展示用快照，不代表即時價格或庫存。`/health` 會標示 fixture/live 狀態。
 
 ## 本機啟動
 
 需要 Python 3.11+。在 repo 根目錄執行：
 
 ```bash
-python3 -m venv .venv
+python3.11 -m venv .venv
 .venv/bin/python -m pip install -r requirements.txt
 .venv/bin/python -m uvicorn backend.main:app --host 127.0.0.1 --port 8000
 ```
+
+預設 `APP_DATA_DIR=./data/catalog/combined`，同時含 Kaggle 與官方品牌資料。Kaggle 商品沒有可核對價格與商城頁，因此可在搜尋中出現，但不參與有預算的完整穿搭推薦；官方商品才會用於總價計算。Kaggle JPG 經後端 `/products/kaggle/<id>.jpg` 提供，官方圖片與商品頁則保留 HTTPS URL。若要回到原本 6 筆合成 fixture，可設定 `APP_DATA_DIR=./data/fixtures`。
 
 另開終端：
 
@@ -21,7 +23,7 @@ curl -X POST http://127.0.0.1:8000/api/v1/recommend \
   -d '{"session_id":"demo-001","text":"週末想戶外走走，整套預算 3000 元，想要日系寬鬆，不要太貼身。"}'
 ```
 
-API 文件：`http://127.0.0.1:8000/docs`。測試：`.venv/bin/python -m pip install -r requirements-dev.txt` 後執行 `.venv/bin/python -m pytest -q`。
+API 文件：`http://127.0.0.1:8000/docs`。測試：`.venv/bin/python -m pip install -r requirements-dev.txt` 後執行 `.venv/bin/python -m pytest -q`。既有 `.venv` 若仍是 Python 3.8，須以 Python 3.11 重建。
 
 ## 前端啟動
 
@@ -32,13 +34,13 @@ npm --prefix frontend ci
 npm run dev
 ```
 
-開啟 `http://127.0.0.1:5173`。開發模式預設使用固定 Recommendation Mock，以便在後端未啟動時檢查 AI Query、loading、結果與錯誤畫面。若要串接本機 FastAPI，先啟動 port 8000 的後端，再設定 `VITE_USE_MOCK_RECOMMENDATION=false`；Vite 會將 `/api/*` proxy 到 `http://127.0.0.1:8000`。
+開啟 `http://127.0.0.1:5173`。開發模式預設連接本機 FastAPI：推薦、Feed、貼文商品及互動都使用同一 API 與 session。先啟動 port 8000 的後端；Vite 會將 `/api/*` 和 `/products/*` proxy 到後端。只有要單獨預覽前端推薦 UI 時，才設 `VITE_USE_MOCK_RECOMMENDATION=true`。
 
 ```bash
-VITE_USE_MOCK_RECOMMENDATION=false npm run dev
+VITE_USE_MOCK_RECOMMENDATION=true npm run dev
 ```
 
-Windows PowerShell 可使用 `$env:VITE_USE_MOCK_RECOMMENDATION='false'; npm run dev`。Production build 不使用 Mock，並預期 `/api/v1/recommend` 與前端位於同網域。API 金鑰只能留在後端，不得放入 `VITE_*`。
+Production build 不使用 Mock，並預期 `/api/v1/recommend` 與前端位於同網域。API 金鑰只能留在後端，不得放入 `VITE_*`。
 
 若要啟用前端 Firebase JS SDK，複製 `frontend/.env.example` 為 `frontend/.env.local`，填入 Firebase Web App config。這組 config 只給前端初始化 Auth / Firestore / Storage，不可拿來初始化 Python backend。
 
@@ -55,8 +57,8 @@ npm test
 | --- | --- |
 | `GET /health` | 模式、資料庫、catalog 與 B/C/D 可用狀態 |
 | `POST /api/v1/recommend` | Intent、完整穿搭、總價、證據理由；無解回 `NO_MATCHING_PRODUCTS` |
-| `POST /api/v1/search` | 文字搜尋與確定性 metadata 篩選；圖片／混合搜尋留到 P1 |
-| `GET /api/v1/feed?user_id=...&cursor=...` | 固定展示貼文，穩定 cursor 分頁 |
+| `POST /api/v1/search` | 已接入 `backend.search`：文字、圖片與混合商品搜尋；依類別、顏色、價格硬篩選 |
+| `GET /api/v1/feed?user_id=...&cursor=...` | 貼文排序使用 session 偏好、已儲存互動與可選趨勢分數，並提供穩定 cursor 分頁 |
 | `GET /api/v1/posts/{post_id}` | 創作者、來源、標記與對應展示商品 |
 | `POST /api/v1/events/batch` | 事件陣列，回 accepted/duplicate 數 |
 | `POST /api/v1/feedback` | session 偏好與重新推薦；`remember_preference` 暫停用 |
@@ -64,7 +66,7 @@ npm test
 | `POST /api/v1/session/{id}/reset` | 刪除 session 事件、偏好、Intent |
 | `GET /api/v1/insights` | 匿名事件計數、樣本數、時間範圍、`source_type=demo` |
 
-例如文字搜尋：
+例如文字搜尋。商城頁目前使用這個模式；在未安裝 FashionCLIP 依賴時，回應會標示 `metadata_text`，以商品名稱、搜尋欄位、風格和色彩做可重現的文字排序：
 
 ```json
 {"session_id":"demo-001","query_text":"日系","mode":"text","filters":{"categories":["top"],"excluded_colors":["beige"]}}
@@ -78,9 +80,11 @@ npm test
 
 事件上報的 body 是陣列，每筆含 `event_id`、`session_id`、`event_type`、`target_type`、`target_id`。dwell 另需 `dwell_ms` 與 `is_foreground`。所有錯誤使用 `{"error":{"code", "message", "retryable", "details"}}` 格式。
 
-## 接入 B/C/D
+## 已接入的 B/C/D 實作與外部 live 模組
 
-設定 `BACKEND_MODE=live`。E 將呼叫 [draft2.md](draft2.md) 第 8 節所列函式：`intent.parse_intent(text, previous_intent)`、`intent.parse_feedback(text, current_intent)`、`search.search_products(request, catalog)`、`recommender.recommend(intent, profile, catalog)`、`feedback.get_profile(user_id)`、`feedback.record_feedback(event)`、`events.record_interactions(events)`、`feedback.get_insights()`。Session reset 另需 D 提供 `feedback.reset_session(session_id)`。Feed P0 仍用固定貼文。B 超時或無法取得時，E 使用可觀察的規則 fallback；缺少 C/D 則回 `DATA_UNAVAILABLE`。真實 catalog 可由 `APP_DATA_DIR` 指向包含 `products.json`、`posts.json`、`creators.json` 的目錄。
+預設流程已直接接入 repo 內已實作的功能：`backend.mock.MockServices` 的意圖、推薦、回饋、事件與 session profile；`backend.search.search_products` 的商品搜尋；`backend.post_feed.rank_feed` 的貼文排序；以及 `EventStore` 的互動與趨勢分數讀取。前端的「商城」頁已呼叫 `/api/v1/search`，商品點擊也會回寫事件。`backend/post_trends.py` 的趨勢分數會在匯入 Trends CSV 後自動參與排序；目前沒有匯入資料時該訊號為零。
+
+`BACKEND_MODE=live` 保留給 [draft2.md](draft2.md) 第 8 節定義的獨立模組介面：`intent.parse_intent`、`recommender.recommend`、`feedback.get_profile`、`events.record_interactions` 等。這些 `backend/intent.py`、`backend/recommender.py`、`backend/feedback.py`、`backend/events.py` 檔案尚未交付，因此不能設定為 `live`；並非既有實作沒有被 API 呼叫。真實 catalog 可由 `APP_DATA_DIR` 指向包含 `products.json`、`posts.json`、`creators.json` 的目錄。
 
 環境變數範例見 [.env.example](.env.example)。`CORS_ORIGINS` 以逗號分隔；預設只接受 `http://localhost:5173`。`APP_DB_PATH` 預設在被 Git 忽略的 `runtime/`。API key 僅由 B 模組讀取環境變數，不放進 repo。
 
@@ -119,4 +123,6 @@ seed 會把 `data/fixtures/products.json`、`posts.json`、`creators.json` 寫�
 
 ## 部署與現況
 
-可用 [Dockerfile](Dockerfile) 建立映像，預設對外監聽 `8000`，也接受平台提供的 `PORT`；部署平台、domain 與 credentials 尚未提供，因此尚未部署。B/C/D、前端與正式商品授權資料尚未在 repo 中，完整雙模組真實 Demo、三次乾淨環境連跑及錄影／提交須待這些模組完成。此 repo 的 mock 路徑可先提供 A 串接與契約檢查。
+可用 [Dockerfile](Dockerfile) 建立單一映像，包含 React build、FastAPI、合併商品庫與本機 Kaggle 圖片；容器的 `/` 提供前端，`/api/*` 提供 API。預設監聽 `8000`，也接受平台提供的 `PORT`。Docker daemon 未啟動時可先用本機雙服務驗收；部署平台、domain 與 credentials 待提供，因此尚未上線。容器內 SQLite 若未掛載持久磁碟，重啟後 session／事件會消失。
+
+`draft2.md` 的 P0 目前是可跑通的整合展示：1012 件商品、20 篇貼文與相似商品標記、完整穿搭、互動事件及 session 偏好 API；商城頁已接入文字商品搜尋，API 也可接收圖片與混合搜尋。三次合併資料集 API 主流程已通過自動測試；瀏覽器已驗證推薦、貼文商品抽屜與商城查詢。Dashboard UI、session reset UI、獨立 B/C/D live 模組、線上部署與 FashionCLIP 依賴安裝仍待實作或驗收。貼文商品只標示 `similar` 展示配對，並非同款；資料來源與圖片展示權利尚須團隊確認。

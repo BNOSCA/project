@@ -1,4 +1,5 @@
 import { getMockRecommendation } from '../data/mockRecommendation'
+import { authenticatedHeaders, getRequestIdentity } from './auth'
 
 export interface RecommendRequest {
   session_id: string
@@ -35,6 +36,7 @@ export interface RecommendedProduct {
   colors?: string[]
   styles?: string[]
   image_url?: string | null
+  product_url?: string | null
 }
 
 export interface RecommendedOutfit {
@@ -56,7 +58,7 @@ export interface RecommendResponse {
 
 const useDevelopmentMock =
   import.meta.env.DEV &&
-  import.meta.env.VITE_USE_MOCK_RECOMMENDATION !== 'false'
+  import.meta.env.VITE_USE_MOCK_RECOMMENDATION === 'true'
 
 export async function recommend(
   request: RecommendRequest,
@@ -65,21 +67,33 @@ export async function recommend(
     return getMockRecommendation(request)
   }
 
+  const [identity, authHeaders] = await Promise.all([
+    getRequestIdentity(),
+    authenticatedHeaders(),
+  ])
+
   const response = await fetch('/api/v1/recommend', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      ...authHeaders,
     },
     body: JSON.stringify({
       ...request,
-      user_id: request.user_id ?? 'anonymous-demo',
+      user_id: identity.userId,
       filters: request.filters ?? {},
       image: request.image ?? null,
     }),
   })
 
   if (!response.ok) {
-    throw new Error('Recommendation request failed')
+    const body = await response.json().catch(() => null) as
+      | { error?: { code?: string; message?: string } }
+      | null
+    if (body?.error?.code === 'NO_MATCHING_PRODUCTS') {
+      throw new Error(body.error.message ?? '目前沒有符合條件的完整穿搭，請調整預算或限制。')
+    }
+    throw new Error(body?.error?.message ?? '目前無法取得推薦，請稍後再試。')
   }
 
   return response.json() as Promise<RecommendResponse>

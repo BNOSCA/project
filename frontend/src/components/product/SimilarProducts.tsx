@@ -14,6 +14,10 @@ interface SimilarProductsProps {
 
   products: Product[]
 
+  isLoading?: boolean
+
+  isDemo?: boolean
+
   onClose: () => void
 
   onOpenProduct?: (
@@ -24,6 +28,8 @@ interface SimilarProductsProps {
 export function SimilarProducts({
   sourceItems,
   products,
+  isLoading = false,
+  isDemo = false,
   onClose,
   onOpenProduct,
 }: SimilarProductsProps) {
@@ -44,7 +50,7 @@ export function SimilarProducts({
             </span>
 
             <h2>
-              找到相似單品
+              貼文商品
             </h2>
           </div>
 
@@ -60,11 +66,11 @@ export function SimilarProducts({
 
         <div className="product-source">
           <strong>
-            AI 辨識到
+            穿搭標籤：
             {' '}
             {sourceItems.length}
             {' '}
-            個主要單品
+            個單品
           </strong>
 
           <span>
@@ -75,10 +81,13 @@ export function SimilarProducts({
               )
               .join(' · ')}
           </span>
+          <small>{isDemo ? '本機示範商品' : '依貼文資訊配對的相似商品；非創作者同款'}</small>
         </div>
 
         <div className="product-list">
-          {products.length ? (
+          {isLoading ? (
+            <div className="empty-state" role="status">正在載入商品…</div>
+          ) : products.length ? (
             products.map(product => (
               <ProductItem
                 key={product.id}

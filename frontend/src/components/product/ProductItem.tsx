@@ -1,6 +1,7 @@
 import {
   ExternalLink,
 } from 'lucide-react'
+import { useState } from 'react'
 
 import type {
   Product,
@@ -18,6 +19,7 @@ export function ProductItem({
   product,
   onOpenProduct,
 }: ProductItemProps) {
+  const [imageFailed, setImageFailed] = useState(false)
   return (
     <article className="product-card">
       <div
@@ -26,7 +28,12 @@ export function ProductItem({
           backgroundColor:
             product.color,
         }}
-      />
+      >
+        {product.imageUrl && !imageFailed && (
+          <img src={product.imageUrl} alt={product.name} loading="lazy"
+            onError={() => setImageFailed(true)} />
+        )}
+      </div>
 
       <div className="product-info">
         <span>
@@ -36,6 +43,10 @@ export function ProductItem({
         <strong>
           {product.name}
         </strong>
+
+        {product.matchType && (
+          <small>{product.matchType === 'exact' ? '同款' : '相似商品（展示配對）'}</small>
+        )}
 
         {typeof product.similarity ===
           'number' && (

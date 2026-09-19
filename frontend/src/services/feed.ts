@@ -1,10 +1,10 @@
 import type {
   OutfitItemCategory,
   OutfitPost,
+  Product,
 } from '../types'
-
-const userId = 'anonymous-demo'
-const sessionStorageKey = 'loop:feed-session:v1'
+import { getSessionId } from './session'
+import { authenticatedHeaders, getRequestIdentity } from './auth'
 
 interface ApiPost {
   post_id: string
@@ -27,19 +27,12 @@ interface ApiFeedResponse {
   items: Array<{
     score: number
     post: ApiPost | null
+    creator?: { display_name: string } | null
   }>
 }
 
-function feedSessionId() {
-  const existing = localStorage.getItem(sessionStorageKey)
-
-  if (existing) {
-    return existing
-  }
-
-  const created = crypto.randomUUID()
-  localStorage.setItem(sessionStorageKey, created)
-  return created
+export function demoSessionId() {
+  return getSessionId()
 }
 
 function itemCategory(tag: string): OutfitItemCategory {
@@ -53,9 +46,17 @@ function itemCategory(tag: string): OutfitItemCategory {
   return 'top'
 }
 
-function toOutfitPost(post: ApiPost, score: number): OutfitPost {
+function itemName(tag: string): string {
+  const names: Record<string, string> = {
+    top: '上衣', bottom: '下身', shoes: '鞋款', outerwear: '外套',
+    bag: '包款', accessory: '配件',
+  }
+  return names[tag.toLowerCase()] ?? tag
+}
+
+function toOutfitPost(post: ApiPost, score: number, creatorDisplayName?: string): OutfitPost {
   const tags = post.item_tags.length > 0 ? post.item_tags : ['Outfit']
-  const creatorName = post.creator_id.replace(/^creator-/, '').replaceAll('-', ' ')
+  const creatorName = creatorDisplayName ?? post.creator_id.replace(/^creator-/, '').replaceAll('-', ' ')
 
   return {
     id: post.post_id,
@@ -79,7 +80,7 @@ function toOutfitPost(post: ApiPost, score: number): OutfitPost {
       items: tags.map((tag, index) => ({
         id: `${post.post_id}-item-${index}`,
         category: itemCategory(tag),
-        name: tag,
+        name: itemName(tag),
         color: post.colors[index % Math.max(post.colors.length, 1)] ?? '#d8d3ca',
         style: post.styles[0],
       })),
@@ -96,12 +97,16 @@ function toOutfitPost(post: ApiPost, score: number): OutfitPost {
 }
 
 export async function loadRecommendedFeed(): Promise<OutfitPost[]> {
+  const [identity, authHeaders] = await Promise.all([
+    getRequestIdentity(),
+    authenticatedHeaders(),
+  ])
   const query = new URLSearchParams({
-    user_id: userId,
-    session_id: feedSessionId(),
+    user_id: identity.userId,
+    session_id: getSessionId(identity.userId),
     limit: '20',
   })
-  const response = await fetch(`/api/v1/feed?${query}`)
+  const response = await fetch(`/api/v1/feed?${query}`, { headers: authHeaders })
 
   if (!response.ok) {
     throw new Error(`Feed request failed (${response.status})`)
@@ -110,13 +115,123 @@ export async function loadRecommendedFeed(): Promise<OutfitPost[]> {
   const data = (await response.json()) as ApiFeedResponse
   return data.items
     .filter((item): item is typeof item & { post: ApiPost } => item.post !== null)
-    .map(item => toOutfitPost(item.post, item.score))
+    .map(item => toOutfitPost(item.post, item.score, item.creator?.display_name))
+}
+
+interface ApiCatalogProduct {
+  product_id: string
+  name: string
+  category: string
+  brand?: string | null
+  source_name?: string | null
+  price: number | null
+  colors: string[]
+  image_url?: string | null
+  product_url?: string | null
+}
+
+interface ApiPostDetail {
+  tagged_products: Array<{
+    match_type: 'exact' | 'similar'
+    product: ApiCatalogProduct
+  }>
+  similar_products: ApiCatalogProduct[]
+}
+
+function catalogCategory(value: string): OutfitItemCategory {
+  if (value === 'top' || value === 'bottom' || value === 'shoes' ||
+      value === 'outerwear' || value === 'bag' || value === 'accessory') {
+    return value
+  }
+  return 'accessory'
+}
+
+function catalogProduct(item: ApiCatalogProduct, matchType?: 'exact' | 'similar'): Product | null {
+  if (item.price === null) return null
+  return {
+    id: item.product_id,
+    brand: item.brand ?? item.source_name ?? '展示商品',
+    name: item.name,
+    category: catalogCategory(item.category),
+    color: item.colors[0] === 'off_white' ? '#f5f4ef' : (item.colors[0] ?? '#d8d3ca'),
+    price: item.price,
+    imageUrl: item.image_url ?? undefined,
+    productUrl: item.product_url ?? undefined,
+    ...(matchType ? { matchType } : {}),
+  }
+}
+
+export async function loadPostProducts(postId: string): Promise<Product[]> {
+  const response = await fetch(`/api/v1/posts/${encodeURIComponent(postId)}`)
+  if (!response.ok) throw new Error(`Post detail failed (${response.status})`)
+  const detail = (await response.json()) as ApiPostDetail
+  const products = [
+    ...detail.tagged_products.map(tag => ({ item: tag.product, matchType: tag.match_type })),
+    ...detail.similar_products.map(item => ({ item, matchType: 'similar' as const })),
+  ]
+  const unique = new Set<string>()
+  return products.flatMap(({ item, matchType }) => {
+    if (unique.has(item.product_id)) return []
+    unique.add(item.product_id)
+    const product = catalogProduct(item, matchType)
+    return product ? [product] : []
+  })
+}
+
+export interface CatalogSearchResult {
+  products: Product[]
+  fusionMethod: string
+}
+
+export async function searchCatalogProducts(
+  queryText: string,
+  filters: {
+    category?: string
+    priceMax?: number
+  } = {},
+): Promise<CatalogSearchResult> {
+  const [identity, authHeaders] = await Promise.all([
+    getRequestIdentity(),
+    authenticatedHeaders(),
+  ])
+  const response = await fetch('/api/v1/search', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...authHeaders },
+    body: JSON.stringify({
+      session_id: getSessionId(identity.userId),
+      query_text: queryText,
+      mode: 'text',
+      filters: {
+        categories: filters.category ? [filters.category] : [],
+        ...(filters.priceMax ? { price_max: filters.priceMax } : {}),
+      },
+    }),
+  })
+  if (!response.ok) {
+    const body = await response.json().catch(() => null) as
+      | { error?: { message?: string } }
+      | null
+    throw new Error(body?.error?.message ?? `商品搜尋失敗 (${response.status})`)
+  }
+  const data = await response.json() as {
+    products: Array<{ product: ApiCatalogProduct | null; score: number }>
+    retrieval: { fusion_method: string }
+  }
+  return {
+    products: data.products.flatMap(hit => {
+      if (!hit.product) return []
+      const product = catalogProduct(hit.product)
+      return product ? [{ ...product, similarity: Math.round(hit.score * 100) }] : []
+    }),
+    fusionMethod: data.retrieval.fusion_method,
+  }
 }
 
 async function postJson(path: string, body: unknown) {
+  const authHeaders = await authenticatedHeaders()
   const response = await fetch(path, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', ...authHeaders },
     body: JSON.stringify(body),
   })
 
@@ -126,25 +241,56 @@ async function postJson(path: string, body: unknown) {
 }
 
 export function recordPostLike(postId: string) {
-  return postJson('/api/v1/feedback', {
+  return getRequestIdentity().then(identity => postJson('/api/v1/feedback', {
     event_id: crypto.randomUUID(),
-    session_id: feedSessionId(),
-    user_id: userId,
+    session_id: getSessionId(identity.userId),
+    user_id: identity.userId,
     event_type: 'like',
     target_type: 'post',
     target_id: postId,
-  })
+  }))
 }
 
 export function recordPostSave(postId: string) {
-  return postJson('/api/v1/events/batch', [{
+  return getRequestIdentity().then(identity => postJson('/api/v1/events/batch', [{
     event_id: crypto.randomUUID(),
-    session_id: feedSessionId(),
-    user_id: userId,
+    session_id: getSessionId(identity.userId),
+    user_id: identity.userId,
     event_type: 'save',
     target_type: 'post',
     target_id: postId,
     surface: 'home-feed',
     is_foreground: true,
-  }])
+  }]))
+}
+
+export function recordPostInteraction(
+  postId: string,
+  eventType: 'post_open' | 'dwell',
+  dwellMs?: number,
+) {
+  return getRequestIdentity().then(identity => postJson('/api/v1/events/batch', [{
+    event_id: crypto.randomUUID(),
+    session_id: getSessionId(identity.userId),
+    user_id: identity.userId,
+    event_type: eventType,
+    target_type: 'post',
+    target_id: postId,
+    surface: 'home-feed',
+    is_foreground: true,
+    ...(dwellMs === undefined ? {} : { dwell_ms: dwellMs }),
+  }]))
+}
+
+export function recordProductClick(productId: string) {
+  return getRequestIdentity().then(identity => postJson('/api/v1/events/batch', [{
+    event_id: crypto.randomUUID(),
+    session_id: getSessionId(identity.userId),
+    user_id: identity.userId,
+    event_type: 'product_click',
+    target_type: 'product',
+    target_id: productId,
+    surface: 'post-products',
+    is_foreground: true,
+  }]))
 }

@@ -3,6 +3,7 @@ import {
   Compass,
   Home,
   Plus,
+  ShoppingBag,
   User,
 } from 'lucide-react'
 
@@ -19,6 +20,11 @@ const navigationItems: Array<{
   label: string
   icon: typeof Home
 }> = [
+  {
+    id: 'shop',
+    label: '商城',
+    icon: ShoppingBag,
+  },
   {
     id: 'home',
     label: '首頁',

@@ -29,6 +29,11 @@ class EventStore:
                     profile_json TEXT NOT NULL,
                     intent_json TEXT
                 );
+                CREATE TABLE IF NOT EXISTS user_profiles (
+                    user_id TEXT PRIMARY KEY,
+                    profile_json TEXT NOT NULL,
+                    updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+                );
                 CREATE TABLE IF NOT EXISTS external_trend_signals (
                     trend_id INTEGER PRIMARY KEY AUTOINCREMENT,
                     source TEXT NOT NULL,
@@ -72,10 +77,37 @@ class EventStore:
             return any((event := json.loads(row["payload"])).get("is_foreground", True) and
                        (event.get("dwell_ms") or 0) >= 2000 for row in rows)
 
+    def list_events(self, session_id: str, user_id: str, limit: int = 500) -> list[dict]:
+        """Return the stored session events that feed ranking actually consumes."""
+        with self.connect() as db:
+            rows = db.execute(
+                """SELECT payload FROM events
+                WHERE session_id = ? AND user_id = ?
+                ORDER BY created_at ASC LIMIT ?""",
+                (session_id, user_id, limit),
+            ).fetchall()
+        return [json.loads(row["payload"]) for row in rows]
+
     def get_profile(self, session_id: str) -> dict | None:
         with self.connect() as db:
             row = db.execute("SELECT profile_json FROM session_profiles WHERE session_id = ?", (session_id,)).fetchone()
             return json.loads(row["profile_json"]) if row else None
+
+    def get_user_profile(self, user_id: str) -> dict | None:
+        with self.connect() as db:
+            row = db.execute(
+                "SELECT profile_json FROM user_profiles WHERE user_id = ?", (user_id,)
+            ).fetchone()
+            return json.loads(row["profile_json"]) if row else None
+
+    def save_user_profile(self, user_id: str, profile: dict) -> None:
+        with self.connect() as db:
+            db.execute(
+                """INSERT INTO user_profiles(user_id, profile_json) VALUES (?, ?)
+                ON CONFLICT(user_id) DO UPDATE SET
+                    profile_json=excluded.profile_json, updated_at=CURRENT_TIMESTAMP""",
+                (user_id, json.dumps(profile, ensure_ascii=False, default=str)),
+            )
 
     def save_profile(self, session_id: str, user_id: str, profile: dict) -> None:
         with self.connect() as db:

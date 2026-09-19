@@ -6,12 +6,14 @@ This is deterministic demo behavior, not a replacement for the owning modules.
 from __future__ import annotations
 
 import json
+import hashlib
 import re
 from datetime import datetime, timezone
 from pathlib import Path
 
 from .db import EventStore
 from .explanation import build_explanation
+from .intent import parse_intent as parse_structured_intent
 from .post_feed import PROFILE_SIGNAL_WEIGHTS, rank_feed, update_profile
 from .schemas import (
     Creator, EventBatchResult, FeedbackEvent, FeedResponse, InsightsResponse,
@@ -57,19 +59,21 @@ class FixtureCatalog:
 
 def filter_products(products: list[Product], filters: SearchFilters, intent: Intent | None = None) -> list[Product]:
     """Apply deterministic metadata constraints before any retrieval or ranking."""
+    fit_applicable_categories = {"top", "bottom", "outerwear", "dress", "set"}
     excluded_colors = set(filters.excluded_colors) | (set(intent.excluded.colors) if intent else set())
     excluded_fits = set(filters.excluded_fits) | (set(intent.excluded.fits) if intent else set())
     result = []
     for product in products:
         if filters.categories and product.category not in filters.categories:
             continue
-        if filters.price_max is not None and product.price > filters.price_max:
+        if filters.price_max is not None and (product.price is None or product.price > filters.price_max):
             continue
         if filters.available_only and product.availability != "available":
             continue
         if excluded_colors and (not product.colors or excluded_colors.intersection(product.colors)):
             continue
-        if excluded_fits and (product.fit is None or product.fit in excluded_fits):
+        if (excluded_fits and product.category in fit_applicable_categories and
+                (product.fit is None or product.fit in excluded_fits)):
             continue
         if filters.sizes and not set(filters.sizes).intersection(product.sizes):
             continue
@@ -131,18 +135,40 @@ def parse_demo_intent(text: str, session_id: str, previous: Intent | None = None
     return intent
 
 
+def intent_to_session_weights(intent: Intent | None) -> dict[str, float]:
+    """Translate the current query intent into post-ranking attributes."""
+    if intent is None:
+        return {}
+
+    weights: dict[str, float] = {}
+    for value in intent.preferred.styles:
+        weights[f"style:{value}"] = 1.0
+    for value in intent.preferred.colors:
+        weights[f"color:{value}"] = 1.0
+    for value in intent.occasion:
+        weights[f"occasion:{value}"] = 1.0
+    for value in intent.excluded.colors:
+        weights[f"color:{value}"] = -1.0
+    return weights
+
+
 class MockServices:
     def __init__(self, catalog: FixtureCatalog, store: EventStore):
         self.catalog = catalog
         self.store = store
 
     def profile(self, session_id: str, user_id: str) -> UserProfile:
-        saved = self.store.get_profile(session_id)
+        # Long-term preferences belong to an account, while intent remains
+        # session-scoped. The session lookup is only a migration fallback for
+        # existing local demo databases.
+        saved = self.store.get_user_profile(user_id) or self.store.get_profile(session_id)
         return UserProfile.model_validate({"user_id": user_id, **(saved or {})})
 
     def parse_intent(self, text: str, session_id: str, user_id: str) -> Intent:
-        previous = self.store.get_intent(session_id)
-        intent = parse_demo_intent(text, session_id, Intent.model_validate(previous) if previous else None)
+        previous_data = self.store.get_intent(session_id)
+        previous = Intent.model_validate(previous_data) if previous_data else None
+        parsed = parse_structured_intent(text, previous)
+        intent = Intent.model_validate({"session_id": session_id, **parsed})
         self.store.save_intent(session_id, user_id, intent.model_dump(mode="json"))
         return intent
 
@@ -160,44 +186,75 @@ class MockServices:
         return SearchResponse(session_id=request.session_id, mode=request.mode, products=hits[:request.limit], retrieval=RetrievalInfo(prefilter_count=len(candidates), text_candidates=len(hits), fusion_method="fixture_rules"))
 
     def recommend(self, intent: Intent, user_id: str, filters: SearchFilters) -> RecommendationResponse:
-        products = filter_products(self.catalog.products, filters, intent)
+        products = [product for product in filter_products(self.catalog.products, filters, intent)
+                    if product.price is not None and (intent.budget_total is None or product.price <= intent.budget_total)]
         profile = self.profile(intent.session_id, user_id)
-        by_category = {category: [p for p in products if p.category == category] for category in intent.required_categories}
+        def priority(item: Product) -> tuple[float, int, str]:
+            matches = (bool(set(item.styles) & set(intent.preferred.styles)) +
+                       bool(set(item.colors) & set(intent.preferred.colors)) +
+                       bool(item.fit and item.fit in intent.preferred.fits))
+            preference = sum(profile.preference_weights.get(f"style:{style}", 0) for style in item.styles)
+            preference += sum(profile.preference_weights.get(f"color:{color}", 0) for color in item.colors)
+            return (-(matches + 0.35 * preference), item.price, item.product_id)
+
+        by_category = {category: sorted((p for p in products if p.category == category), key=priority)[:10]
+                       for category in intent.required_categories}
         outfits: list[Outfit] = []
         if all(by_category.values()):
-            # Fixture size is intentionally tiny; C owns production combination and scoring.
             from itertools import product
-            for index, items in enumerate(product(*(by_category[c] for c in intent.required_categories))):
+            for items in product(*(by_category[c] for c in intent.required_categories)):
                 total = sum(item.price for item in items)
                 if intent.budget_total is not None and total > intent.budget_total:
                     continue
                 style_hits = sum(bool(set(item.styles) & set(intent.preferred.styles)) for item in items)
                 color_hits = sum(bool(set(item.colors) & set(intent.preferred.colors)) for item in items)
-                relevance = (style_hits + color_hits) / max(2 * len(items), 1)
+                fit_hits = sum(bool(item.fit and item.fit in intent.preferred.fits) for item in items)
+                active_dimensions = sum(bool(values) for values in (intent.preferred.styles, intent.preferred.colors, intent.preferred.fits))
+                relevance = (style_hits + color_hits + fit_hits) / max(active_dimensions * len(items), 1)
                 weights = ([profile.preference_weights.get(f"style:{style}", 0) for item in items for style in item.styles] +
                            [profile.preference_weights.get(f"color:{color}", 0) for item in items for color in item.colors])
                 preference = (sum(weights) / max(len(weights), 1) + 1) / 2
                 score = round(0.65 * relevance + 0.35 * preference, 4)
-                outfit = Outfit(outfit_id=f"demo-outfit-{index + 1}", items=list(items), total_price=total, score=score,
+                outfit_key = "|".join(item.product_id for item in items)
+                outfit_id = "demo-outfit-" + hashlib.sha1(outfit_key.encode()).hexdigest()[:12]
+                warnings = ["demo_only"] if any(item.availability == "demo_only" for item in items) else []
+                if any(item.availability in {"unknown", "demo_only"} for item in items):
+                    warnings.append("availability_unknown")
+                outfit = Outfit(outfit_id=outfit_id, items=list(items), total_price=total, score=score,
                                 score_breakdown=ScoreBreakdown(relevance=relevance, preference=preference, compatibility=0, trend=0),
-                                matched_constraints=list(intent.hard_constraints), warnings=["demo_only", "availability_unknown"])
+                                matched_constraints=list(intent.hard_constraints), warnings=warnings)
                 outfit.reason = build_explanation(outfit, intent)
                 outfits.append(outfit)
         outfits.sort(key=lambda o: (-o.score, o.total_price, o.outfit_id))
-        return RecommendationResponse(session_id=intent.session_id, intent=intent, outfits=outfits[:3], fallback_used=True,
-                                      message="固定展示資料；商品價格與庫存不是即時資訊。")
+        distinct_outfits = []
+        seen_product_pages = set()
+        for outfit in outfits:
+            pages = tuple(str(item.product_url or item.product_id) for item in outfit.items)
+            if pages in seen_product_pages:
+                continue
+            seen_product_pages.add(pages)
+            distinct_outfits.append(outfit)
+            if len(distinct_outfits) == 3:
+                break
+        return RecommendationResponse(session_id=intent.session_id, intent=intent, outfits=distinct_outfits, fallback_used=True,
+                                      message="商品資料為展示快照；價格與庫存可能變動。")
 
     def feed(self, user_id: str, session_id: str | None, cursor: str | None, limit: int) -> FeedResponse:
-        # Without a session_id there is no session-scoped profile to look up
-        # (session_profiles is keyed by session_id, not user_id), so callers that omit
-        # it get a neutral, unpersonalized ranking instead of an error.
         offset = int(cursor) if cursor else 0
         profile = self.profile(session_id, user_id) if session_id else UserProfile(user_id=user_id)
+        events = self.store.list_events(session_id, user_id) if session_id else []
+        intent_data = self.store.get_intent(session_id) if session_id else None
+        intent = Intent.model_validate(intent_data) if intent_data else None
+        session_weights = intent_to_session_weights(intent)
         ranked = rank_feed(user_id=user_id, posts=self.catalog.posts, profile=profile,
-                           events=[], limit=len(self.catalog.posts))
+                           events=events, limit=len(self.catalog.posts),
+                           session_weights=session_weights,
+                           external_trend_scores=self.store.trend_scores())
         page = ranked.items[offset:offset + limit]
         for i, item in enumerate(page):
             item.rank = offset + i + 1
+            if item.post is not None:
+                item.creator = self.catalog.creators_by_id[item.post.creator_id]
         next_cursor = str(offset + len(page)) if offset + len(page) < len(ranked.items) else None
         return FeedResponse(user_id=user_id, items=page, next_cursor=next_cursor,
                             profile_version=profile.profile_version)
@@ -245,7 +302,7 @@ class MockServices:
                 profile.preference_weights[attribute] = round(max(-1, min(1, profile.preference_weights.get(attribute, 0) + weight)), 3)
             profile.profile_version += 1
             profile.updated_at = datetime.now(timezone.utc)
-        self.store.save_profile(session_id, user_id, profile.model_dump(mode="json"))
+        self.store.save_user_profile(user_id, profile.model_dump(mode="json"))
 
     def feedback(self, event: FeedbackEvent) -> tuple[UserProfile, bool]:
         for path in event.explicit_patch:
@@ -262,7 +319,7 @@ class MockServices:
                 key = f"{field[:-1] if field.endswith('s') else field}:{value}"
                 profile.preference_weights[key] = -1.0 if kind == "excluded" else 0.4
         profile.updated_at = datetime.now(timezone.utc)
-        self.store.save_profile(event.session_id, event.user_id, profile.model_dump(mode="json"))
+        self.store.save_user_profile(event.user_id, profile.model_dump(mode="json"))
         return profile, False
 
     def insights(self) -> InsightsResponse:
