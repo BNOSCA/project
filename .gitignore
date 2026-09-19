@@ -223,3 +223,10 @@ __marimo__/
 *.md
 !README.md
 !draft2.md
+!frontend/README.md
+
+# Frontend build and dependency artifacts.
+node_modules/
+frontend/node_modules/
+frontend/dist/
+*.tsbuildinfo
