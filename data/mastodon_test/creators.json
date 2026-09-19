@@ -1,0 +1,30 @@
+[
+  {
+    "creator_id": "creator-mastodon-natsushyo-pixelfed-social",
+    "display_name": "夏",
+    "source": "mastodon_public_scrape",
+    "source_url": "https://pixelfed.social/p/natsushyo/129978250414919680",
+    "is_demo": true
+  },
+  {
+    "creator_id": "creator-mastodon-shushu383",
+    "display_name": "shushu",
+    "source": "mastodon_public_scrape",
+    "source_url": "https://mastodon.social/@shushu383/114498291750795309",
+    "is_demo": true
+  },
+  {
+    "creator_id": "creator-mastodon-lacklack407",
+    "display_name": "Lack",
+    "source": "mastodon_public_scrape",
+    "source_url": "https://mastodon.social/@lacklack407/113989642698711097",
+    "is_demo": true
+  },
+  {
+    "creator_id": "creator-mastodon-hk01-mirror-mastodon-hongkongers-net",
+    "display_name": "香港01",
+    "source": "mastodon_public_scrape",
+    "source_url": "https://mastodon.hongkongers.net/@hk01_mirror/116480720583211497",
+    "is_demo": true
+  }
+]

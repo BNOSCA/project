@@ -1,0 +1,1287 @@
+[
+  {
+    "post_id": "mastodon-103595771947317306",
+    "creator_id": "creator-mastodon-natsushyo-pixelfed-social",
+    "image_url": "images/mastodon-103595771947317306.jpeg",
+    "caption": "貓貓襯衫🐈\n\n\n\n#今日穿搭",
+    "source_query": "#今日穿搭",
+    "styles": [
+      "preppy",
+      "minimal",
+      "elegant"
+    ],
+    "colors": [
+      "white",
+      "beige",
+      "gray"
+    ],
+    "occasion": [
+      "casual"
+    ],
+    "fits": [
+      "slim",
+      "regular"
+    ],
+    "materials": [
+      "silky"
+    ],
+    "unknown_fields": [],
+    "garments": [],
+    "image_embedding_id": "mastodon-103595771947317306",
+    "tagged_products": [],
+    "source": "mastodon_public_scrape",
+    "source_checked_at": "2026-09-18",
+    "is_demo": true,
+    "created_at": "2026-09-19T15:32:19Z"
+  },
+  {
+    "post_id": "mastodon-114498291750795309",
+    "creator_id": "creator-mastodon-shushu383",
+    "image_url": "images/mastodon-114498291750795309.png",
+    "caption": "今天的廚房時光✨ 廚房的光線超棒，雖然會做的美食不多，但是還總是很有勇氣的站在這裡，還是先給自己一個大大的微笑來加油啦 #日常穿搭 #廚房日常 #簡單生活",
+    "source_query": "#日常穿搭",
+    "styles": [
+      "minimal",
+      "sporty",
+      "elegant"
+    ],
+    "colors": [
+      "black",
+      "charcoal",
+      "navy"
+    ],
+    "occasion": [
+      "sport"
+    ],
+    "fits": [
+      "relaxed",
+      "slim"
+    ],
+    "materials": [
+      "silky"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "top",
+        "bbox": [
+          0.2068,
+          0.4088,
+          0.6861,
+          0.825
+        ],
+        "colors": [
+          "black",
+          "navy"
+        ],
+        "detection_score": 0.9171
+      }
+    ],
+    "image_embedding_id": "mastodon-114498291750795309",
+    "tagged_products": [],
+    "source": "mastodon_public_scrape",
+    "source_checked_at": "2026-09-18",
+    "is_demo": true,
+    "created_at": "2026-09-19T15:32:19Z"
+  },
+  {
+    "post_id": "mastodon-114486968359150396",
+    "creator_id": "creator-mastodon-shushu383",
+    "image_url": "images/mastodon-114486968359150396.png",
+    "caption": "穿上最愛的粉色圍巾，搭配這件清新的綠色小背心，整個人都感覺好有活力呀～💕 陽光從窗戶灑進來，心情也跟著亮起來了！你們覺得這套穿搭怎麼樣呢？✨ #日常穿搭 #粉色控 #陽光女孩",
+    "source_query": "#日常穿搭",
+    "styles": [
+      "elegant",
+      "minimal",
+      "casual"
+    ],
+    "colors": [
+      "pink",
+      "orange",
+      "white"
+    ],
+    "occasion": [
+      "date"
+    ],
+    "fits": [],
+    "materials": [
+      "silky"
+    ],
+    "unknown_fields": [
+      "fits"
+    ],
+    "garments": [
+      {
+        "label": "dress",
+        "bbox": [
+          0.0876,
+          0.4758,
+          0.7895,
+          1.0035
+        ],
+        "colors": [
+          "pink"
+        ],
+        "detection_score": 0.4174
+      }
+    ],
+    "image_embedding_id": "mastodon-114486968359150396",
+    "tagged_products": [],
+    "source": "mastodon_public_scrape",
+    "source_checked_at": "2026-09-18",
+    "is_demo": true,
+    "created_at": "2026-09-19T15:32:20Z"
+  },
+  {
+    "post_id": "mastodon-114407693725978908",
+    "creator_id": "creator-mastodon-shushu383",
+    "image_url": "images/mastodon-114407693725978908.png",
+    "caption": "今天的穿搭是溫柔系的白色露肩上衣搭配粉嫩小裙子～💕  \n站在這棟超有感覺的建築前，整個人都被浪漫氛圍包圍了！🌿  \n每一個角落都好適合拍照，心情都亮起來了✨  \n#日常穿搭 #溫柔風 #打卡景點 #好心情",
+    "source_query": "#日常穿搭",
+    "styles": [
+      "elegant",
+      "minimal",
+      "formal"
+    ],
+    "colors": [
+      "white",
+      "pink",
+      "orange"
+    ],
+    "occasion": [
+      "date"
+    ],
+    "fits": [],
+    "materials": [
+      "silky"
+    ],
+    "unknown_fields": [
+      "fits"
+    ],
+    "garments": [
+      {
+        "label": "top",
+        "bbox": [
+          0.084,
+          0.4201,
+          0.7229,
+          0.8086
+        ],
+        "colors": [
+          "white",
+          "pink"
+        ],
+        "detection_score": 0.6593
+      }
+    ],
+    "image_embedding_id": "mastodon-114407693725978908",
+    "tagged_products": [],
+    "source": "mastodon_public_scrape",
+    "source_checked_at": "2026-09-18",
+    "is_demo": true,
+    "created_at": "2026-09-19T15:32:20Z"
+  },
+  {
+    "post_id": "mastodon-114239711130670508",
+    "creator_id": "creator-mastodon-shushu383",
+    "image_url": "images/mastodon-114239711130670508.png",
+    "caption": "今天的街頭穿搭，簡單又有型！黑色西裝外套搭配牛仔褲，輕鬆穿出率性風格✨ 走在城市街頭，感受這座城市的活力，心情也跟著飛揚起來～  \n#OOTD #街拍 #城市探索 #日常穿搭 #心情超好",
+    "source_query": "#日常穿搭",
+    "styles": [
+      "elegant",
+      "minimal",
+      "street"
+    ],
+    "colors": [
+      "black",
+      "charcoal",
+      "navy"
+    ],
+    "occasion": [
+      "work"
+    ],
+    "fits": [
+      "regular"
+    ],
+    "materials": [],
+    "unknown_fields": [
+      "materials"
+    ],
+    "garments": [
+      {
+        "label": "top",
+        "bbox": [
+          0.4128,
+          0.5692,
+          0.583,
+          0.6707
+        ],
+        "colors": [
+          "navy",
+          "black"
+        ],
+        "detection_score": 0.6299
+      },
+      {
+        "label": "outerwear",
+        "bbox": [
+          0.2582,
+          0.4835,
+          0.7304,
+          0.8463
+        ],
+        "colors": [
+          "black",
+          "charcoal"
+        ],
+        "detection_score": 0.592
+      },
+      {
+        "label": "accessory",
+        "bbox": [
+          0.6157,
+          0.4942,
+          0.7733,
+          1.0003
+        ],
+        "colors": [
+          "black",
+          "charcoal"
+        ],
+        "detection_score": 0.8442
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.3811,
+          0.8049,
+          0.6812,
+          0.9999
+        ],
+        "colors": [
+          "navy",
+          "blue"
+        ],
+        "detection_score": 0.9218
+      }
+    ],
+    "image_embedding_id": "mastodon-114239711130670508",
+    "tagged_products": [],
+    "source": "mastodon_public_scrape",
+    "source_checked_at": "2026-09-18",
+    "is_demo": true,
+    "created_at": "2026-09-19T15:32:21Z"
+  },
+  {
+    "post_id": "mastodon-114234048461734973",
+    "creator_id": "creator-mastodon-shushu383",
+    "image_url": "images/mastodon-114234048461734973.png",
+    "caption": "今天在台北街頭捕捉到這張超有feel的照片啦～💖 走在熱鬧的街頭， 雖然背景人來人往，但這一刻感覺世界都是我的～ 喜歡這種隨性又自在的時刻，記錄下來分享給你們！ #台北街拍 #日常穿搭 #自信滿滿 #街頭時尚",
+    "source_query": "#日常穿搭",
+    "styles": [
+      "minimal",
+      "elegant",
+      "japanese"
+    ],
+    "colors": [
+      "black",
+      "charcoal",
+      "navy"
+    ],
+    "occasion": [
+      "work"
+    ],
+    "fits": [
+      "slim",
+      "regular"
+    ],
+    "materials": [
+      "silky"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "accessory",
+        "bbox": [
+          0.6085,
+          0.7339,
+          0.677,
+          0.7758
+        ],
+        "colors": [
+          "gray",
+          "blue"
+        ],
+        "detection_score": 0.8923
+      },
+      {
+        "label": "dress",
+        "bbox": [
+          0.2828,
+          0.4494,
+          0.667,
+          1.0016
+        ],
+        "colors": [
+          "black",
+          "charcoal"
+        ],
+        "detection_score": 0.6519
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.2824,
+          0.7196,
+          0.666,
+          0.9984
+        ],
+        "colors": [
+          "black",
+          "navy"
+        ],
+        "detection_score": 0.9147
+      },
+      {
+        "label": "top",
+        "bbox": [
+          0.3245,
+          0.4319,
+          0.6176,
+          0.7183
+        ],
+        "colors": [
+          "navy",
+          "black"
+        ],
+        "detection_score": 0.9825
+      }
+    ],
+    "image_embedding_id": "mastodon-114234048461734973",
+    "tagged_products": [],
+    "source": "mastodon_public_scrape",
+    "source_checked_at": "2026-09-18",
+    "is_demo": true,
+    "created_at": "2026-09-19T15:32:22Z"
+  },
+  {
+    "post_id": "mastodon-114172433221237977",
+    "creator_id": "creator-mastodon-shushu383",
+    "image_url": "images/mastodon-114172433221237977.jpeg",
+    "caption": "今天嘗試了一個新的拍照風格，感覺有點小性感又帶點慵懶的氛圍～✨ 你們覺得這張照片怎麼樣呀？是不是有點不一樣的感覺呢？💕 #日常穿搭 #拍照練習 #小性感",
+    "source_query": "#日常穿搭",
+    "styles": [
+      "elegant",
+      "japanese",
+      "minimal"
+    ],
+    "colors": [
+      "white",
+      "beige",
+      "pink"
+    ],
+    "occasion": [
+      "date"
+    ],
+    "fits": [],
+    "materials": [
+      "silky"
+    ],
+    "unknown_fields": [
+      "fits"
+    ],
+    "garments": [
+      {
+        "label": "accessory",
+        "bbox": [
+          0.0082,
+          0.4421,
+          0.119,
+          0.5143
+        ],
+        "colors": [
+          "beige"
+        ],
+        "detection_score": 0.3928
+      },
+      {
+        "label": "dress",
+        "bbox": [
+          0.0005,
+          0.3853,
+          0.9984,
+          1.0031
+        ],
+        "colors": [
+          "white",
+          "beige"
+        ],
+        "detection_score": 0.8199
+      }
+    ],
+    "image_embedding_id": "mastodon-114172433221237977",
+    "tagged_products": [],
+    "source": "mastodon_public_scrape",
+    "source_checked_at": "2026-09-18",
+    "is_demo": true,
+    "created_at": "2026-09-19T15:32:23Z"
+  },
+  {
+    "post_id": "mastodon-113989642698711097",
+    "creator_id": "creator-mastodon-lacklack407",
+    "image_url": "images/mastodon-113989642698711097.png",
+    "caption": "「✨ 今天走一個簡單俐落的路線~黑色背心+金色波浪髮,就是我的自信穿搭啦!💁‍♀️ 有時候,less is more,不用太多裝飾,簡單也能很有魅力!你們覺得呢?😉 #自信就是最好的配飾 #日常穿搭 #簡單時尚」",
+    "source_query": "#日常穿搭",
+    "styles": [
+      "minimal",
+      "elegant",
+      "casual"
+    ],
+    "colors": [
+      "black",
+      "charcoal",
+      "beige"
+    ],
+    "occasion": [
+      "party"
+    ],
+    "fits": [
+      "relaxed",
+      "regular"
+    ],
+    "materials": [
+      "silky"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "dress",
+        "bbox": [
+          0.1746,
+          0.632,
+          0.7383,
+          0.9973
+        ],
+        "colors": [
+          "black",
+          "charcoal"
+        ],
+        "detection_score": 0.7555
+      }
+    ],
+    "image_embedding_id": "mastodon-113989642698711097",
+    "tagged_products": [],
+    "source": "mastodon_public_scrape",
+    "source_checked_at": "2026-09-18",
+    "is_demo": true,
+    "created_at": "2026-09-19T15:32:23Z"
+  },
+  {
+    "post_id": "mastodon-114158551006426865",
+    "creator_id": "creator-mastodon-shushu383",
+    "image_url": "images/mastodon-114158551006426865.png",
+    "caption": "今天終於吃到心心念念的甜甜圈啦～🍩✨ 穿新買的西裝外套，整個人都超有氣質的啦！坐在咖啡廳裡，享受這份甜甜的幸福感，整個下午都超療癒的～💕 #甜甜圈日常 #穿搭分享 #小確幸時光 #咖啡廳打卡",
+    "source_query": "#穿搭分享",
+    "styles": [
+      "minimal",
+      "elegant",
+      "formal"
+    ],
+    "colors": [
+      "orange",
+      "beige",
+      "brown"
+    ],
+    "occasion": [
+      "work"
+    ],
+    "fits": [],
+    "materials": [],
+    "unknown_fields": [
+      "fits",
+      "materials"
+    ],
+    "garments": [
+      {
+        "label": "outerwear",
+        "bbox": [
+          0.0575,
+          0.5088,
+          0.9377,
+          1.0039
+        ],
+        "colors": [
+          "beige",
+          "brown"
+        ],
+        "detection_score": 0.562
+      }
+    ],
+    "image_embedding_id": "mastodon-114158551006426865",
+    "tagged_products": [],
+    "source": "mastodon_public_scrape",
+    "source_checked_at": "2026-09-18",
+    "is_demo": true,
+    "created_at": "2026-09-19T15:32:24Z"
+  },
+  {
+    "post_id": "mastodon-114013216548138665",
+    "creator_id": "creator-mastodon-shushu383",
+    "image_url": "images/mastodon-114013216548138665.png",
+    "caption": "嘿～今天來分享一張超美的照片！✨ 站在這排色彩繽紛的建築前，整個人都覺得好有氣質啦～📸 這裡的建築風格超特別，橘色、黃色、藍色的牆面讓人感覺像走進童話世界一樣，超級夢幻的！💖 陽光灑下來，整個氛圍都超棒的， #街拍 #旅行日記 #穿搭分享 #夢幻景點 #陽光女孩",
+    "source_query": "#穿搭分享",
+    "styles": [
+      "casual",
+      "minimal",
+      "elegant"
+    ],
+    "colors": [
+      "white",
+      "gray",
+      "beige"
+    ],
+    "occasion": [
+      "casual"
+    ],
+    "fits": [
+      "relaxed",
+      "regular"
+    ],
+    "materials": [
+      "silky"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "accessory",
+        "bbox": [
+          0.375,
+          0.1997,
+          0.5325,
+          0.2533
+        ],
+        "colors": [
+          "white"
+        ],
+        "detection_score": 0.3957
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.2737,
+          0.8005,
+          0.5997,
+          0.9967
+        ],
+        "colors": [
+          "blue",
+          "navy"
+        ],
+        "detection_score": 0.7457
+      },
+      {
+        "label": "top",
+        "bbox": [
+          0.2386,
+          0.3867,
+          0.6288,
+          0.7833
+        ],
+        "colors": [
+          "white",
+          "blue"
+        ],
+        "detection_score": 0.8856
+      }
+    ],
+    "image_embedding_id": "mastodon-114013216548138665",
+    "tagged_products": [],
+    "source": "mastodon_public_scrape",
+    "source_checked_at": "2026-09-18",
+    "is_demo": true,
+    "created_at": "2026-09-19T15:32:24Z"
+  },
+  {
+    "post_id": "mastodon-114492629076321053",
+    "creator_id": "creator-mastodon-shushu383",
+    "image_url": "images/mastodon-114492629076321053.png",
+    "caption": "今天上班前匆匆忙忙地綁鞋帶，結果被同事偷拍了啦～這套淺藍色西裝是我最近最愛的一件，穿起來整個人都精神多了！雖然每天都很忙，但還是要記得保持美美的狀態喔！💼✨ #上班日常 #穿搭日記 #西裝控 #忙裡偷閒",
+    "source_query": "#穿搭日記",
+    "styles": [
+      "elegant",
+      "formal",
+      "minimal"
+    ],
+    "colors": [
+      "blue",
+      "navy",
+      "gray"
+    ],
+    "occasion": [
+      "work"
+    ],
+    "fits": [
+      "relaxed",
+      "regular"
+    ],
+    "materials": [
+      "silky"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "shoes",
+        "bbox": [
+          0.1007,
+          0.8398,
+          0.383,
+          0.9579
+        ],
+        "colors": [
+          "white"
+        ],
+        "detection_score": 0.9254
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.1481,
+          0.4782,
+          0.5842,
+          0.8578
+        ],
+        "colors": [
+          "blue",
+          "navy"
+        ],
+        "detection_score": 0.7038
+      }
+    ],
+    "image_embedding_id": "mastodon-114492629076321053",
+    "tagged_products": [],
+    "source": "mastodon_public_scrape",
+    "source_checked_at": "2026-09-18",
+    "is_demo": true,
+    "created_at": "2026-09-19T15:32:25Z"
+  },
+  {
+    "post_id": "mastodon-114483189191993179",
+    "creator_id": "creator-mastodon-shushu383",
+    "image_url": "images/mastodon-114483189191993179.png",
+    "caption": "今天終於打卡成功啦！這個城市的天際線真的超美的～☁️ 白色小背心加卡其褲，穿搭簡單但超喜歡！💕 大家快來猜猜這是哪裡吧！😏 #城市打卡 #穿搭日記 #旅行日記",
+    "source_query": "#穿搭日記",
+    "styles": [
+      "minimal",
+      "sporty",
+      "casual"
+    ],
+    "colors": [
+      "white",
+      "beige",
+      "green"
+    ],
+    "occasion": [
+      "date"
+    ],
+    "fits": [
+      "relaxed",
+      "oversized"
+    ],
+    "materials": [
+      "silky"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "accessory",
+        "bbox": [
+          0.6661,
+          0.8181,
+          0.7366,
+          0.8525
+        ],
+        "colors": [
+          "beige",
+          "white"
+        ],
+        "detection_score": 0.8429
+      },
+      {
+        "label": "dress",
+        "bbox": [
+          0.2144,
+          0.3393,
+          0.6964,
+          0.9999
+        ],
+        "colors": [
+          "beige",
+          "white"
+        ],
+        "detection_score": 0.4002
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.2158,
+          0.6745,
+          0.6928,
+          0.9967
+        ],
+        "colors": [
+          "beige",
+          "green"
+        ],
+        "detection_score": 0.915
+      },
+      {
+        "label": "top",
+        "bbox": [
+          0.3134,
+          0.3295,
+          0.6307,
+          0.6145
+        ],
+        "colors": [
+          "white"
+        ],
+        "detection_score": 0.9932
+      }
+    ],
+    "image_embedding_id": "mastodon-114483189191993179",
+    "tagged_products": [],
+    "source": "mastodon_public_scrape",
+    "source_checked_at": "2026-09-18",
+    "is_demo": true,
+    "created_at": "2026-09-19T15:32:25Z"
+  },
+  {
+    "post_id": "mastodon-114381268009855106",
+    "creator_id": "creator-mastodon-shushu383",
+    "image_url": "images/mastodon-114381268009855106.png",
+    "caption": "哇～今天穿新買的粉色小可愛出門，整個超喜歡的啦！💖 跟姐妹們聚會拍了好多美照，哢嚓哢嚓根本停不下來📸 這種微涼的天氣配燈光氣氛剛剛好，好chill喔～下次還要穿這件！✨ #姐妹約會 #穿搭日記 #自拍停不下來 😝",
+    "source_query": "#穿搭日記",
+    "styles": [
+      "elegant",
+      "formal",
+      "japanese"
+    ],
+    "colors": [
+      "pink",
+      "orange",
+      "red"
+    ],
+    "occasion": [
+      "party"
+    ],
+    "fits": [],
+    "materials": [
+      "silky"
+    ],
+    "unknown_fields": [
+      "fits"
+    ],
+    "garments": [],
+    "image_embedding_id": "mastodon-114381268009855106",
+    "tagged_products": [],
+    "source": "mastodon_public_scrape",
+    "source_checked_at": "2026-09-18",
+    "is_demo": true,
+    "created_at": "2026-09-19T15:32:26Z"
+  },
+  {
+    "post_id": "mastodon-116480720898085197",
+    "creator_id": "creator-mastodon-hk01-mirror-mastodon-hongkongers-net",
+    "image_url": "images/mastodon-116480720898085197.jpg",
+    "caption": "近日，張曼玉以一身簡約俐落的「高腰寬管牛仔褲」穿搭廣告在各大社群強力播放，再度掀起網路熱議。現年62歲的她，依舊時髦氣場滿分，透過高腰剪裁\nhttps://www.hk01.com/穿搭筆記/60337136/張曼玉牛仔褲穿搭示範-高腰寬管穿出-女神比例-附9個平價款",
+    "source_query": "#穿搭",
+    "styles": [
+      "minimal",
+      "japanese",
+      "casual"
+    ],
+    "colors": [
+      "blue",
+      "navy",
+      "black"
+    ],
+    "occasion": [
+      "casual"
+    ],
+    "fits": [
+      "relaxed",
+      "oversized"
+    ],
+    "materials": [
+      "denim"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "bottom",
+        "bbox": [
+          0.0218,
+          0.4317,
+          0.2908,
+          1.0043
+        ],
+        "colors": [
+          "blue",
+          "gray"
+        ],
+        "detection_score": 0.9841
+      },
+      {
+        "label": "shoes",
+        "bbox": [
+          0.3949,
+          0.9753,
+          0.4468,
+          0.9931
+        ],
+        "colors": [
+          "gray",
+          "blue"
+        ],
+        "detection_score": 0.6496
+      }
+    ],
+    "image_embedding_id": "mastodon-116480720898085197",
+    "tagged_products": [],
+    "source": "mastodon_public_scrape",
+    "source_checked_at": "2026-09-18",
+    "is_demo": true,
+    "created_at": "2026-09-19T15:32:27Z"
+  },
+  {
+    "post_id": "mastodon-116451937542677126",
+    "creator_id": "creator-mastodon-hk01-mirror-mastodon-hongkongers-net",
+    "image_url": "images/mastodon-116451937542677126.jpg",
+    "caption": "一名網友近日在Threads附上影片分享赴日旅遊觀察，只見原PO在日本地鐵穿著人字拖，卻發現周圍幾乎沒有人做出相同穿搭，畫面形成強烈對比，引發網友\nhttps://www.hk01.com/熱爆話題/60342845/赴日旅遊搭地鐵-穿人字拖-遭批沒禮貌-日本網紅-在東京不適合",
+    "source_query": "#穿搭",
+    "styles": [],
+    "colors": [
+      "green"
+    ],
+    "occasion": [],
+    "fits": [],
+    "materials": [],
+    "unknown_fields": [
+      "styles",
+      "occasion",
+      "fits",
+      "materials"
+    ],
+    "garments": [],
+    "image_embedding_id": "mastodon-116451937542677126",
+    "tagged_products": [],
+    "source": "mastodon_public_scrape",
+    "source_checked_at": "2026-09-18",
+    "is_demo": true,
+    "created_at": "2026-09-19T15:32:27Z"
+  },
+  {
+    "post_id": "mastodon-116412301139431785",
+    "creator_id": "creator-mastodon-hk01-mirror-mastodon-hongkongers-net",
+    "image_url": "images/mastodon-116412301139431785.jpg",
+    "caption": "每到新季節來臨，便會想關注最新的流行動態，希望可以快速跟上趨勢之外，同時改變造型打造搶眼注目度，但有時又會擔心風格不合適，而遲遲不敢下手嘗\nhttps://www.hk01.com/穿搭筆記/60338192/2026春季連帽外套穿搭-日本女生4套靈感範本-休閒通勤不踩雷",
+    "source_query": "#穿搭",
+    "styles": [
+      "minimal",
+      "japanese",
+      "casual"
+    ],
+    "colors": [
+      "charcoal",
+      "gray",
+      "black"
+    ],
+    "occasion": [
+      "work"
+    ],
+    "fits": [
+      "oversized",
+      "relaxed"
+    ],
+    "materials": [
+      "knit"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "shoes",
+        "bbox": [
+          0.0915,
+          0.8277,
+          0.1799,
+          0.9807
+        ],
+        "colors": [
+          "black",
+          "charcoal"
+        ],
+        "detection_score": 0.8339
+      },
+      {
+        "label": "accessory",
+        "bbox": [
+          0.4595,
+          0.5574,
+          0.5951,
+          0.8763
+        ],
+        "colors": [
+          "black",
+          "charcoal"
+        ],
+        "detection_score": 0.4621
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.4073,
+          0.3842,
+          0.5925,
+          0.9628
+        ],
+        "colors": [
+          "black",
+          "charcoal"
+        ],
+        "detection_score": 0.8272
+      },
+      {
+        "label": "top",
+        "bbox": [
+          0.4601,
+          0.177,
+          0.5343,
+          0.2621
+        ],
+        "colors": [
+          "black",
+          "navy"
+        ],
+        "detection_score": 0.3791
+      },
+      {
+        "label": "outerwear",
+        "bbox": [
+          0.3897,
+          0.05,
+          0.569,
+          0.552
+        ],
+        "colors": [
+          "white",
+          "gray"
+        ],
+        "detection_score": 0.5604
+      }
+    ],
+    "image_embedding_id": "mastodon-116412301139431785",
+    "tagged_products": [],
+    "source": "mastodon_public_scrape",
+    "source_checked_at": "2026-09-18",
+    "is_demo": true,
+    "created_at": "2026-09-19T15:32:28Z"
+  },
+  {
+    "post_id": "mastodon-116383989635452085",
+    "creator_id": "creator-mastodon-hk01-mirror-mastodon-hongkongers-net",
+    "image_url": "images/mastodon-116383989635452085.jpg",
+    "caption": "如果說風格有語氣，那張員瑛的穿搭大概介於「輕鬆」與「精準」之間。她不靠誇張設計吸引目光，而是用熟悉的單品，穿出剛剛好的比例與節奏。這一季，\nhttps://www.hk01.com/穿搭筆記/60336347/張員瑛2026春夏穿搭-拆解6大高級公式-丹寧-條紋精緻又時髦",
+    "source_query": "#穿搭",
+    "styles": [
+      "casual",
+      "preppy",
+      "minimal"
+    ],
+    "colors": [
+      "red",
+      "blue",
+      "pink"
+    ],
+    "occasion": [
+      "date"
+    ],
+    "fits": [
+      "oversized",
+      "regular"
+    ],
+    "materials": [
+      "knit"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "top",
+        "bbox": [
+          0.1684,
+          0.318,
+          0.3043,
+          0.7813
+        ],
+        "colors": [
+          "blue",
+          "navy"
+        ],
+        "detection_score": 0.4051
+      },
+      {
+        "label": "outerwear",
+        "bbox": [
+          0.0052,
+          0.2847,
+          0.4783,
+          1.0088
+        ],
+        "colors": [
+          "blue",
+          "navy"
+        ],
+        "detection_score": 0.5945
+      }
+    ],
+    "image_embedding_id": "mastodon-116383989635452085",
+    "tagged_products": [],
+    "source": "mastodon_public_scrape",
+    "source_checked_at": "2026-09-18",
+    "is_demo": true,
+    "created_at": "2026-09-19T15:32:29Z"
+  },
+  {
+    "post_id": "mastodon-116361328707022034",
+    "creator_id": "creator-mastodon-hk01-mirror-mastodon-hongkongers-net",
+    "image_url": "images/mastodon-116361328707022034.jpg",
+    "caption": "日本人氣模特三戶夏芽憑著招牌的超短眉上瀏海、搞怪的拍照姿勢深受許多女生喜愛，身為萌系教主的她私下穿搭相當多變，身高152cm更是小隻女們的穿搭\nhttps://www.hk01.com/穿搭筆記/60265570/小個子日雜模特三戶夏芽6招穿搭-傘裙修飾身型綁帶洋裝拉高比例",
+    "source_query": "#穿搭",
+    "styles": [
+      "preppy",
+      "sporty",
+      "japanese"
+    ],
+    "colors": [
+      "navy",
+      "blue",
+      "green"
+    ],
+    "occasion": [
+      "casual"
+    ],
+    "fits": [
+      "oversized",
+      "relaxed"
+    ],
+    "materials": [
+      "knit"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "shoes",
+        "bbox": [
+          0.3538,
+          0.8604,
+          0.411,
+          0.9351
+        ],
+        "colors": [
+          "brown",
+          "beige"
+        ],
+        "detection_score": 0.9664
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.3196,
+          0.5358,
+          0.4219,
+          0.8289
+        ],
+        "colors": [
+          "beige",
+          "white"
+        ],
+        "detection_score": 0.7112
+      },
+      {
+        "label": "dress",
+        "bbox": [
+          0.3122,
+          0.3077,
+          0.4179,
+          0.8356
+        ],
+        "colors": [
+          "gray",
+          "charcoal"
+        ],
+        "detection_score": 0.5899
+      },
+      {
+        "label": "accessory",
+        "bbox": [
+          0.4012,
+          0.626,
+          0.4463,
+          0.7533
+        ],
+        "colors": [
+          "beige",
+          "brown"
+        ],
+        "detection_score": 0.424
+      }
+    ],
+    "image_embedding_id": "mastodon-116361328707022034",
+    "tagged_products": [],
+    "source": "mastodon_public_scrape",
+    "source_checked_at": "2026-09-18",
+    "is_demo": true,
+    "created_at": "2026-09-19T15:32:30Z"
+  },
+  {
+    "post_id": "mastodon-116327367223127751",
+    "creator_id": "creator-mastodon-hk01-mirror-mastodon-hongkongers-net",
+    "image_url": "images/mastodon-116327367223127751.jpg",
+    "caption": "新季節到來，大家是不是已經開始期待想穿上春季新品，在春暖花開大地盎然的時刻，把自己打扮的漂亮，不僅充滿儀式感心情也會變好，喜歡關注日本流行\nhttps://www.hk01.com/穿搭筆記/60333722/2026春季日系穿搭-選用蕾絲點綴溫柔氛圍-4套範本穿出精緻優雅",
+    "source_query": "#穿搭",
+    "styles": [
+      "japanese",
+      "formal",
+      "elegant"
+    ],
+    "colors": [
+      "black",
+      "white",
+      "charcoal"
+    ],
+    "occasion": [
+      "formal"
+    ],
+    "fits": [
+      "oversized",
+      "relaxed"
+    ],
+    "materials": [
+      "knit"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "accessory",
+        "bbox": [
+          0.1246,
+          0.0676,
+          0.2043,
+          0.1184
+        ],
+        "colors": [
+          "brown",
+          "red"
+        ],
+        "detection_score": 0.6185
+      },
+      {
+        "label": "shoes",
+        "bbox": [
+          0.4507,
+          0.8906,
+          0.5088,
+          0.9654
+        ],
+        "colors": [
+          "navy",
+          "black"
+        ],
+        "detection_score": 0.8997
+      },
+      {
+        "label": "bottom",
+        "bbox": [
+          0.4265,
+          0.4152,
+          0.5677,
+          0.9223
+        ],
+        "colors": [
+          "navy",
+          "black"
+        ],
+        "detection_score": 0.614
+      }
+    ],
+    "image_embedding_id": "mastodon-116327367223127751",
+    "tagged_products": [],
+    "source": "mastodon_public_scrape",
+    "source_checked_at": "2026-09-18",
+    "is_demo": true,
+    "created_at": "2026-09-19T15:32:31Z"
+  },
+  {
+    "post_id": "mastodon-116317445666618652",
+    "creator_id": "creator-mastodon-hk01-mirror-mastodon-hongkongers-net",
+    "image_url": "images/mastodon-116317445666618652.jpg",
+    "caption": "GU與韓國設計師品牌rokh聯手的「Play in Style」系列，每次釋出合作消息都會引起不少關注度，全因rokh以獨特時裝剪裁融入街頭穿搭風格，就連Jisoo\nhttps://www.hk01.com/穿搭筆記/60335510/gu-x-rokh三度合作-揉合柔美與機能性的春夏聯乘新系列正式上架",
+    "source_query": "#穿搭",
+    "styles": [
+      "japanese",
+      "vintage",
+      "minimal"
+    ],
+    "colors": [
+      "brown",
+      "charcoal",
+      "green"
+    ],
+    "occasion": [
+      "outdoor"
+    ],
+    "fits": [
+      "oversized",
+      "relaxed"
+    ],
+    "materials": [
+      "knit"
+    ],
+    "unknown_fields": [],
+    "garments": [
+      {
+        "label": "shoes",
+        "bbox": [
+          0.5026,
+          0.8536,
+          0.5724,
+          0.9523
+        ],
+        "colors": [
+          "beige",
+          "brown"
+        ],
+        "detection_score": 0.9748
+      },
+      {
+        "label": "dress",
+        "bbox": [
+          0.3112,
+          0.2091,
+          0.6195,
+          0.7522
+        ],
+        "colors": [
+          "brown",
+          "charcoal"
+        ],
+        "detection_score": 0.9555
+      }
+    ],
+    "image_embedding_id": "mastodon-116317445666618652",
+    "tagged_products": [],
+    "source": "mastodon_public_scrape",
+    "source_checked_at": "2026-09-18",
+    "is_demo": true,
+    "created_at": "2026-09-19T15:32:32Z"
+  }
+]

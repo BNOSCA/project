@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mastodon 樣本 × 屬性抽取</title>
+<meta name="description" content="爬蟲抓到的 20 篇 Mastodon 貼文，跑過 FashionCLIP + YOLOS-fashionpedia 屬性抽取 pipeline 後的結果">
+<style>
+:root { color-scheme: light dark; }
+body { margin: 0; }
+:root {
+  --bg: #f4f3f6; --surface: #ffffff; --surface-2: #ebe9f0; --border: #dcd9e4;
+  --ink: #201c2b; --ink-dim: #5b5668; --accent: #a53e5c; --accent-ink: #ffffff;
+  --warn-bg: #fbe9d7; --warn-border: #e6b56f; --warn-ink: #7a4a12;
+  --news: #6b6480; --personal: #a53e5c;
+  --tag-bg: #ebe6f5; --tag-ink: #4a3f66;
+  --unknown: #c24444;
+  --font-display: "Fraunces", Georgia, "Noto Serif TC", serif;
+  --font-body: "IBM Plex Sans", "Noto Sans TC", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #17151d; --surface: #201d29; --surface-2: #2a2634; --border: #38334a;
+    --ink: #eeecf3; --ink-dim: #a9a3ba; --accent: #e8879e; --accent-ink: #201121;
+    --warn-bg: #3a2c17; --warn-border: #7a5a25; --warn-ink: #f0c88a;
+    --news: #9b93b8; --personal: #e8879e;
+    --tag-bg: #322c47; --tag-ink: #d8d0ec; --unknown: #e88a8a;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #17151d; --surface: #201d29; --surface-2: #2a2634; --border: #38334a;
+  --ink: #eeecf3; --ink-dim: #a9a3ba; --accent: #e8879e; --accent-ink: #201121;
+  --warn-bg: #3a2c17; --warn-border: #7a5a25; --warn-ink: #f0c88a;
+  --news: #9b93b8; --personal: #e8879e;
+  --tag-bg: #322c47; --tag-ink: #d8d0ec; --unknown: #e88a8a;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); padding-inline: 20px; }
+main { max-width: 1200px; margin: 0 auto; padding-block: 8px 56px; }
+header.hero { padding-block: 40px 24px; border-bottom: 1px solid var(--border); margin-bottom: 24px; }
+.eyebrow { font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin: 0 0 10px; }
+h1 { font-family: var(--font-display); font-size: clamp(26px,4.2vw,40px); font-weight: 600; margin: 0 0 12px; text-wrap: balance; }
+.hero p.sub { color: var(--ink-dim); font-size: 15px; line-height: 1.6; max-width: 68ch; margin: 0; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit,minmax(140px,1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-block: 22px; }
+.stat { background: var(--surface); padding: 15px 18px; }
+.stat__value { font-family: var(--font-display); font-size: 24px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.stat__label { font-size: 12px; color: var(--ink-dim); margin-top: 2px; }
+.callout { background: var(--warn-bg); border: 1px solid var(--warn-border); color: var(--warn-ink); border-radius: 12px; padding: 16px 18px; font-size: 13.5px; line-height: 1.65; margin-bottom: 26px; }
+.callout ul { margin: 8px 0 0; padding-inline-start: 20px; }
+.panel { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px 20px; margin-bottom: 28px; font-size: 13px; }
+.panel h2 { font-family: var(--font-display); font-size: 15px; font-weight: 600; margin: 0 0 10px; }
+.legend-item { margin-right: 16px; color: var(--ink-dim); }
+.dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 5px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(260px,1fr)); gap: 18px; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; }
+.card__media { position: relative; aspect-ratio: 3/4; background: var(--surface-2); }
+.card__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.box { position: absolute; border: 2px solid; box-sizing: border-box; border-radius: 3px; }
+.box-label { position: absolute; top: -17px; left: -2px; font-size: 9.5px; font-family: var(--font-mono); color: #fff; padding: 1px 5px; border-radius: 3px; white-space: nowrap; }
+.badge { position: absolute; top: 10px; left: 10px; font-size: 11px; font-family: var(--font-mono); padding: 3px 8px; border-radius: 999px; color: var(--accent-ink); }
+.badge--personal { background: var(--personal); }
+.badge--news { background: var(--news); }
+.card__body { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 10px; }
+.card__meta { display: flex; justify-content: space-between; gap: 8px; font-size: 12px; }
+.card__author { font-weight: 600; overflow-wrap: anywhere; }
+.card__tag { color: var(--accent); font-family: var(--font-mono); white-space: nowrap; }
+.card__caption { font-size: 13px; line-height: 1.5; margin: 0; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; color: var(--ink-dim); }
+.card__caption a { color: var(--accent); }
+.attrs { display: flex; flex-direction: column; gap: 5px; border-top: 1px solid var(--border); padding-top: 10px; }
+.attr-row { display: grid; grid-template-columns: 40px 1fr; gap: 8px; align-items: start; font-size: 12px; }
+.attr-label { color: var(--ink-dim); font-family: var(--font-mono); padding-top: 2px; }
+.attr-values { display: flex; flex-wrap: wrap; gap: 4px; }
+.tag { background: var(--tag-bg); color: var(--tag-ink); padding: 1px 8px; border-radius: 999px; font-size: 11.5px; }
+.tag--unknown { background: transparent; color: var(--unknown); padding: 0; font-family: var(--font-mono); }
+.tag--empty { background: transparent; color: var(--ink-dim); padding: 0; }
+footer.note { margin-top: 32px; font-size: 12px; color: var(--ink-dim); line-height: 1.6; }
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+</head>
+<body>
+<main>
+  <header class="hero">
+    <p class="eyebrow">爬蟲樣本 → FashionCLIP + YOLOS-fashionpedia</p>
+    <h1>屬性抽取 Pipeline 效果</h1>
+    <p class="sub">把爬蟲抓到的 20 篇 Mastodon 貼文餵進既有的 <code>extract_post_attributes.py</code> 邏輯（不動原本 Pexels 那份正式資料，輸出到 <code>data/mastodon_test/</code> 另外檢視）：FashionCLIP 對圖片做風格／顏色／場合／版型／材質的 zero-shot 分類，YOLOS-fashionpedia 框出單品位置。</p>
+  </header>
+
+  <div class="stats">
+    <div class="stat"><div class="stat__value">20</div><div class="stat__label">處理貼文數</div></div>
+    <div class="stat"><div class="stat__value">17</div><div class="stat__label">至少偵測到 1 件單品</div></div>
+    <div class="stat"><div class="stat__value">3</div><div class="stat__label">沒偵測到任何單品</div></div>
+    <div class="stat"><div class="stat__value">7</div><div class="stat__label">有欄位判斷不出（留空）</div></div>
+  </div>
+
+  <div class="callout">
+    <strong>跑完 pipeline 之後的觀察：</strong>
+    <ul>
+      <li>真實社群照片（有人物、背景雜訊、非純棚拍）大多還是能抓到單品，17/20 篇至少框到一件；門檻沿用跟 Pexels 那批一樣的設定，沒有另外調整。</li>
+      <li>媒體轉發帳號（<code>hk01_mirror</code>）的圖片意外地也能被偵測出單品——因為那些新聞配圖本身就是時尚照片，只是文字是新聞式介紹而非第一人稱穿搭心得，<code>caption</code> 拿去做語意標註時要注意這點。</li>
+      <li>這批的 <code>image_url</code> 目前指向套件裡的本地檔案路徑（測試用），正式採用前要決定圖片要繼續下載存本地、還是改存 Mastodon 原始圖床網址。</li>
+    </ul>
+  </div>
+
+  <div class="panel">
+    <h2>單品偵測分布（YOLOS-fashionpedia）</h2>
+    <span class="legend-item"><span class="dot" style="background:#3b82f6"></span>top（8）</span><span class="legend-item"><span class="dot" style="background:#22c55e"></span>bottom（9）</span><span class="legend-item"><span class="dot" style="background:#f97316"></span>shoes（6）</span><span class="legend-item"><span class="dot" style="background:#a855f7"></span>outerwear（4）</span><span class="legend-item"><span class="dot" style="background:#ec4899"></span>accessory（8）</span><span class="legend-item"><span class="dot" style="background:#ef4444"></span>dress（7）</span>
+  </div>
+
+  <div class="grid">
+    
+    <article class="card">
+      <div class="card__media">
+        <img src="images/mastodon-103595771947317306.jpeg" alt="" loading="lazy">
+        
+        <span class="badge badge--personal">個人貼文</span>
+      </div>
+      <div class="card__body">
+        <div class="card__meta">
+          <span class="card__author">natsushyo-pixelfed-social</span>
+          <span class="card__tag">#今日穿搭</span>
+        </div>
+        <p class="card__caption">貓貓襯衫🐈<br><br><br><br>#今日穿搭</p>
+        <div class="attrs"><div class="attr-row"><span class="attr-label">風格</span><span class="attr-values"><span class="tag">preppy</span><span class="tag">minimal</span><span class="tag">elegant</span></span></div><div class="attr-row"><span class="attr-label">顏色</span><span class="attr-values"><span class="tag">white</span><span class="tag">beige</span><span class="tag">gray</span></span></div><div class="attr-row"><span class="attr-label">場合</span><span class="attr-values"><span class="tag">casual</span></span></div><div class="attr-row"><span class="attr-label">版型</span><span class="attr-values"><span class="tag">slim</span><span class="tag">regular</span></span></div><div class="attr-row"><span class="attr-label">材質</span><span class="attr-values"><span class="tag">silky</span></span></div></div>
+      </div>
+    </article>
+    <article class="card">
+      <div class="card__media">
+        <img src="images/mastodon-114498291750795309.png" alt="" loading="lazy">
+        <div class="box" style="left:20.68%;top:40.88%;width:47.93%;height:41.62%;border-color:#3b82f6"><span class="box-label" style="background:#3b82f6">top 0.92</span></div>
+        <span class="badge badge--personal">個人貼文</span>
+      </div>
+      <div class="card__body">
+        <div class="card__meta">
+          <span class="card__author">shushu383</span>
+          <span class="card__tag">#日常穿搭</span>
+        </div>
+        <p class="card__caption">今天的廚房時光✨ 廚房的光線超棒，雖然會做的美食不多，但是還總是很有勇氣的站在這裡，還是先給自己一個大大的微笑來加油啦 #日常穿搭 #廚房日常 #簡單生活</p>
+        <div class="attrs"><div class="attr-row"><span class="attr-label">風格</span><span class="attr-values"><span class="tag">minimal</span><span class="tag">sporty</span><span class="tag">elegant</span></span></div><div class="attr-row"><span class="attr-label">顏色</span><span class="attr-values"><span class="tag">black</span><span class="tag">charcoal</span><span class="tag">navy</span></span></div><div class="attr-row"><span class="attr-label">場合</span><span class="attr-values"><span class="tag">sport</span></span></div><div class="attr-row"><span class="attr-label">版型</span><span class="attr-values"><span class="tag">relaxed</span><span class="tag">slim</span></span></div><div class="attr-row"><span class="attr-label">材質</span><span class="attr-values"><span class="tag">silky</span></span></div></div>
+      </div>
+    </article>
+    <article class="card">
+      <div class="card__media">
+        <img src="images/mastodon-114486968359150396.png" alt="" loading="lazy">
+        <div class="box" style="left:8.76%;top:47.58%;width:70.19%;height:52.77%;border-color:#ef4444"><span class="box-label" style="background:#ef4444">dress 0.42</span></div>
+        <span class="badge badge--personal">個人貼文</span>
+      </div>
+      <div class="card__body">
+        <div class="card__meta">
+          <span class="card__author">shushu383</span>
+          <span class="card__tag">#日常穿搭</span>
+        </div>
+        <p class="card__caption">穿上最愛的粉色圍巾，搭配這件清新的綠色小背心，整個人都感覺好有活力呀～💕 陽光從窗戶灑進來，心情也跟著亮起來了！你們覺得這套穿搭怎麼樣呢？✨ #日常穿搭 #粉色控 #陽光女孩</p>
+        <div class="attrs"><div class="attr-row"><span class="attr-label">風格</span><span class="attr-values"><span class="tag">elegant</span><span class="tag">minimal</span><span class="tag">casual</span></span></div><div class="attr-row"><span class="attr-label">顏色</span><span class="attr-values"><span class="tag">pink</span><span class="tag">orange</span><span class="tag">white</span></span></div><div class="attr-row"><span class="attr-label">場合</span><span class="attr-values"><span class="tag">date</span></span></div><div class="attr-row"><span class="attr-label">版型</span><span class="attr-values"><span class="tag tag--unknown">（無）</span></span></div><div class="attr-row"><span class="attr-label">材質</span><span class="attr-values"><span class="tag">silky</span></span></div></div>
+      </div>
+    </article>
+    <article class="card">
+      <div class="card__media">
+        <img src="images/mastodon-114407693725978908.png" alt="" loading="lazy">
+        <div class="box" style="left:8.40%;top:42.01%;width:63.89%;height:38.85%;border-color:#3b82f6"><span class="box-label" style="background:#3b82f6">top 0.66</span></div>
+        <span class="badge badge--personal">個人貼文</span>
+      </div>
+      <div class="card__body">
+        <div class="card__meta">
+          <span class="card__author">shushu383</span>
+          <span class="card__tag">#日常穿搭</span>
+        </div>
+        <p class="card__caption">今天的穿搭是溫柔系的白色露肩上衣搭配粉嫩小裙子～💕  <br>站在這棟超有感覺的建築前，整個人都被浪漫氛圍包圍了！🌿  <br>每一個角落都好適合拍照，心情都亮起來了✨  <br>#日常穿搭 #溫柔風 #打卡景點 #好心情</p>
+        <div class="attrs"><div class="attr-row"><span class="attr-label">風格</span><span class="attr-values"><span class="tag">elegant</span><span class="tag">minimal</span><span class="tag">formal</span></span></div><div class="attr-row"><span class="attr-label">顏色</span><span class="attr-values"><span class="tag">white</span><span class="tag">pink</span><span class="tag">orange</span></span></div><div class="attr-row"><span class="attr-label">場合</span><span class="attr-values"><span class="tag">date</span></span></div><div class="attr-row"><span class="attr-label">版型</span><span class="attr-values"><span class="tag tag--unknown">（無）</span></span></div><div class="attr-row"><span class="attr-label">材質</span><span class="attr-values"><span class="tag">silky</span></span></div></div>
+      </div>
+    </article>
+    <article class="card">
+      <div class="card__media">
+        <img src="images/mastodon-114239711130670508.png" alt="" loading="lazy">
+        <div class="box" style="left:41.28%;top:56.92%;width:17.02%;height:10.15%;border-color:#3b82f6"><span class="box-label" style="background:#3b82f6">top 0.63</span></div><div class="box" style="left:25.82%;top:48.35%;width:47.22%;height:36.28%;border-color:#a855f7"><span class="box-label" style="background:#a855f7">outerwear 0.59</span></div><div class="box" style="left:61.57%;top:49.42%;width:15.76%;height:50.61%;border-color:#ec4899"><span class="box-label" style="background:#ec4899">accessory 0.84</span></div><div class="box" style="left:38.11%;top:80.49%;width:30.01%;height:19.50%;border-color:#22c55e"><span class="box-label" style="background:#22c55e">bottom 0.92</span></div>
+        <span class="badge badge--personal">個人貼文</span>
+      </div>
+      <div class="card__body">
+        <div class="card__meta">
+          <span class="card__author">shushu383</span>
+          <span class="card__tag">#日常穿搭</span>
+        </div>
+        <p class="card__caption">今天的街頭穿搭，簡單又有型！黑色西裝外套搭配牛仔褲，輕鬆穿出率性風格✨ 走在城市街頭，感受這座城市的活力，心情也跟著飛揚起來～  <br>#OOTD #街拍 #城市探索 #日常穿搭 #心情超好</p>
+        <div class="attrs"><div class="attr-row"><span class="attr-label">風格</span><span class="attr-values"><span class="tag">elegant</span><span class="tag">minimal</span><span class="tag">street</span></span></div><div class="attr-row"><span class="attr-label">顏色</span><span class="attr-values"><span class="tag">black</span><span class="tag">charcoal</span><span class="tag">navy</span></span></div><div class="attr-row"><span class="attr-label">場合</span><span class="attr-values"><span class="tag">work</span></span></div><div class="attr-row"><span class="attr-label">版型</span><span class="attr-values"><span class="tag">regular</span></span></div><div class="attr-row"><span class="attr-label">材質</span><span class="attr-values"><span class="tag tag--unknown">（無）</span></span></div></div>
+      </div>
+    </article>
+    <article class="card">
+      <div class="card__media">
+        <img src="images/mastodon-114234048461734973.png" alt="" loading="lazy">
+        <div class="box" style="left:60.85%;top:73.39%;width:6.85%;height:4.19%;border-color:#ec4899"><span class="box-label" style="background:#ec4899">accessory 0.89</span></div><div class="box" style="left:28.28%;top:44.94%;width:38.42%;height:55.22%;border-color:#ef4444"><span class="box-label" style="background:#ef4444">dress 0.65</span></div><div class="box" style="left:28.24%;top:71.96%;width:38.36%;height:27.88%;border-color:#22c55e"><span class="box-label" style="background:#22c55e">bottom 0.91</span></div><div class="box" style="left:32.45%;top:43.19%;width:29.31%;height:28.64%;border-color:#3b82f6"><span class="box-label" style="background:#3b82f6">top 0.98</span></div>
+        <span class="badge badge--personal">個人貼文</span>
+      </div>
+      <div class="card__body">
+        <div class="card__meta">
+          <span class="card__author">shushu383</span>
+          <span class="card__tag">#日常穿搭</span>
+        </div>
+        <p class="card__caption">今天在台北街頭捕捉到這張超有feel的照片啦～💖 走在熱鬧的街頭， 雖然背景人來人往，但這一刻感覺世界都是我的～ 喜歡這種隨性又自在的時刻，記錄下來分享給你們！ #台北街拍 #日常穿搭 #自信滿滿 #街頭時尚</p>
+        <div class="attrs"><div class="attr-row"><span class="attr-label">風格</span><span class="attr-values"><span class="tag">minimal</span><span class="tag">elegant</span><span class="tag">japanese</span></span></div><div class="attr-row"><span class="attr-label">顏色</span><span class="attr-values"><span class="tag">black</span><span class="tag">charcoal</span><span class="tag">navy</span></span></div><div class="attr-row"><span class="attr-label">場合</span><span class="attr-values"><span class="tag">work</span></span></div><div class="attr-row"><span class="attr-label">版型</span><span class="attr-values"><span class="tag">slim</span><span class="tag">regular</span></span></div><div class="attr-row"><span class="attr-label">材質</span><span class="attr-values"><span class="tag">silky</span></span></div></div>
+      </div>
+    </article>
+    <article class="card">
+      <div class="card__media">
+        <img src="images/mastodon-114172433221237977.jpeg" alt="" loading="lazy">
+        <div class="box" style="left:0.82%;top:44.21%;width:11.08%;height:7.22%;border-color:#ec4899"><span class="box-label" style="background:#ec4899">accessory 0.39</span></div><div class="box" style="left:0.05%;top:38.53%;width:99.79%;height:61.78%;border-color:#ef4444"><span class="box-label" style="background:#ef4444">dress 0.82</span></div>
+        <span class="badge badge--personal">個人貼文</span>
+      </div>
+      <div class="card__body">
+        <div class="card__meta">
+          <span class="card__author">shushu383</span>
+          <span class="card__tag">#日常穿搭</span>
+        </div>
+        <p class="card__caption">今天嘗試了一個新的拍照風格，感覺有點小性感又帶點慵懶的氛圍～✨ 你們覺得這張照片怎麼樣呀？是不是有點不一樣的感覺呢？💕 #日常穿搭 #拍照練習 #小性感</p>
+        <div class="attrs"><div class="attr-row"><span class="attr-label">風格</span><span class="attr-values"><span class="tag">elegant</span><span class="tag">japanese</span><span class="tag">minimal</span></span></div><div class="attr-row"><span class="attr-label">顏色</span><span class="attr-values"><span class="tag">white</span><span class="tag">beige</span><span class="tag">pink</span></span></div><div class="attr-row"><span class="attr-label">場合</span><span class="attr-values"><span class="tag">date</span></span></div><div class="attr-row"><span class="attr-label">版型</span><span class="attr-values"><span class="tag tag--unknown">（無）</span></span></div><div class="attr-row"><span class="attr-label">材質</span><span class="attr-values"><span class="tag">silky</span></span></div></div>
+      </div>
+    </article>
+    <article class="card">
+      <div class="card__media">
+        <img src="images/mastodon-113989642698711097.png" alt="" loading="lazy">
+        <div class="box" style="left:17.46%;top:63.20%;width:56.37%;height:36.53%;border-color:#ef4444"><span class="box-label" style="background:#ef4444">dress 0.76</span></div>
+        <span class="badge badge--personal">個人貼文</span>
+      </div>
+      <div class="card__body">
+        <div class="card__meta">
+          <span class="card__author">lacklack407</span>
+          <span class="card__tag">#日常穿搭</span>
+        </div>
+        <p class="card__caption">「✨ 今天走一個簡單俐落的路線~黑色背心+金色波浪髮,就是我的自信穿搭啦!💁‍♀️ 有時候,less is more,不用太多裝飾,簡單也能很有魅力!你們覺得呢?😉 #自信就是最好的配飾 #日常穿搭 #簡單時尚」</p>
+        <div class="attrs"><div class="attr-row"><span class="attr-label">風格</span><span class="attr-values"><span class="tag">minimal</span><span class="tag">elegant</span><span class="tag">casual</span></span></div><div class="attr-row"><span class="attr-label">顏色</span><span class="attr-values"><span class="tag">black</span><span class="tag">charcoal</span><span class="tag">beige</span></span></div><div class="attr-row"><span class="attr-label">場合</span><span class="attr-values"><span class="tag">party</span></span></div><div class="attr-row"><span class="attr-label">版型</span><span class="attr-values"><span class="tag">relaxed</span><span class="tag">regular</span></span></div><div class="attr-row"><span class="attr-label">材質</span><span class="attr-values"><span class="tag">silky</span></span></div></div>
+      </div>
+    </article>
+    <article class="card">
+      <div class="card__media">
+        <img src="images/mastodon-114158551006426865.png" alt="" loading="lazy">
+        <div class="box" style="left:5.75%;top:50.88%;width:88.02%;height:49.51%;border-color:#a855f7"><span class="box-label" style="background:#a855f7">outerwear 0.56</span></div>
+        <span class="badge badge--personal">個人貼文</span>
+      </div>
+      <div class="card__body">
+        <div class="card__meta">
+          <span class="card__author">shushu383</span>
+          <span class="card__tag">#穿搭分享</span>
+        </div>
+        <p class="card__caption">今天終於吃到心心念念的甜甜圈啦～🍩✨ 穿新買的西裝外套，整個人都超有氣質的啦！坐在咖啡廳裡，享受這份甜甜的幸福感，整個下午都超療癒的～💕 #甜甜圈日常 #穿搭分享 #小確幸時光 #咖啡廳打卡</p>
+        <div class="attrs"><div class="attr-row"><span class="attr-label">風格</span><span class="attr-values"><span class="tag">minimal</span><span class="tag">elegant</span><span class="tag">formal</span></span></div><div class="attr-row"><span class="attr-label">顏色</span><span class="attr-values"><span class="tag">orange</span><span class="tag">beige</span><span class="tag">brown</span></span></div><div class="attr-row"><span class="attr-label">場合</span><span class="attr-values"><span class="tag">work</span></span></div><div class="attr-row"><span class="attr-label">版型</span><span class="attr-values"><span class="tag tag--unknown">（無）</span></span></div><div class="attr-row"><span class="attr-label">材質</span><span class="attr-values"><span class="tag tag--unknown">（無）</span></span></div></div>
+      </div>
+    </article>
+    <article class="card">
+      <div class="card__media">
+        <img src="images/mastodon-114013216548138665.png" alt="" loading="lazy">
+        <div class="box" style="left:37.50%;top:19.97%;width:15.75%;height:5.36%;border-color:#ec4899"><span class="box-label" style="background:#ec4899">accessory 0.40</span></div><div class="box" style="left:27.37%;top:80.05%;width:32.60%;height:19.62%;border-color:#22c55e"><span class="box-label" style="background:#22c55e">bottom 0.75</span></div><div class="box" style="left:23.86%;top:38.67%;width:39.02%;height:39.66%;border-color:#3b82f6"><span class="box-label" style="background:#3b82f6">top 0.89</span></div>
+        <span class="badge badge--personal">個人貼文</span>
+      </div>
+      <div class="card__body">
+        <div class="card__meta">
+          <span class="card__author">shushu383</span>
+          <span class="card__tag">#穿搭分享</span>
+        </div>
+        <p class="card__caption">嘿～今天來分享一張超美的照片！✨ 站在這排色彩繽紛的建築前，整個人都覺得好有氣質啦～📸 這裡的建築風格超特別，橘色、黃色、藍色的牆面讓人感覺像走進童話世界一樣，超級夢幻的！💖 陽光灑下來，整個氛圍都超棒的， #街拍 #旅行日記 #穿搭分享 #夢幻景點 #陽光女孩</p>
+        <div class="attrs"><div class="attr-row"><span class="attr-label">風格</span><span class="attr-values"><span class="tag">casual</span><span class="tag">minimal</span><span class="tag">elegant</span></span></div><div class="attr-row"><span class="attr-label">顏色</span><span class="attr-values"><span class="tag">white</span><span class="tag">gray</span><span class="tag">beige</span></span></div><div class="attr-row"><span class="attr-label">場合</span><span class="attr-values"><span class="tag">casual</span></span></div><div class="attr-row"><span class="attr-label">版型</span><span class="attr-values"><span class="tag">relaxed</span><span class="tag">regular</span></span></div><div class="attr-row"><span class="attr-label">材質</span><span class="attr-values"><span class="tag">silky</span></span></div></div>
+      </div>
+    </article>
+    <article class="card">
+      <div class="card__media">
+        <img src="images/mastodon-114492629076321053.png" alt="" loading="lazy">
+        <div class="box" style="left:10.07%;top:83.98%;width:28.23%;height:11.81%;border-color:#f97316"><span class="box-label" style="background:#f97316">shoes 0.93</span></div><div class="box" style="left:14.81%;top:47.82%;width:43.61%;height:37.96%;border-color:#22c55e"><span class="box-label" style="background:#22c55e">bottom 0.70</span></div>
+        <span class="badge badge--personal">個人貼文</span>
+      </div>
+      <div class="card__body">
+        <div class="card__meta">
+          <span class="card__author">shushu383</span>
+          <span class="card__tag">#穿搭日記</span>
+        </div>
+        <p class="card__caption">今天上班前匆匆忙忙地綁鞋帶，結果被同事偷拍了啦～這套淺藍色西裝是我最近最愛的一件，穿起來整個人都精神多了！雖然每天都很忙，但還是要記得保持美美的狀態喔！💼✨ #上班日常 #穿搭日記 #西裝控 #忙裡偷閒</p>
+        <div class="attrs"><div class="attr-row"><span class="attr-label">風格</span><span class="attr-values"><span class="tag">elegant</span><span class="tag">formal</span><span class="tag">minimal</span></span></div><div class="attr-row"><span class="attr-label">顏色</span><span class="attr-values"><span class="tag">blue</span><span class="tag">navy</span><span class="tag">gray</span></span></div><div class="attr-row"><span class="attr-label">場合</span><span class="attr-values"><span class="tag">work</span></span></div><div class="attr-row"><span class="attr-label">版型</span><span class="attr-values"><span class="tag">relaxed</span><span class="tag">regular</span></span></div><div class="attr-row"><span class="attr-label">材質</span><span class="attr-values"><span class="tag">silky</span></span></div></div>
+      </div>
+    </article>
+    <article class="card">
+      <div class="card__media">
+        <img src="images/mastodon-114483189191993179.png" alt="" loading="lazy">
+        <div class="box" style="left:66.61%;top:81.81%;width:7.05%;height:3.44%;border-color:#ec4899"><span class="box-label" style="background:#ec4899">accessory 0.84</span></div><div class="box" style="left:21.44%;top:33.93%;width:48.20%;height:66.06%;border-color:#ef4444"><span class="box-label" style="background:#ef4444">dress 0.40</span></div><div class="box" style="left:21.58%;top:67.45%;width:47.70%;height:32.22%;border-color:#22c55e"><span class="box-label" style="background:#22c55e">bottom 0.92</span></div><div class="box" style="left:31.34%;top:32.95%;width:31.73%;height:28.50%;border-color:#3b82f6"><span class="box-label" style="background:#3b82f6">top 0.99</span></div>
+        <span class="badge badge--personal">個人貼文</span>
+      </div>
+      <div class="card__body">
+        <div class="card__meta">
+          <span class="card__author">shushu383</span>
+          <span class="card__tag">#穿搭日記</span>
+        </div>
+        <p class="card__caption">今天終於打卡成功啦！這個城市的天際線真的超美的～☁️ 白色小背心加卡其褲，穿搭簡單但超喜歡！💕 大家快來猜猜這是哪裡吧！😏 #城市打卡 #穿搭日記 #旅行日記</p>
+        <div class="attrs"><div class="attr-row"><span class="attr-label">風格</span><span class="attr-values"><span class="tag">minimal</span><span class="tag">sporty</span><span class="tag">casual</span></span></div><div class="attr-row"><span class="attr-label">顏色</span><span class="attr-values"><span class="tag">white</span><span class="tag">beige</span><span class="tag">green</span></span></div><div class="attr-row"><span class="attr-label">場合</span><span class="attr-values"><span class="tag">date</span></span></div><div class="attr-row"><span class="attr-label">版型</span><span class="attr-values"><span class="tag">relaxed</span><span class="tag">oversized</span></span></div><div class="attr-row"><span class="attr-label">材質</span><span class="attr-values"><span class="tag">silky</span></span></div></div>
+      </div>
+    </article>
+    <article class="card">
+      <div class="card__media">
+        <img src="images/mastodon-114381268009855106.png" alt="" loading="lazy">
+        
+        <span class="badge badge--personal">個人貼文</span>
+      </div>
+      <div class="card__body">
+        <div class="card__meta">
+          <span class="card__author">shushu383</span>
+          <span class="card__tag">#穿搭日記</span>
+        </div>
+        <p class="card__caption">哇～今天穿新買的粉色小可愛出門，整個超喜歡的啦！💖 跟姐妹們聚會拍了好多美照，哢嚓哢嚓根本停不下來📸 這種微涼的天氣配燈光氣氛剛剛好，好chill喔～下次還要穿這件！✨ #姐妹約會 #穿搭日記 #自拍停不下來 😝</p>
+        <div class="attrs"><div class="attr-row"><span class="attr-label">風格</span><span class="attr-values"><span class="tag">elegant</span><span class="tag">formal</span><span class="tag">japanese</span></span></div><div class="attr-row"><span class="attr-label">顏色</span><span class="attr-values"><span class="tag">pink</span><span class="tag">orange</span><span class="tag">red</span></span></div><div class="attr-row"><span class="attr-label">場合</span><span class="attr-values"><span class="tag">party</span></span></div><div class="attr-row"><span class="attr-label">版型</span><span class="attr-values"><span class="tag tag--unknown">（無）</span></span></div><div class="attr-row"><span class="attr-label">材質</span><span class="attr-values"><span class="tag">silky</span></span></div></div>
+      </div>
+    </article>
+    <article class="card">
+      <div class="card__media">
+        <img src="images/mastodon-116480720898085197.jpg" alt="" loading="lazy">
+        <div class="box" style="left:2.18%;top:43.17%;width:26.90%;height:57.26%;border-color:#22c55e"><span class="box-label" style="background:#22c55e">bottom 0.98</span></div><div class="box" style="left:39.49%;top:97.53%;width:5.19%;height:1.78%;border-color:#f97316"><span class="box-label" style="background:#f97316">shoes 0.65</span></div>
+        <span class="badge badge--news">媒體轉發</span>
+      </div>
+      <div class="card__body">
+        <div class="card__meta">
+          <span class="card__author">hk01-mirror-mastodon-hongkongers-net</span>
+          <span class="card__tag">#穿搭</span>
+        </div>
+        <p class="card__caption">近日，張曼玉以一身簡約俐落的「高腰寬管牛仔褲」穿搭廣告在各大社群強力播放，再度掀起網路熱議。現年62歲的她，依舊時髦氣場滿分，透過高腰剪裁<br><a href="https://www.hk01.com/穿搭筆記/60337136/張曼玉牛仔褲穿搭示範-高腰寬管穿出-女神比例-附9個平價款" target="_blank" rel="noopener noreferrer">https://www.hk01.com/穿搭筆記/60337136/張曼玉牛仔褲穿搭示範-高腰寬管穿出-女神比例-附9個平價款</a></p>
+        <div class="attrs"><div class="attr-row"><span class="attr-label">風格</span><span class="attr-values"><span class="tag">minimal</span><span class="tag">japanese</span><span class="tag">casual</span></span></div><div class="attr-row"><span class="attr-label">顏色</span><span class="attr-values"><span class="tag">blue</span><span class="tag">navy</span><span class="tag">black</span></span></div><div class="attr-row"><span class="attr-label">場合</span><span class="attr-values"><span class="tag">casual</span></span></div><div class="attr-row"><span class="attr-label">版型</span><span class="attr-values"><span class="tag">relaxed</span><span class="tag">oversized</span></span></div><div class="attr-row"><span class="attr-label">材質</span><span class="attr-values"><span class="tag">denim</span></span></div></div>
+      </div>
+    </article>
+    <article class="card">
+      <div class="card__media">
+        <img src="images/mastodon-116451937542677126.jpg" alt="" loading="lazy">
+        
+        <span class="badge badge--news">媒體轉發</span>
+      </div>
+      <div class="card__body">
+        <div class="card__meta">
+          <span class="card__author">hk01-mirror-mastodon-hongkongers-net</span>
+          <span class="card__tag">#穿搭</span>
+        </div>
+        <p class="card__caption">一名網友近日在Threads附上影片分享赴日旅遊觀察，只見原PO在日本地鐵穿著人字拖，卻發現周圍幾乎沒有人做出相同穿搭，畫面形成強烈對比，引發網友<br><a href="https://www.hk01.com/熱爆話題/60342845/赴日旅遊搭地鐵-穿人字拖-遭批沒禮貌-日本網紅-在東京不適合" target="_blank" rel="noopener noreferrer">https://www.hk01.com/熱爆話題/60342845/赴日旅遊搭地鐵-穿人字拖-遭批沒禮貌-日本網紅-在東京不適合</a></p>
+        <div class="attrs"><div class="attr-row"><span class="attr-label">風格</span><span class="attr-values"><span class="tag tag--unknown">（無）</span></span></div><div class="attr-row"><span class="attr-label">顏色</span><span class="attr-values"><span class="tag">green</span></span></div><div class="attr-row"><span class="attr-label">場合</span><span class="attr-values"><span class="tag tag--unknown">（無）</span></span></div><div class="attr-row"><span class="attr-label">版型</span><span class="attr-values"><span class="tag tag--unknown">（無）</span></span></div><div class="attr-row"><span class="attr-label">材質</span><span class="attr-values"><span class="tag tag--unknown">（無）</span></span></div></div>
+      </div>
+    </article>
+    <article class="card">
+      <div class="card__media">
+        <img src="images/mastodon-116412301139431785.jpg" alt="" loading="lazy">
+        <div class="box" style="left:9.15%;top:82.77%;width:8.84%;height:15.30%;border-color:#f97316"><span class="box-label" style="background:#f97316">shoes 0.83</span></div><div class="box" style="left:45.95%;top:55.74%;width:13.56%;height:31.89%;border-color:#ec4899"><span class="box-label" style="background:#ec4899">accessory 0.46</span></div><div class="box" style="left:40.73%;top:38.42%;width:18.52%;height:57.86%;border-color:#22c55e"><span class="box-label" style="background:#22c55e">bottom 0.83</span></div><div class="box" style="left:46.01%;top:17.70%;width:7.42%;height:8.51%;border-color:#3b82f6"><span class="box-label" style="background:#3b82f6">top 0.38</span></div><div class="box" style="left:38.97%;top:5.00%;width:17.93%;height:50.20%;border-color:#a855f7"><span class="box-label" style="background:#a855f7">outerwear 0.56</span></div>
+        <span class="badge badge--news">媒體轉發</span>
+      </div>
+      <div class="card__body">
+        <div class="card__meta">
+          <span class="card__author">hk01-mirror-mastodon-hongkongers-net</span>
+          <span class="card__tag">#穿搭</span>
+        </div>
+        <p class="card__caption">每到新季節來臨，便會想關注最新的流行動態，希望可以快速跟上趨勢之外，同時改變造型打造搶眼注目度，但有時又會擔心風格不合適，而遲遲不敢下手嘗<br><a href="https://www.hk01.com/穿搭筆記/60338192/2026春季連帽外套穿搭-日本女生4套靈感範本-休閒通勤不踩雷" target="_blank" rel="noopener noreferrer">https://www.hk01.com/穿搭筆記/60338192/2026春季連帽外套穿搭-日本女生4套靈感範本-休閒通勤不踩雷</a></p>
+        <div class="attrs"><div class="attr-row"><span class="attr-label">風格</span><span class="attr-values"><span class="tag">minimal</span><span class="tag">japanese</span><span class="tag">casual</span></span></div><div class="attr-row"><span class="attr-label">顏色</span><span class="attr-values"><span class="tag">charcoal</span><span class="tag">gray</span><span class="tag">black</span></span></div><div class="attr-row"><span class="attr-label">場合</span><span class="attr-values"><span class="tag">work</span></span></div><div class="attr-row"><span class="attr-label">版型</span><span class="attr-values"><span class="tag">oversized</span><span class="tag">relaxed</span></span></div><div class="attr-row"><span class="attr-label">材質</span><span class="attr-values"><span class="tag">knit</span></span></div></div>
+      </div>
+    </article>
+    <article class="card">
+      <div class="card__media">
+        <img src="images/mastodon-116383989635452085.jpg" alt="" loading="lazy">
+        <div class="box" style="left:16.84%;top:31.80%;width:13.59%;height:46.33%;border-color:#3b82f6"><span class="box-label" style="background:#3b82f6">top 0.41</span></div><div class="box" style="left:0.52%;top:28.47%;width:47.31%;height:72.41%;border-color:#a855f7"><span class="box-label" style="background:#a855f7">outerwear 0.59</span></div>
+        <span class="badge badge--news">媒體轉發</span>
+      </div>
+      <div class="card__body">
+        <div class="card__meta">
+          <span class="card__author">hk01-mirror-mastodon-hongkongers-net</span>
+          <span class="card__tag">#穿搭</span>
+        </div>
+        <p class="card__caption">如果說風格有語氣，那張員瑛的穿搭大概介於「輕鬆」與「精準」之間。她不靠誇張設計吸引目光，而是用熟悉的單品，穿出剛剛好的比例與節奏。這一季，<br><a href="https://www.hk01.com/穿搭筆記/60336347/張員瑛2026春夏穿搭-拆解6大高級公式-丹寧-條紋精緻又時髦" target="_blank" rel="noopener noreferrer">https://www.hk01.com/穿搭筆記/60336347/張員瑛2026春夏穿搭-拆解6大高級公式-丹寧-條紋精緻又時髦</a></p>
+        <div class="attrs"><div class="attr-row"><span class="attr-label">風格</span><span class="attr-values"><span class="tag">casual</span><span class="tag">preppy</span><span class="tag">minimal</span></span></div><div class="attr-row"><span class="attr-label">顏色</span><span class="attr-values"><span class="tag">red</span><span class="tag">blue</span><span class="tag">pink</span></span></div><div class="attr-row"><span class="attr-label">場合</span><span class="attr-values"><span class="tag">date</span></span></div><div class="attr-row"><span class="attr-label">版型</span><span class="attr-values"><span class="tag">oversized</span><span class="tag">regular</span></span></div><div class="attr-row"><span class="attr-label">材質</span><span class="attr-values"><span class="tag">knit</span></span></div></div>
+      </div>
+    </article>
+    <article class="card">
+      <div class="card__media">
+        <img src="images/mastodon-116361328707022034.jpg" alt="" loading="lazy">
+        <div class="box" style="left:35.38%;top:86.04%;width:5.72%;height:7.47%;border-color:#f97316"><span class="box-label" style="background:#f97316">shoes 0.97</span></div><div class="box" style="left:31.96%;top:53.58%;width:10.23%;height:29.31%;border-color:#22c55e"><span class="box-label" style="background:#22c55e">bottom 0.71</span></div><div class="box" style="left:31.22%;top:30.77%;width:10.57%;height:52.79%;border-color:#ef4444"><span class="box-label" style="background:#ef4444">dress 0.59</span></div><div class="box" style="left:40.12%;top:62.60%;width:4.51%;height:12.73%;border-color:#ec4899"><span class="box-label" style="background:#ec4899">accessory 0.42</span></div>
+        <span class="badge badge--news">媒體轉發</span>
+      </div>
+      <div class="card__body">
+        <div class="card__meta">
+          <span class="card__author">hk01-mirror-mastodon-hongkongers-net</span>
+          <span class="card__tag">#穿搭</span>
+        </div>
+        <p class="card__caption">日本人氣模特三戶夏芽憑著招牌的超短眉上瀏海、搞怪的拍照姿勢深受許多女生喜愛，身為萌系教主的她私下穿搭相當多變，身高152cm更是小隻女們的穿搭<br><a href="https://www.hk01.com/穿搭筆記/60265570/小個子日雜模特三戶夏芽6招穿搭-傘裙修飾身型綁帶洋裝拉高比例" target="_blank" rel="noopener noreferrer">https://www.hk01.com/穿搭筆記/60265570/小個子日雜模特三戶夏芽6招穿搭-傘裙修飾身型綁帶洋裝拉高比例</a></p>
+        <div class="attrs"><div class="attr-row"><span class="attr-label">風格</span><span class="attr-values"><span class="tag">preppy</span><span class="tag">sporty</span><span class="tag">japanese</span></span></div><div class="attr-row"><span class="attr-label">顏色</span><span class="attr-values"><span class="tag">navy</span><span class="tag">blue</span><span class="tag">green</span></span></div><div class="attr-row"><span class="attr-label">場合</span><span class="attr-values"><span class="tag">casual</span></span></div><div class="attr-row"><span class="attr-label">版型</span><span class="attr-values"><span class="tag">oversized</span><span class="tag">relaxed</span></span></div><div class="attr-row"><span class="attr-label">材質</span><span class="attr-values"><span class="tag">knit</span></span></div></div>
+      </div>
+    </article>
+    <article class="card">
+      <div class="card__media">
+        <img src="images/mastodon-116327367223127751.jpg" alt="" loading="lazy">
+        <div class="box" style="left:12.46%;top:6.76%;width:7.97%;height:5.08%;border-color:#ec4899"><span class="box-label" style="background:#ec4899">accessory 0.62</span></div><div class="box" style="left:45.07%;top:89.06%;width:5.81%;height:7.48%;border-color:#f97316"><span class="box-label" style="background:#f97316">shoes 0.90</span></div><div class="box" style="left:42.65%;top:41.52%;width:14.12%;height:50.71%;border-color:#22c55e"><span class="box-label" style="background:#22c55e">bottom 0.61</span></div>
+        <span class="badge badge--news">媒體轉發</span>
+      </div>
+      <div class="card__body">
+        <div class="card__meta">
+          <span class="card__author">hk01-mirror-mastodon-hongkongers-net</span>
+          <span class="card__tag">#穿搭</span>
+        </div>
+        <p class="card__caption">新季節到來，大家是不是已經開始期待想穿上春季新品，在春暖花開大地盎然的時刻，把自己打扮的漂亮，不僅充滿儀式感心情也會變好，喜歡關注日本流行<br><a href="https://www.hk01.com/穿搭筆記/60333722/2026春季日系穿搭-選用蕾絲點綴溫柔氛圍-4套範本穿出精緻優雅" target="_blank" rel="noopener noreferrer">https://www.hk01.com/穿搭筆記/60333722/2026春季日系穿搭-選用蕾絲點綴溫柔氛圍-4套範本穿出精緻優雅</a></p>
+        <div class="attrs"><div class="attr-row"><span class="attr-label">風格</span><span class="attr-values"><span class="tag">japanese</span><span class="tag">formal</span><span class="tag">elegant</span></span></div><div class="attr-row"><span class="attr-label">顏色</span><span class="attr-values"><span class="tag">black</span><span class="tag">white</span><span class="tag">charcoal</span></span></div><div class="attr-row"><span class="attr-label">場合</span><span class="attr-values"><span class="tag">formal</span></span></div><div class="attr-row"><span class="attr-label">版型</span><span class="attr-values"><span class="tag">oversized</span><span class="tag">relaxed</span></span></div><div class="attr-row"><span class="attr-label">材質</span><span class="attr-values"><span class="tag">knit</span></span></div></div>
+      </div>
+    </article>
+    <article class="card">
+      <div class="card__media">
+        <img src="images/mastodon-116317445666618652.jpg" alt="" loading="lazy">
+        <div class="box" style="left:50.26%;top:85.36%;width:6.98%;height:9.87%;border-color:#f97316"><span class="box-label" style="background:#f97316">shoes 0.97</span></div><div class="box" style="left:31.12%;top:20.91%;width:30.83%;height:54.31%;border-color:#ef4444"><span class="box-label" style="background:#ef4444">dress 0.96</span></div>
+        <span class="badge badge--news">媒體轉發</span>
+      </div>
+      <div class="card__body">
+        <div class="card__meta">
+          <span class="card__author">hk01-mirror-mastodon-hongkongers-net</span>
+          <span class="card__tag">#穿搭</span>
+        </div>
+        <p class="card__caption">GU與韓國設計師品牌rokh聯手的「Play in Style」系列，每次釋出合作消息都會引起不少關注度，全因rokh以獨特時裝剪裁融入街頭穿搭風格，就連Jisoo<br><a href="https://www.hk01.com/穿搭筆記/60335510/gu-x-rokh三度合作-揉合柔美與機能性的春夏聯乘新系列正式上架" target="_blank" rel="noopener noreferrer">https://www.hk01.com/穿搭筆記/60335510/gu-x-rokh三度合作-揉合柔美與機能性的春夏聯乘新系列正式上架</a></p>
+        <div class="attrs"><div class="attr-row"><span class="attr-label">風格</span><span class="attr-values"><span class="tag">japanese</span><span class="tag">vintage</span><span class="tag">minimal</span></span></div><div class="attr-row"><span class="attr-label">顏色</span><span class="attr-values"><span class="tag">brown</span><span class="tag">charcoal</span><span class="tag">green</span></span></div><div class="attr-row"><span class="attr-label">場合</span><span class="attr-values"><span class="tag">outdoor</span></span></div><div class="attr-row"><span class="attr-label">版型</span><span class="attr-values"><span class="tag">oversized</span><span class="tag">relaxed</span></span></div><div class="attr-row"><span class="attr-label">材質</span><span class="attr-values"><span class="tag">knit</span></span></div></div>
+      </div>
+    </article>
+  </div>
+
+  <footer class="note">
+    輸出檔案：<span style="font-family:var(--font-mono)">data/mastodon_test/posts.json</span>（完整屬性）、
+    <span style="font-family:var(--font-mono)">posts_proposed_schema.json</span>（比照 convert_to_schema.py 轉換規則）、
+    <span style="font-family:var(--font-mono)">creators.json</span>。全部獨立於既有 Pexels pipeline 的正式輸出，尚未合併。
+  </footer>
+</main>
+</body>
+</html>
