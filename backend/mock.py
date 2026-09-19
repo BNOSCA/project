@@ -87,6 +87,8 @@ def parse_demo_intent(text: str, session_id: str, previous: Intent | None = None
     budget = re.search(r"(?:預算|總價|總預算|最多|以下|內)[^\d]{0,8}(\d{2,6})\s*(?:元|塊)?", text)
     if not budget:
         budget = re.search(r"(\d{2,6})\s*(?:元|塊)\s*(?:內|以下)", text)
+    if not budget:
+        budget = re.search(r"(\d{2,6})\s*(?:元|塊)?\s*(?:內|以下|以內)", text)
     if budget:
         intent.budget_total = int(budget.group(1))
         if "budget_total" not in intent.hard_constraints:

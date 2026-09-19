@@ -148,6 +148,15 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                     additions = [x for x in getattr(getattr(after, group), field) if x not in values]
                     if additions:
                         patch[path] = additions
+            if not patch:
+                # Repeating an explicit preference with a new event ID remains valid.
+                patch = {}
+                standalone = parse_demo_intent(event.text, event.session_id)
+                for path in PATCH_PATHS:
+                    group, field = path.split(".")
+                    values = getattr(getattr(standalone, group), field)
+                    if values:
+                        patch[path] = values
         else:
             patch = {}
         if not isinstance(patch, dict) or any(path not in PATCH_PATHS or not isinstance(values, list) for path, values in patch.items()):
@@ -245,6 +254,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         merged = request.model_copy(deep=True)
         merged.filters.excluded_colors = sorted(set(merged.filters.excluded_colors + query_intent.excluded.colors))
         merged.filters.excluded_fits = sorted(set(merged.filters.excluded_fits + query_intent.excluded.fits))
+        if query_intent.budget_total is not None and "budget_total" in query_intent.hard_constraints:
+            limit = query_intent.budget_total
+            merged.filters.price_max = min(merged.filters.price_max, limit) if merged.filters.price_max is not None else limit
         session_data = store.get_intent(request.session_id) if store else None
         if session_data:
             session_intent = Intent.model_validate(session_data)
@@ -297,6 +309,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             raise APIError(422, "INVALID_INPUT", "回饋貼文不存在。")
         if event.target_type == "product" and event.target_id not in require_mock().catalog.products_by_id:
             raise APIError(422, "INVALID_INPUT", "回饋商品不存在。")
+        if settings.mode == "mock" and require_mock().store.has_event_id(event.event_id):
+            return FeedbackResponse(profile=require_mock().profile(event.session_id, event.user_id), duplicate=True)
         previous_data = store.get_intent(event.session_id) if store else None
         previous = Intent.model_validate(previous_data) if previous_data else None
         patch = await feedback_patch(event, previous)

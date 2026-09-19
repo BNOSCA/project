@@ -44,6 +44,10 @@ class EventStore:
             )
             return cur.rowcount == 1
 
+    def has_event_id(self, event_id: str) -> bool:
+        with self.connect() as db:
+            return db.execute("SELECT 1 FROM events WHERE event_id = ?", (event_id,)).fetchone() is not None
+
     def has_qualifying_dwell(self, session_id: str, target_type: str, target_id: str) -> bool:
         with self.connect() as db:
             rows = db.execute(

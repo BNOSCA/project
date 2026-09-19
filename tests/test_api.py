@@ -138,6 +138,16 @@ def test_text_feedback_and_search_exclusions(client: TestClient):
     })
     assert response.status_code == 200
     assert response.json()["profile"]["preference_weights"]["color:beige"] == -1.0
+    repeated = client.post("/api/v1/feedback", json={
+        "event_id": "text-feedback", "session_id": "text", "event_type": "explicit", "text": "不要米色",
+    })
+    assert repeated.status_code == 200
+    assert repeated.json()["duplicate"] is True
+    new_event = client.post("/api/v1/feedback", json={
+        "event_id": "same-instruction-new-id", "session_id": "text", "event_type": "explicit", "text": "不要米色",
+    })
+    assert new_event.status_code == 200
+    assert new_event.json()["profile"]["preference_weights"]["color:beige"] == -1.0
     search = client.post("/api/v1/search", json={"session_id": "text", "query_text": "日系，不要米色"})
     assert search.status_code == 200
     assert search.json()["products"]
@@ -150,6 +160,16 @@ def test_text_feedback_and_search_exclusions(client: TestClient):
     })
     assert invalid.status_code == 422
     assert invalid.json()["error"]["code"] == "INVALID_INPUT"
+
+
+def test_text_price_ceiling_is_a_search_hard_filter(client: TestClient):
+    response = client.post("/api/v1/search", json={
+        "session_id": "price", "query_text": "日系，900 以下", "mode": "text",
+    })
+    assert response.status_code == 200
+    assert response.json()["products"]
+    assert all(hit["product"]["price"] <= 900 for hit in response.json()["products"])
+    assert response.json()["retrieval"]["prefilter_count"] < 6
 
 
 def test_multiturn_fallback_replaces_only_mentioned_preference(client: TestClient):
