@@ -60,4 +60,4 @@ API 文件：`http://127.0.0.1:8000/docs`。測試：`.venv/bin/python -m pip in
 
 ## 部署與現況
 
-可用 [Dockerfile](Dockerfile) 建立映像，對外監聽 `8000`；部署平台、domain 與 credentials 尚未提供，因此尚未部署。B/C/D、前端與正式商品授權資料尚未在 repo 中，完整雙模組真實 Demo、三次乾淨環境連跑及錄影／提交須待這些模組完成。此 repo 的 mock 路徑可先提供 A 串接與契約檢查。
+可用 [Dockerfile](Dockerfile) 建立映像，預設對外監聽 `8000`，也接受平台提供的 `PORT`；部署平台、domain 與 credentials 尚未提供，因此尚未部署。B/C/D、前端與正式商品授權資料尚未在 repo 中，完整雙模組真實 Demo、三次乾淨環境連跑及錄影／提交須待這些模組完成。此 repo 的 mock 路徑可先提供 A 串接與契約檢查。
