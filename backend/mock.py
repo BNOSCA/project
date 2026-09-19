@@ -82,6 +82,8 @@ def parse_demo_intent(text: str, session_id: str, previous: Intent | None = None
     intent.session_id = session_id
     intent.source_text = text
     intent.semantic_query = text
+    intent.needs_clarification = False
+    intent.clarifying_question = None
     budget = re.search(r"(?:預算|總價|總預算|最多|以下|內)[^\d]{0,8}(\d{2,6})\s*(?:元|塊)?", text)
     if not budget:
         budget = re.search(r"(\d{2,6})\s*(?:元|塊)\s*(?:內|以下)", text)
@@ -89,6 +91,7 @@ def parse_demo_intent(text: str, session_id: str, previous: Intent | None = None
         intent.budget_total = int(budget.group(1))
         if "budget_total" not in intent.hard_constraints:
             intent.hard_constraints.append("budget_total")
+    mentioned_colors: list[str] = []
     for phrase, color in (("黑", "black"), ("米色", "beige"), ("白", "white"), ("灰", "charcoal")):
         if phrase in text:
             if any(x in text for x in (f"不要{phrase}", f"不喜歡{phrase}", f"排除{phrase}")):
@@ -96,7 +99,13 @@ def parse_demo_intent(text: str, session_id: str, previous: Intent | None = None
                     intent.excluded.colors.append(color)
                 if "excluded.colors" not in intent.hard_constraints:
                     intent.hard_constraints.append("excluded.colors")
-            elif color not in intent.preferred.colors:
+            else:
+                mentioned_colors.append(color)
+    if mentioned_colors and re.search(r"改成|換成|改為|換為", text):
+        intent.preferred.colors = mentioned_colors
+    else:
+        for color in mentioned_colors:
+            if color not in intent.preferred.colors:
                 intent.preferred.colors.append(color)
     if "日系" in text and "japanese" not in intent.preferred.styles:
         intent.preferred.styles.append("japanese")

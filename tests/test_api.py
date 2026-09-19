@@ -152,6 +152,21 @@ def test_text_feedback_and_search_exclusions(client: TestClient):
     assert invalid.json()["error"]["code"] == "INVALID_INPUT"
 
 
+def test_multiturn_fallback_replaces_only_mentioned_preference(client: TestClient):
+    first = client.post("/api/v1/recommend", json={
+        "session_id": "multi", "text": "日系寬鬆，喜歡白色，不要米色，整套預算 3000 元"})
+    assert first.status_code == 200
+    second = client.post("/api/v1/recommend", json={
+        "session_id": "multi", "text": "改成黑色，預算提高到 4000 元"})
+    assert second.status_code == 200
+    intent = second.json()["intent"]
+    assert intent["preferred"]["colors"] == ["black"]
+    assert intent["preferred"]["styles"] == ["japanese"]
+    assert intent["preferred"]["fits"] == ["relaxed"]
+    assert intent["excluded"]["colors"] == ["beige"]
+    assert intent["budget_total"] == 4000
+
+
 def test_live_mode_reports_missing_modules(tmp_path: Path):
     settings = Settings("live", ("http://localhost:5173",), tmp_path / "live.sqlite3",
                         ROOT / "data" / "fixtures", 0.1)
