@@ -60,6 +60,8 @@ cover/
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
+runtime/
+*.sqlite3
 
 # Flask stuff:
 instance/
@@ -216,3 +218,8 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Keep only the active project documentation in version control.
+*.md
+!README.md
+!draft2.md
