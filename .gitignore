@@ -242,6 +242,7 @@ __marimo__/
 !GIT_WORKFLOW.md
 !POST_FEED_RECOMMENDER.md
 !BACKEND_README.md
+!WEB_IMPLEMENTATION_HANDOFF.md
 
 # Frontend build and dependency artifacts.
 node_modules/
