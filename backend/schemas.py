@@ -201,6 +201,20 @@ class ProductTag(Contract):
     match_type: Literal["exact", "similar"]
 
 
+class DetectedRegion(Contract):
+    """Auto-detected garment region without a known product match yet.
+
+    Populated by offline vision extraction (label + bbox only). The backend
+    uses this at request time to crop the region and run an image search
+    against the catalog, filling PostDetail.similar_products. This is
+    deliberately separate from ProductTag, which requires a resolved
+    product_id/match_type that we do not have for these posts.
+    """
+
+    label: str
+    bbox: tuple[float, float, float, float]
+
+
 class Post(Contract):
     post_id: str
     creator_id: str
@@ -210,6 +224,7 @@ class Post(Contract):
     colors: list[str] = Field(default_factory=list)
     occasion: list[str] = Field(default_factory=list)
     tagged_products: list[ProductTag] = Field(default_factory=list)
+    detected_regions: list[DetectedRegion] = Field(default_factory=list)
     source: str
     source_checked_at: str | None = None
     is_demo: bool = True
