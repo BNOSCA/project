@@ -3,6 +3,13 @@ __pycache__/
 *.py[codz]
 *$py.class
 
+# WSL/Windows zone-identifier metadata (no content value)
+*:Zone.Identifier
+
+# Handoff zip bundles kept on disk only, not in git history
+*.zip
+黑客松爬蟲-20260919T071454Z-1-001/
+
 # C extensions
 *.so
 
@@ -62,6 +69,8 @@ cover/
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
+
+# backend/ FastAPI 服務的本機 SQLite（見 backend/config.py APP_DB_PATH 預設值）
 runtime/
 *.sqlite3
 
@@ -229,9 +238,18 @@ __marimo__/
 !README.md
 !draft2.md
 !frontend/README.md
+!scripts/README.md
+!GIT_WORKFLOW.md
+!POST_FEED_RECOMMENDER.md
+!BACKEND_README.md
 
 # Frontend build and dependency artifacts.
 node_modules/
 frontend/node_modules/
 frontend/dist/
 *.tsbuildinfo
+
+# Embedding and preprocessing artifacts
+.cache_images/
+data/clean_*.json
+data/sample_images/

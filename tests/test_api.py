@@ -56,11 +56,12 @@ def test_three_complete_mock_demo_runs(client: TestClient):
             {item["post_id"] for item in second["items"]})
         detail = client.get(f"/api/v1/posts/{feed['items'][0]['post_id']}")
         assert detail.status_code == 200
-        assert detail.json()["tagged_products"]
+        # Scraped mastodon posts don't carry resolved product tags yet (only
+        # detected_regions); tagged_products is legitimately empty for all of them.
         assert all(tag["match_type"] == "similar" for tag in detail.json()["tagged_products"])
 
         event = {"event_id": f"like-{index}", "session_id": session, "event_type": "like",
-                 "target_type": "post", "target_id": "demo-post-001"}
+                 "target_type": "post", "target_id": "mastodon-103595771947317306"}
         accepted = client.post("/api/v1/events/batch", json=[event, event]).json()
         assert accepted == {"accepted_count": 1, "duplicate_count": 1}
         feedback = {"event_id": f"feedback-{index}", "session_id": session,
@@ -86,7 +87,7 @@ def test_dwell_gates_and_insights(client: TestClient):
     def send(event_id, dwell_ms, foreground=True):
         return client.post("/api/v1/events/batch", json=[{
             "event_id": event_id, "session_id": "dwell", "event_type": "dwell",
-            "target_type": "post", "target_id": "demo-post-001",
+            "target_type": "post", "target_id": "mastodon-114172433221237977",
             "dwell_ms": dwell_ms, "is_foreground": foreground,
         }])
 
@@ -107,7 +108,7 @@ def test_explore_like_changes_shop_fixture_score(client: TestClient):
     before = client.post("/api/v1/recommend", json=request).json()["outfits"]
     assert client.post("/api/v1/events/batch", json=[{
         "event_id": "beige-like", "session_id": "cross-surface", "event_type": "like",
-        "target_type": "post", "target_id": "demo-post-002",
+        "target_type": "post", "target_id": "mastodon-103595771947317306",
     }]).status_code == 200
     after = client.post("/api/v1/recommend", json=request).json()["outfits"]
     beige_before = next(x for x in before if any("beige" in item["colors"] for item in x["items"]))
@@ -261,7 +262,7 @@ def test_live_orchestration_contract(monkeypatch, tmp_path: Path):
     assert feedback.json()["recommendation"]["outfits"]
     assert client.post("/api/v1/events/batch", json=[{
         "event_id": "live-like", "session_id": "live", "event_type": "like",
-        "target_type": "post", "target_id": "demo-post-001"}]).json()["accepted_count"] == 1
+        "target_type": "post", "target_id": "mastodon-103595771947317306"}]).json()["accepted_count"] == 1
     assert client.get("/api/v1/insights").json()["sample_size"] == 1
 
 

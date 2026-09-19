@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026 梅竹黑客松 × 聚陽實業 · 題目說明</title>
+<style>
+  :root{
+    --navy:#0b3d91; --deep:#0e2d55; --accent:#2f9bd6; --gold:#c79a3a;
+    --ink:#1a2233; --muted:#6b7686; --soft:#f5f7fa; --line:#e5e8ee; --sale:#d1344b;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;}
+  body{font-family:"Microsoft JhengHei","微軟正黑體","Segoe UI",sans-serif;color:var(--ink);
+    background:#0a1626;overflow:hidden;}
+  .deck{position:relative;width:100vw;height:100vh;}
+  .slide{position:absolute;inset:0;display:none;flex-direction:column;justify-content:center;
+    padding:6vh 8vw;animation:fade .35s ease;}
+  .slide.active{display:flex;}
+  @keyframes fade{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+  .slide.light{background:#fff;}
+  .slide.dark{background:linear-gradient(135deg,#0b2545,#123a6b 55%,#1c5aa0);color:#fff;}
+  .kicker{font-size:1.05vw;letter-spacing:.28em;font-weight:700;color:var(--accent);margin-bottom:1.4vh;text-transform:uppercase;}
+  .dark .kicker{color:#8fc4f0;}
+  h1{font-size:4.2vw;font-weight:900;line-height:1.12;letter-spacing:.01em;}
+  h2{font-size:2.9vw;font-weight:850;line-height:1.18;margin-bottom:2.2vh;}
+  .lead{font-size:1.5vw;line-height:1.7;color:var(--muted);max-width:60ch;}
+  .dark .lead{color:#d7e3f4;}
+  p{font-size:1.4vw;line-height:1.7;}
+  .big{font-size:1.7vw;}
+  .sub{font-size:1.1vw;color:var(--muted);}
+  .dark .sub{color:#bcd0ea;}
+
+  /* title */
+  .title-tag{display:inline-block;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);
+    border-radius:30px;padding:.6vh 1.6vw;font-size:1.05vw;font-weight:700;margin-bottom:3vh;}
+  .title-foot{margin-top:4vh;font-size:1.1vw;color:#bcd0ea;}
+
+  /* three engines */
+  .flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:stretch;gap:1vw;margin-top:2vh;}
+  .eng{background:var(--soft);border:1px solid var(--line);border-radius:16px;padding:2.4vh 1.6vw;display:flex;flex-direction:column;gap:1vh;}
+  .eng .no{width:2.6vw;height:2.6vw;min-width:38px;min-height:38px;border-radius:50%;background:var(--navy);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.4vw;}
+  .eng h3{font-size:1.5vw;font-weight:850;}
+  .eng p{font-size:1.05vw;color:var(--muted);line-height:1.6;}
+  .arrow{display:flex;align-items:center;font-size:2.4vw;color:var(--accent);font-weight:900;}
+
+  /* generic cards / rows */
+  .cards{display:grid;gap:1.6vh;margin-top:1vh;}
+  .cards.two{grid-template-columns:1fr 1fr;}
+  .cards.three{grid-template-columns:repeat(3,1fr);}
+  .cardx{background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:2vh 1.6vw;}
+  .cardx h3{font-size:1.4vw;font-weight:800;margin-bottom:.8vh;color:var(--navy);}
+  .cardx p{font-size:1.05vw;color:var(--muted);line-height:1.6;}
+  .cardx .em{font-size:2.2vw;}
+  ul.pts{margin-left:1.4vw;}
+  ul.pts li{font-size:1.35vw;line-height:1.9;}
+  ul.pts li b{color:var(--navy);}
+
+  table.sc{width:100%;border-collapse:collapse;font-size:1.25vw;margin-top:1vh;}
+  table.sc th{background:var(--navy);color:#fff;padding:1.2vh 1.2vw;text-align:left;}
+  table.sc td{border:1px solid var(--line);padding:1.1vh 1.2vw;}
+  table.sc tr:nth-child(even) td{background:var(--soft);}
+  table.sc .w{text-align:center;font-weight:900;color:var(--navy);white-space:nowrap;}
+
+  .pill{display:inline-block;background:#eef3fb;color:#31578f;font-size:1.05vw;border-radius:8px;
+    padding:.5vh 1vw;margin:.5vh .5vw .5vh 0;font-weight:600;}
+  .callout{background:#fff8e6;border:1px solid #f0dfa6;border-radius:14px;padding:2vh 1.8vw;font-size:1.35vw;
+    color:#7a5c12;line-height:1.6;margin-top:2vh;}
+  .quote{font-size:2vw;font-weight:800;line-height:1.4;}
+  .quote small{display:block;font-size:1.1vw;font-weight:600;color:#8fc4f0;margin-top:1.4vh;}
+
+  .demo-url{display:inline-block;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.35);
+    border-radius:12px;padding:1.4vh 1.8vw;font-size:1.6vw;font-weight:800;letter-spacing:.02em;margin-top:2vh;}
+  .demo-steps{margin-top:2.4vh;display:grid;grid-template-columns:repeat(4,1fr);gap:1vw;}
+  .demo-steps .s{background:rgba(255,255,255,.1);border-radius:12px;padding:1.8vh 1.2vw;}
+  .demo-steps .s b{display:block;font-size:1.25vw;margin-bottom:.6vh;}
+  .demo-steps .s span{font-size:1vw;color:#cdddf1;}
+
+  .src-cat{font-size:1.25vw;font-weight:800;color:#0b6b47;margin:1.6vh 0 .6vh;}
+  .src{font-size:1.05vw;line-height:1.75;color:var(--ink);}
+
+  /* chrome */
+  .hud{position:fixed;bottom:2.4vh;right:3vw;z-index:20;display:flex;align-items:center;gap:1.2vw;}
+  .hud .num{font-size:1vw;color:#9fb0c6;font-weight:700;}
+  .dark .hud .num{color:#cdddf1;}
+  .btn{background:var(--navy);color:#fff;border:0;border-radius:50%;width:3vw;height:3vw;min-width:44px;min-height:44px;
+    font-size:1.4vw;cursor:pointer;opacity:.85;}
+  .btn:hover{opacity:1;}
+  .dots{position:fixed;bottom:2.8vh;left:3vw;z-index:20;display:flex;gap:.6vw;}
+  .dot{width:.8vw;height:.8vw;min-width:9px;min-height:9px;border-radius:50%;background:#c7d0dd;cursor:pointer;}
+  .dot.on{background:var(--navy);width:2.4vw;border-radius:6px;}
+  .progress{position:fixed;top:0;left:0;height:5px;background:var(--accent);z-index:30;transition:width .3s;}
+  .brand-mini{position:fixed;top:2.4vh;left:3vw;z-index:20;font-weight:900;letter-spacing:.14em;
+    color:var(--navy);font-size:1.1vw;}
+  .dark .brand-mini{color:#fff;opacity:.9;}
+  .compliance{position:fixed;bottom:2.8vh;left:50%;transform:translateX(-50%);z-index:15;
+    font-size:.85vw;color:#9fb0c6;}
+  .dark .compliance{color:#8ca6c8;}
+  /* 大架構總覽頁 */
+  .arch{position:relative;padding-top:6.2vh;margin-top:.5vh;}
+  .arch > svg{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;}
+  .arch-zone{margin:0 0 .8vh 2px;position:relative;z-index:2;}
+  .arch-ztag{display:inline-block;font-size:.85vw;font-weight:800;color:#fff;border-radius:6px;padding:.3vh .8vw;margin-right:.6vw;}
+  .arch-row{display:flex;align-items:stretch;position:relative;z-index:2;}
+  .arch-box{flex:1;border:1px solid var(--line);background:var(--soft);border-radius:12px;
+    padding:1.2vh 1vw;display:flex;flex-direction:column;gap:.5vh;min-width:0;}
+  .arch-box .ic{font-size:1.7vw;line-height:1;}
+  .arch-box h4{font-size:1.15vw;font-weight:850;}
+  .arch-box p{font-size:.82vw;color:var(--muted);line-height:1.4;}
+  .arch-box.mfg{background:#eef4fb;border-color:#cfe0f2;} .arch-box.mfg h4{color:#134e8f;}
+  .arch-box.con{background:#e9f7f1;border-color:#bfe6d6;} .arch-box.con h4{color:#0e7a5f;}
+  .arch-box.bridge{background:linear-gradient(135deg,#3a2f6b,#5a4aa0);border-color:#3a2f6b;color:#fff;}
+  .arch-box.bridge h4{color:#fff;} .arch-box.bridge p{color:#dcd7f2;}
+  .arch-badge{align-self:flex-start;font-size:.72vw;font-weight:800;border-radius:20px;padding:.1vh .7vw;}
+  .mfg .arch-badge{background:#134e8f;color:#fff;} .con .arch-badge{background:#0e7a5f;color:#fff;}
+  .arch-conn{flex:0 0 2.4vw;display:flex;align-items:center;justify-content:center;color:var(--navy);font-size:1.5vw;font-weight:900;z-index:2;}
+  .arch-gap{height:7.5vh;}
+  .arch-elabel{position:absolute;z-index:3;background:#fff;border:1px solid var(--line);border-radius:7px;
+    padding:.2vh .7vw;font-size:.78vw;font-weight:700;color:#134e8f;white-space:nowrap;transform:translate(-50%,-50%);}
+  .arch-elabel.gold{background:#fbf3df;border-color:#ecdaa6;color:#7a5c12;}
+  .arch-take{margin-top:1.4vh;background:#fff8e6;border:1px solid #f0dfa6;border-radius:12px;
+    padding:1.3vh 1.4vw;font-size:1.05vw;color:#7a5c12;line-height:1.55;}
+  .arch-take b{color:#8a5a00;}
+  .hint-note{font-size:.9vw;font-weight:600;color:var(--muted);letter-spacing:0;}
+
+  @media(max-width:820px){ h1{font-size:8vw;} h2{font-size:6vw;} .lead,p{font-size:3.4vw;}
+    .flow{grid-template-columns:1fr;} .arrow{transform:rotate(90deg);justify-content:center;}
+    .cards.two,.cards.three,.demo-steps{grid-template-columns:1fr;} ul.pts li{font-size:3.4vw;} }
+
+  /* 現場 DEMO 半版截圖頁 */
+  .slide.demo-bleed{padding:0;justify-content:flex-start;overflow:hidden;}
+  .demo-bleed .shot{position:absolute;right:0;top:0;height:100%;width:62%;object-fit:cover;object-position:left center;z-index:0;}
+  .demo-bleed .shot-fade{position:absolute;inset:0;z-index:1;
+    background:linear-gradient(90deg,#0a1f3d 0%,#0a1f3d 36%,rgba(10,31,61,.6) 52%,rgba(10,31,61,0) 72%);}
+  .demo-bleed .demo-content{position:relative;z-index:2;max-width:47%;height:100%;padding:8vh 4vw;
+    display:flex;flex-direction:column;justify-content:center;}
+  .demo-steps-v{margin-top:2.2vh;display:flex;flex-direction:column;gap:1.1vh;}
+  .demo-steps-v div{font-size:1.15vw;line-height:1.4;color:#eaf1fb;}
+  .demo-steps-v b{color:#8fc4f0;margin-right:.5vw;font-size:1.3vw;}
+  .demo-bleed .demo-url{align-self:flex-start;}
+</style>
+</head>
+<body>
+<div class="progress" id="prog"></div>
+<div class="brand-mini" id="brandMini">聚陽實業 · 資訊處</div>
+<div class="deck" id="deck">
+
+  <!-- 1 封面 -->
+  <section class="slide dark active">
+    <div class="title-tag">2026 梅竹黑客松　×　聚陽實業</div>
+    <h1>一句話，<br>讀懂消費者要什麼</h1>
+    <div class="title-foot">賽前工作坊 · 題目說明　|　主講：資訊處</div>
+  </section>
+
+  <!-- 2 銜接前段 -->
+  <section class="slide light">
+    <div class="kicker">承接前段</div>
+    <h2>從「趨勢訊號」到「消費者意圖」</h2>
+    <p class="big">前面談的是設計師如何從社群趨勢找靈感，把<b>趨勢變成商品</b>——速度與「訊號轉商品」是關鍵。</p>
+    <div class="callout">但整條鏈最前端、也最難接住的訊號，是<b>「消費者到底想要什麼」</b>。</div>
+  </section>
+
+  <!-- 2.5 大架構總覽（閉環）-->
+  <section class="slide light">
+    <div class="kicker">大架構總覽</div>
+    <h2 style="margin-bottom:1vh;">從趨勢到消費者，再回到設計 —— 一條閉環</h2>
+    <div class="arch">
+      <svg><defs>
+        <marker id="archNavy" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M1,1 L9,5 L1,9 Z" fill="#3a2f6b"/></marker>
+        <marker id="archGold" markerWidth="11" markerHeight="11" refX="8" refY="5" orient="auto"><path d="M1,1 L9,5 L1,9 Z" fill="#b98a2e"/></marker>
+      </defs></svg>
+      <div class="arch-zone"><span class="arch-ztag" style="background:#134e8f">上半 · 製造端</span><span style="font-size:1vw;font-weight:800;color:#134e8f;">設計師 / 生產流程</span></div>
+      <div class="arch-row">
+        <div class="arch-box mfg" id="arch-a1"><div class="ic">🔍</div><span class="arch-badge">來源</span><h4>趨勢與參考來源</h4><p>TikTok・Pinterest・秀場・KOL</p></div>
+        <div class="arch-conn">→</div>
+        <div class="arch-box mfg" id="arch-a2"><div class="ic">✏️</div><span class="arch-badge">設計</span><h4>設計師發想・選款</h4><p>趨勢 → 款式・色彩・材料</p></div>
+        <div class="arch-conn">→</div>
+        <div class="arch-box mfg" id="arch-a3"><div class="ic">🧵</div><span class="arch-badge">生產</span><h4>打樣・材料・生產</h4><p>最快把訊號變商品</p></div>
+        <div class="arch-conn">→</div>
+        <div class="arch-box bridge" id="arch-a4"><div class="ic">🏷️</div><h4>商品庫</h4><p>可購買的真實商品</p></div>
+      </div>
+      <div class="arch-gap"></div>
+      <div class="arch-zone"><span class="arch-ztag" style="background:#0e7a5f">下半 · 消費端</span></div>
+      <div class="arch-row">
+        <div class="arch-box con" id="arch-consumer" style="flex:1;align-items:center;justify-content:center;text-align:center;padding:3.4vh 1vw;gap:1vh;">
+          <div class="ic" style="font-size:2.6vw;">💭</div>
+          <h4 style="font-size:1.7vw;">消費者在想什麼？</h4>
+        </div>
+      </div>
+    </div>
+    <div class="arch-take">🔑 設計師把「趨勢」變「商品」；各位要接住的是<b>消費者意圖與偏好</b> —— 這正是製造端最缺的<b>市場前端訊號</b>，接回設計/生產，單向線就變成<b>愈跑愈準的閉環</b>。</div>
+  </section>
+
+  <!-- 3 題目背景 -->
+  <section class="slide light">
+    <div class="kicker">題目背景</div>
+    <h2>購物，正從「搜尋關鍵字」走向「說一句話」</h2>
+  </section>
+
+  <!-- 5 引擎1 -->
+  <section class="slide light">
+    <div class="kicker">Engine 01</div>
+    <h2>需求理解：把「一句話」變成「結構化意圖」</h2>
+    <div class="cards">
+      <div class="cardx"><h3>技術對照 <span class="hint-note">（僅供參考・不限於此，鼓勵你們找更好的做法）</span></h3>
+        <p>slot filling／資訊抽取（NER）、LLM 結構化輸出（JSON / tool use）、對話狀態管理。</p>
+        <p style="margin-top:1vh;"><b>重點：</b>真本事在「抽得準 + 接得住模糊」，而不是把字面照抄。</p></div>
+    </div>
+  </section>
+
+  <!-- 6 引擎2 -->
+  <section class="slide light">
+    <div class="kicker">Engine 02</div>
+    <h2>可解釋性的 AI</h2>
+    <div class="cards">
+      <div class="cardx"><h3>技術對照 <span class="hint-note">（僅供參考・不限於此，鼓勵你們找更好的做法）</span></h3>
+        <p>內容式推薦＋排序、影像/文字 embedding（如 FashionCLIP）、穿搭相容性（Polyvore）、預算等約束求解。</p>
+        <p style="margin-top:1vh;"><b>難點：</b>在約束下維持推薦品質，而不是隨便湊。</p></div>
+    </div>
+  </section>
+
+  <!-- 7 引擎3 -->
+  <section class="slide light">
+    <div class="kicker">Engine 03</div>
+    <h2>偏好回饋迴圈：愈用愈懂你</h2>
+    <div class="cards">
+      <div class="cardx"><h3>技術對照 <span class="hint-note">（僅供參考・不限於此，鼓勵你們找更好的做法）</span></h3>
+        <p>偏好建模、線上個人化、bandits／輕量學習；偏好訊號可回饋到開款、備料、生產。</p>
+        <p style="margin-top:1vh;"><b>回應題目：</b>回饋是否「量化可驗證」是評分重點之一。</p></div>
+    </div>
+  </section>
+
+  <!-- 8 別淪為 prompt 比賽 -->
+  <section class="slide dark">
+    <div class="kicker">給你們的提醒</div>
+    <h2>重點不在「串一個聊天機器人」</h2>
+    <div class="cards three" style="margin-top:1vh;">
+      <div class="cardx" style="background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.2);color:#fff;">
+        <h3 style="color:#8fc4f0;">可理解</h3><p style="color:#cdddf1;">真的聽懂使用者要什麼，包含沒說出口的隱含需求。</p></div>
+      <div class="cardx" style="background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.2);color:#fff;">
+        <h3 style="color:#8fc4f0;">可解釋</h3><p style="color:#cdddf1;">說得出「為什麼」，而不是黑箱丟出一個結果。</p></div>
+      <div class="cardx" style="background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.2);color:#fff;">
+        <h3 style="color:#8fc4f0;">可變強</h3><p style="color:#cdddf1;">愈用愈懂你，而且進步是看得見、可被驗證的。</p></div>
+    </div>
+    <div class="quote" style="margin-top:3vh;">把這三件事做扎實 —— 這才是真本事。</div>
+  </section>
+
+  <!-- 9 交付項目 -->
+  <section class="slide light">
+    <div class="kicker">交付項目</div>
+    <h2>你們最後要繳交什麼</h2>
+    <div class="cards two">
+      <div class="cardx"><h3 class="em">🖥️</h3><p><b>可實際運作的 prototype / demo</b>，以及現場互動展示。</p></div>
+      <div class="cardx"><h3 class="em">📦</h3><p><b>GitHub 原始碼 + 英文 README</b>（需可供他人重現）。</p></div>
+      <div class="cardx"><h3 class="em">🎬</h3><p><b>2–3 分鐘 Demo 影片</b>（MP4）。</p></div>
+      <div class="cardx"><h3 class="em">🎤</h3><p><b>現場簡報與問答</b>。（不要求繳交訓練後的模型權重）</p></div>
+    </div>
+  </section>
+
+  <!-- 10 評分 -->
+  <section class="slide light">
+    <div class="kicker">評分標準（建議權重）</div>
+    <h2>評審在看什麼</h2>
+    <table class="sc">
+      <tr><th>構面</th><th class="w">權重</th><th>說明</th></tr>
+      <tr><td>問題理解與延展性</td><td class="w">35%</td><td>是否跳脫字面題目，展現對消費者體驗的洞察與獨到切入</td></tr>
+      <tr><td>技術應用深度與創意</td><td class="w">35%</td><td>自然語言理解、推薦系統、資料處理的技術含金量與方法合理性</td></tr>
+      <tr><td>可行性與展示完整度</td><td class="w">20%</td><td>Demo 完整度；搭配是否完整可購買、回饋迴圈是否可驗證</td></tr>
+      <tr><td>表達與團隊協作</td><td class="w">10%</td><td>簡報清晰度、問題到解法的邏輯完整性</td></tr>
+    </table>
+    <p class="sub" style="margin-top:1.6vh;">本題偏重方法、創意與現場表現，而非單一準確率數字。</p>
+  </section>
+
+  <!-- 12 工具與資料 -->
+  <section class="slide light">
+    <div class="kicker">工具與資源</div>
+    <h2>資料自己找 —— 這本身就是能力展現</h2>
+    <p class="lead">主辦與聚陽不提供資料集、不另給 GPU；請善用<b>合法、公開</b>的資料來源與免費 API。建議「公開商品集當商品庫 ＋ 即時趨勢來源」。</p>
+    <div class="cards two" style="margin-top:1.6vh;">
+      <div class="cardx">
+        <div class="src-cat">商品 / 穿搭</div>
+        <div class="src">H&amp;M（Kaggle）、Fashion Product Images（Kaggle）、DeepFashion、Polyvore（穿搭相容性）</div>
+        <div class="src-cat">消費者聲音 / 合身回饋</div>
+        <div class="src">Amazon Reviews（UCSD）、Clothing Fit（ModCloth + Rent the Runway）</div>
+      </div>
+      <div class="cardx">
+        <div class="src-cat">流行趨勢 / 社群訊號</div>
+        <div class="src">Google Trends（pytrends）、Reddit 公開 API、公開時裝週影像</div>
+        <div class="src-cat">平台</div>
+        <div class="src">Kaggle Datasets、Hugging Face Datasets</div>
+        <p class="sub" style="margin-top:1.2vh;">※ 授權條款不一，使用前務必確認授權、著作權與個資合規。</p>
+      </div>
+    </div>
+  </section>
+
+
+
+</div>
+<div class="dots" id="dots"></div>
+<div class="hud"><span class="num" id="num">1 / 14</span>
+  <button class="btn" id="prev">‹</button><button class="btn" id="next">›</button></div>
+
+<script>
+  const slides=[...document.querySelectorAll('.slide')];
+  let i=0;
+  const dotsWrap=document.getElementById('dots');
+  slides.forEach((s,idx)=>{ const d=document.createElement('div'); d.className='dot'; d.onclick=()=>go(idx); dotsWrap.appendChild(d); });
+  const dots=[...document.querySelectorAll('.dot')];
+  function go(n){
+    i=Math.max(0,Math.min(slides.length-1,n));
+    slides.forEach((s,idx)=>s.classList.toggle('active',idx===i));
+    if(slides[i].querySelector('.arch')){ drawArch(); requestAnimationFrame(drawArch); }
+    dots.forEach((d,idx)=>d.classList.toggle('on',idx===i));
+    document.getElementById('num').textContent=(i+1)+' / '+slides.length;
+    document.getElementById('prog').style.width=((i+1)/slides.length*100)+'%';
+    // 深色頁時，左上品牌字與 HUD 數字用亮色（由 .dark 後代選擇器處理；此處切 body class 供全域）
+    document.body.classList.toggle('on-dark', slides[i].classList.contains('dark'));
+    document.getElementById('brandMini').className='brand-mini';
+    if(slides[i].classList.contains('dark')){ document.getElementById('brandMini').style.color='#fff'; document.getElementById('num').style.color='#cdddf1'; }
+    else { document.getElementById('brandMini').style.color=''; document.getElementById('num').style.color=''; }
+  }
+  function next(){ go(i+1); } function prev(){ go(i-1); }
+  document.getElementById('next').onclick=next;
+  document.getElementById('prev').onclick=prev;
+  document.addEventListener('keydown',e=>{
+    if(['ArrowRight','ArrowDown',' ','PageDown'].includes(e.key)){ e.preventDefault(); next(); }
+    else if(['ArrowLeft','ArrowUp','PageUp'].includes(e.key)){ e.preventDefault(); prev(); }
+    else if(e.key==='Home'){ go(0); } else if(e.key==='End'){ go(slides.length-1); }
+  });
+  document.getElementById('deck').addEventListener('click',e=>{
+    if(e.target.closest('.btn,.dot,a')) return;
+    const x=e.clientX, w=window.innerWidth;
+    if(x < w*0.28) prev(); else next();  // 左側 28% 上一頁，其餘下一頁
+  });
+  // 大架構頁：翻到時才算座標畫連線與回饋弧
+  function drawArch(){
+    const arch=document.querySelector('.slide.active .arch'); if(!arch) return;
+    const svg=arch.querySelector('svg');
+    [...svg.querySelectorAll('path.e')].forEach(n=>n.remove());
+    [...arch.querySelectorAll('.arch-elabel')].forEach(n=>n.remove());
+    const C=arch.getBoundingClientRect();
+    const P=id=>{ const r=arch.querySelector('#'+id).getBoundingClientRect();
+      return {t:r.top-C.top,b:r.bottom-C.top,cx:r.left-C.left+r.width/2}; };
+    const path=(d,color,marker,dash)=>{ const p=document.createElementNS('http://www.w3.org/2000/svg','path');
+      p.setAttribute('class','e'); p.setAttribute('d',d); p.setAttribute('fill','none'); p.setAttribute('stroke',color);
+      p.setAttribute('stroke-width','2.4'); if(dash)p.setAttribute('stroke-dasharray',dash);
+      p.setAttribute('marker-end','url(#'+marker+')'); svg.appendChild(p); };
+    const lab=(x,y,t,cls)=>{ const d=document.createElement('div'); d.className='arch-elabel '+(cls||'');
+      d.textContent=t; d.style.left=x+'px'; d.style.top=y+'px'; arch.appendChild(d); };
+    if(!arch.querySelector('#arch-consumer')) return;
+    const a4=P('arch-a4'), a2=P('arch-a2'), con=P('arch-consumer');
+    const mid=(a2.b+con.t)/2;
+    // 供給：商品庫 → 消費端（實線往下）
+    path(`M ${a4.cx} ${a4.b} C ${a4.cx} ${a4.b+45}, ${con.cx} ${con.t-45}, ${con.cx} ${con.t}`,'#3a2f6b','archNavy');
+    // 閉環回饋：消費端訊號 → 回饋設計 · 開款 · 生產（虛線往上）
+    path(`M ${a2.cx} ${con.t} C ${a2.cx} ${mid}, ${a2.cx} ${mid}, ${a2.cx} ${a2.b}`,'#b98a2e','archGold','7 5');
+    lab(a2.cx,mid,'市場前端訊號 → 回饋設計 · 開款 · 生產','gold');
+  }
+  window.addEventListener('resize',()=>{ if(document.querySelector('.slide.active .arch')) drawArch(); });
+  go(0);
+</script>
+</body>
+</html>

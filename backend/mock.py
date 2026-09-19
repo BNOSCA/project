@@ -12,8 +12,9 @@ from pathlib import Path
 
 from .db import EventStore
 from .explanation import build_explanation
+from .post_feed import PROFILE_SIGNAL_WEIGHTS, rank_feed, update_profile
 from .schemas import (
-    Creator, EventBatchResult, FeedbackEvent, FeedItem, FeedResponse, InsightsResponse,
+    Creator, EventBatchResult, FeedbackEvent, FeedResponse, InsightsResponse,
     Intent, InteractionEvent, Outfit, Post, PostDetail, Product, RecommendationResponse,
     RetrievalInfo, ScoreBreakdown, SearchFilters, SearchHit, SearchRequest, SearchResponse,
     TaggedProductDetail, UserProfile,
@@ -186,14 +187,20 @@ class MockServices:
         return RecommendationResponse(session_id=intent.session_id, intent=intent, outfits=outfits[:3], fallback_used=True,
                                       message="固定展示資料；商品價格與庫存不是即時資訊。")
 
-    def feed(self, user_id: str, cursor: str | None, limit: int) -> FeedResponse:
+    def feed(self, user_id: str, session_id: str | None, cursor: str | None, limit: int) -> FeedResponse:
+        # Without a session_id there is no session-scoped profile to look up
+        # (session_profiles is keyed by session_id, not user_id), so callers that omit
+        # it get a neutral, unpersonalized ranking instead of an error.
         offset = int(cursor) if cursor else 0
-        posts = self.catalog.posts[offset:offset + limit]
-        items = [FeedItem(post_id=post.post_id, rank=offset + i + 1, ranking_reason=["editorial_demo"],
-                          score_breakdown={"preference": 0, "social": 0, "exploration": 1}, post=post)
-                 for i, post in enumerate(posts)]
-        next_cursor = str(offset + len(posts)) if offset + len(posts) < len(self.catalog.posts) else None
-        return FeedResponse(user_id=user_id, items=items, next_cursor=next_cursor)
+        profile = self.profile(session_id, user_id) if session_id else UserProfile(user_id=user_id)
+        ranked = rank_feed(user_id=user_id, posts=self.catalog.posts, profile=profile,
+                           events=[], limit=len(self.catalog.posts))
+        page = ranked.items[offset:offset + limit]
+        for i, item in enumerate(page):
+            item.rank = offset + i + 1
+        next_cursor = str(offset + len(page)) if offset + len(page) < len(ranked.items) else None
+        return FeedResponse(user_id=user_id, items=page, next_cursor=next_cursor,
+                            profile_version=profile.profile_version)
 
     def record_interactions(self, events: list[InteractionEvent]) -> EventBatchResult:
         accepted = duplicates = 0
@@ -215,21 +222,29 @@ class MockServices:
         return EventBatchResult(accepted_count=accepted, duplicate_count=duplicates)
 
     def _apply_signal(self, session_id: str, user_id: str, target_type: str, target_id: str, event_type: str, dwell_ms: int | None = None) -> None:
+        # Single source of truth for signal -> preference-weight deltas is
+        # post_feed.PROFILE_SIGNAL_WEIGHTS; this used to be reimplemented here with a
+        # stale, smaller signal set (no follow/not_interested/hide/quick_skip and a
+        # different dwell threshold constant).
         profile = self.profile(session_id, user_id)
-        if target_type == "post":
-            target = self.catalog.posts_by_id.get(target_id)
-            attributes = ([f"style:{x}" for x in target.styles] + [f"color:{x}" for x in target.colors]) if target else []
-        else:
-            target = self.catalog.products_by_id.get(target_id)
-            attributes = ([f"style:{x}" for x in target.styles] + [f"color:{x}" for x in target.colors]) if target else []
+        signal_type = event_type
         if event_type == "dwell":
-            delta = 0.05 if (dwell_ms or 0) >= 8000 else 0.02
+            signal_type = "dwell_8s_plus" if (dwell_ms or 0) >= 8000 else "dwell_2_8s"
+        if signal_type not in PROFILE_SIGNAL_WEIGHTS:
+            return
+        if target_type == "post":
+            post = self.catalog.posts_by_id.get(target_id)
+            if post is None:
+                return
+            profile = update_profile(profile, post, signal_type)
         else:
-            delta = {"post_open": 0.03, "like": 0.15 if target_type == "post" else 0.2,
-                     "save": 0.2, "product_click": 0.1, "dislike": -0.3}.get(event_type, 0)
-        for attribute in attributes:
-            profile.preference_weights[attribute] = round(max(-1, min(1, profile.preference_weights.get(attribute, 0) + delta)), 3)
-        profile.updated_at = datetime.now(timezone.utc)
+            product = self.catalog.products_by_id.get(target_id)
+            attributes = ([f"style:{x}" for x in product.styles] + [f"color:{x}" for x in product.colors]) if product else []
+            weight = PROFILE_SIGNAL_WEIGHTS[signal_type]
+            for attribute in attributes:
+                profile.preference_weights[attribute] = round(max(-1, min(1, profile.preference_weights.get(attribute, 0) + weight)), 3)
+            profile.profile_version += 1
+            profile.updated_at = datetime.now(timezone.utc)
         self.store.save_profile(session_id, user_id, profile.model_dump(mode="json"))
 
     def feedback(self, event: FeedbackEvent) -> tuple[UserProfile, bool]:

@@ -16,6 +16,7 @@ from fastapi.responses import JSONResponse
 from .config import Settings
 from .db import EventStore
 from .explanation import build_explanation
+from .feed_debug import build_debug_router
 from .mock import FixtureCatalog, MockServices, filter_products, parse_demo_intent
 from .schemas import (
     ErrorBody, ErrorResponse, EventBatchResult, FeedbackEvent, FeedbackResponse,
@@ -273,11 +274,14 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             hit.product = catalog.products_by_id[hit.product_id]
         return response
 
+    app.include_router(build_debug_router(require_mock))
+
     @app.get("/api/v1/feed", response_model=FeedResponse)
-    def feed(user_id: str = "anonymous-demo", cursor: str | None = None, limit: int = Query(20, ge=1, le=100)) -> FeedResponse:
+    def feed(user_id: str = "anonymous-demo", session_id: str | None = None,
+             cursor: str | None = None, limit: int = Query(20, ge=1, le=100)) -> FeedResponse:
         if cursor is not None and (not cursor.isdigit() or int(cursor) > 1000000):
             raise APIError(422, "INVALID_INPUT", "cursor 無效。")
-        return require_mock().feed(user_id, cursor, limit)
+        return require_mock().feed(user_id, session_id, cursor, limit)
 
     @app.get("/api/v1/posts/{post_id}", response_model=PostDetail)
     def post_detail(post_id: str) -> PostDetail:
