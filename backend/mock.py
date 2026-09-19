@@ -244,7 +244,7 @@ class MockServices:
     def feed(self, user_id: str, session_id: str | None, cursor: str | None, limit: int) -> FeedResponse:
         offset = int(cursor) if cursor else 0
         profile = self.profile(session_id, user_id) if session_id else UserProfile(user_id=user_id)
-        events = self.store.list_events(session_id, user_id) if session_id else []
+        events = self.store.list_user_events(user_id)
         intent_data = self.store.get_intent(session_id) if session_id else None
         intent = Intent.model_validate(intent_data) if intent_data else None
         intent_weights = intent_to_session_weights(intent)
@@ -255,12 +255,20 @@ class MockServices:
                            session_weights=session_weights,
                            recommendation_weights=recommendation_weights,
                            external_trend_scores=self.store.trend_scores())
-        page = ranked.items[offset:offset + limit]
+        seen_post_ids = {
+            event.get("target_id")
+            for event in events
+            if event.get("event_type") == "impression"
+            and event.get("target_type") == "post"
+            and event.get("is_foreground", True)
+        }
+        unseen_items = [item for item in ranked.items if item.post_id not in seen_post_ids]
+        page = unseen_items[offset:offset + limit]
         for i, item in enumerate(page):
             item.rank = offset + i + 1
             if item.post is not None:
                 item.creator = self.catalog.creators_by_id[item.post.creator_id]
-        next_cursor = str(offset + len(page)) if offset + len(page) < len(ranked.items) else None
+        next_cursor = str(offset + len(page)) if offset + len(page) < len(unseen_items) else None
         return FeedResponse(user_id=user_id, items=page, next_cursor=next_cursor,
                             profile_version=profile.profile_version)
 

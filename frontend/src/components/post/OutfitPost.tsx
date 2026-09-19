@@ -1,6 +1,7 @@
 import {
   ShoppingBag,
 } from 'lucide-react'
+import { useEffect, useRef } from 'react'
 
 import type {
   OutfitPost as OutfitPostModel,
@@ -37,6 +38,8 @@ interface OutfitPostProps {
   onShare?: (
     postId: string,
   ) => void
+
+  onImpression?: (postId: string) => void
 }
 
 export function OutfitPost({
@@ -49,7 +52,24 @@ export function OutfitPost({
   onFindProducts,
   onComment,
   onShare,
+  onImpression,
 }: OutfitPostProps) {
+  const articleRef = useRef<HTMLElement>(null)
+  const impressionSent = useRef(false)
+
+  useEffect(() => {
+    if (!onImpression || variant !== 'feed' || !articleRef.current) return
+    const element = articleRef.current
+    const observer = new IntersectionObserver(entries => {
+      if (!impressionSent.current && entries.some(entry => entry.isIntersecting && entry.intersectionRatio >= 0.6)) {
+        impressionSent.current = true
+        onImpression(post.id)
+        observer.disconnect()
+      }
+    }, { threshold: 0.6 })
+    observer.observe(element)
+    return () => observer.disconnect()
+  }, [onImpression, post.id, variant])
   const visibleLikeCount =
     post.stats.likeCount +
     (
@@ -61,6 +81,7 @@ export function OutfitPost({
 
   return (
     <article
+      ref={articleRef}
       className={
         variant === 'grid'
           ? 'social-post grid-post'

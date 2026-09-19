@@ -19,7 +19,10 @@ interface SidebarProps {
 
   currentUser: User
 
+  isAuthenticated: boolean
+
   onNavigate: (page: AppPage) => void
+  onAuthClick: () => void
 }
 
 const navigationItems: Array<{
@@ -62,7 +65,9 @@ const navigationItems: Array<{
 export function Sidebar({
   currentPage,
   currentUser,
+  isAuthenticated,
   onNavigate,
+  onAuthClick,
 }: SidebarProps) {
   return (
     <aside className="left-sidebar">
@@ -112,7 +117,7 @@ export function Sidebar({
 
       <button
         className="mini-profile"
-        onClick={() => onNavigate('profile')}
+        onClick={() => isAuthenticated ? onNavigate('profile') : onAuthClick()}
       >
         <Avatar
           user={currentUser}
@@ -121,11 +126,11 @@ export function Sidebar({
 
         <span>
           <strong>
-            {currentUser.displayName}
+            {isAuthenticated ? currentUser.displayName : '登入 / 註冊'}
           </strong>
 
           <small>
-            @{currentUser.username}
+            {isAuthenticated ? `@${currentUser.username}` : '同步收藏與偏好'}
           </small>
         </span>
       </button>

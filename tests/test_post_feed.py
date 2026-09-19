@@ -138,3 +138,13 @@ def test_demographics_are_a_soft_audience_match_signal():
     assert demographic_match(post, matching) == 1.0
     assert demographic_match(post, non_matching) == 0.0
     assert demographic_match(post, unknown) == 0.5
+
+
+def test_creator_diversity_is_soft_and_does_not_drop_posts():
+    posts = [make_post(f"p{i}", "street", "black", "shirt", "c1") for i in range(5)]
+    profile = UserProfile(user_id="u1")
+
+    response = rank_feed("u1", posts, profile, [], limit=5, current_time=NOW)
+
+    assert len(response.items) == 5
+    assert {item.post_id for item in response.items} == {post.post_id for post in posts}

@@ -243,9 +243,7 @@ def rank_feed(
     for row in deferred:
         if len(selected) >= limit:
             break
-        if creator_counts.get(row[0].creator_id, 0) < 3:
-            selected.append(row)
-            creator_counts[row[0].creator_id] = creator_counts.get(row[0].creator_id, 0) + 1
+        selected.append(row)
 
     items: list[FeedItem] = []
     for rank, (post, score, breakdown) in enumerate(selected[:limit], 1):
