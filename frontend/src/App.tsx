@@ -5,6 +5,7 @@ import {
 } from 'react'
 
 import { Toast } from './components/common/Toast'
+import { AuthDialog } from './components/auth/AuthDialog'
 
 import { BottomNav } from './components/layout/BottomNav'
 import { MobileHeader } from './components/layout/MobileHeader'
@@ -14,7 +15,7 @@ import { Sidebar } from './components/layout/Sidebar'
 import { SimilarProducts } from './components/product/SimilarProducts'
 
 import {
-  currentUser,
+  currentUser as demoUser,
   mockPosts,
   mockProducts,
 } from './data'
@@ -34,17 +35,35 @@ import {
   loadRecommendedFeed,
   loadPostProducts,
   recordPostInteraction,
+  recordPostImpression,
   recordPostLike,
   recordPostSave,
   recordProductClick,
 } from './services/feed'
-import { getRequestIdentity } from './services/auth'
+import {
+  observeAuthState,
+  saveFirebaseProfile,
+  signOutCurrentUser,
+} from './services/auth'
 
 import type {
   AppPage,
   OutfitPost,
   Product,
+  User,
 } from './types/index'
+
+function profileStorageKey(userId: string) {
+  return `loop:public-profile:${userId}:v1`
+}
+
+function readLocalProfile(userId: string): Partial<User> {
+  try {
+    return JSON.parse(localStorage.getItem(profileStorageKey(userId)) ?? '{}')
+  } catch {
+    return {}
+  }
+}
 
 function likedStorageKey(userId: string) {
   return `loop:liked-posts:${userId}:v1`
@@ -136,6 +155,10 @@ export default function App() {
   ] = useState<string[]>([])
 
   const [activeUserId, setActiveUserId] = useState('anonymous-demo')
+  const [currentUser, setCurrentUser] = useState<User>(demoUser)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [authConfigured, setAuthConfigured] = useState(false)
+  const [authDialogOpen, setAuthDialogOpen] = useState(false)
 
   const [
     selectedProductPost,
@@ -179,17 +202,32 @@ export default function App() {
     }
   }, [])
 
-  useEffect(() => {
-    let active = true
-    void getRequestIdentity()
-      .then(identity => {
-        if (active) setActiveUserId(identity.userId)
-      })
-      .catch(() => {
-        // Keep the local fallback identity when Firebase is unavailable.
-      })
-    return () => { active = false }
-  }, [])
+  useEffect(() => observeAuthState(({ user, configured }) => {
+    setAuthConfigured(configured)
+    setIsAuthenticated(Boolean(user && !user.isAnonymous))
+
+    if (!user || user.isAnonymous) {
+      setActiveUserId('anonymous-demo')
+      setCurrentUser(demoUser)
+      return
+    }
+
+    const saved = readLocalProfile(user.uid)
+    const emailName = user.email?.split('@')[0] || 'loop.user'
+    const displayName = saved.displayName || user.displayName || emailName
+    setActiveUserId(user.uid)
+    setCurrentUser({
+      id: user.uid,
+      username: saved.username || emailName.replace(/[^a-zA-Z0-9._]/g, ''),
+      displayName,
+      avatarText: displayName.slice(0, 1).toUpperCase(),
+      avatarUrl: saved.avatarUrl || user.photoURL || undefined,
+      bio: saved.bio || '正在建立我的風格檔案。',
+      postCount: saved.postCount ?? 0,
+      followerCount: saved.followerCount ?? 0,
+      followingCount: saved.followingCount ?? 0,
+    })
+  }), [])
 
   useEffect(() => {
     setLikedIds(readStoredIds(likedStorageKey(activeUserId)))
@@ -212,12 +250,16 @@ export default function App() {
 
   async function refreshFeed() {
     const recommendedPosts = await loadRecommendedFeed()
-    if (recommendedPosts.length > 0) {
-      setPosts(current => [
-        ...current.filter(post => post.id.startsWith('post-user-')),
-        ...recommendedPosts,
-      ])
-    }
+    setPosts(current => [
+      ...current.filter(post => post.id.startsWith('post-user-')),
+      ...recommendedPosts,
+    ])
+    setNotice(recommendedPosts.length > 0 ? '已更新推薦貼文' : '你已看完目前所有貼文')
+  }
+
+  function recordImpression(postId: string, position: number) {
+    if (postId.startsWith('post-user-') || mockPosts.some(post => post.id === postId)) return
+    void recordPostImpression(postId, position).catch(() => {})
   }
 
   /*
@@ -297,12 +339,37 @@ export default function App() {
   function navigate(
     page: AppPage,
   ) {
+    if (!isAuthenticated && (page === 'profile' || page === 'post')) {
+      setAuthDialogOpen(true)
+      return
+    }
+
     setCurrentPage(page)
 
     window.scrollTo({
       top: 0,
       behavior: 'smooth',
     })
+  }
+
+  async function updateCurrentProfile(
+    profile: Pick<User, 'displayName' | 'username' | 'bio' | 'avatarUrl'>,
+  ) {
+    await saveFirebaseProfile(profile.displayName, profile.avatarUrl)
+    const next = {
+      ...currentUser,
+      ...profile,
+      avatarText: profile.displayName.slice(0, 1).toUpperCase(),
+    }
+    localStorage.setItem(profileStorageKey(activeUserId), JSON.stringify(next))
+    setCurrentUser(next)
+    setNotice('個人檔案已更新')
+  }
+
+  async function signOutUser() {
+    await signOutCurrentUser()
+    setCurrentPage('home')
+    setNotice('已登出帳號')
   }
 
   function toggleLike(
@@ -703,6 +770,8 @@ export default function App() {
           onGoSaved={() =>
             navigate('saved')
           }
+          onUpdateProfile={updateCurrentProfile}
+          onSignOut={signOutUser}
         />
       )
     }
@@ -734,6 +803,7 @@ export default function App() {
           navigate('post')
         }
         onRefreshFeed={refreshFeed}
+        onImpression={recordImpression}
       />
     )
   }
@@ -744,6 +814,13 @@ export default function App() {
         message={notice}
       />
 
+      <AuthDialog
+        open={authDialogOpen}
+        configured={authConfigured}
+        onClose={() => setAuthDialogOpen(false)}
+        onSuccess={setNotice}
+      />
+
       <div className="app-layout">
         <Sidebar
           currentPage={
@@ -752,9 +829,11 @@ export default function App() {
           currentUser={
             currentUser
           }
+          isAuthenticated={isAuthenticated}
           onNavigate={
             navigate
           }
+          onAuthClick={() => setAuthDialogOpen(true)}
         />
 
         <main className="main-column">

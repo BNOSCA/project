@@ -134,7 +134,12 @@ def main() -> None:
     image_link = OUTPUT / "images"
     target = Path("..") / "kaggle_500" / "images"
     if image_link.exists() or image_link.is_symlink():
-        if not image_link.is_symlink() or image_link.readlink() != target:
+        is_expected_link = image_link.is_symlink() and image_link.readlink() == target
+        is_windows_git_link = (
+            image_link.is_file()
+            and image_link.read_text(encoding="utf-8").strip().replace("\\", "/") == target.as_posix()
+        )
+        if not is_expected_link and not is_windows_git_link:
             raise ValueError(f"unexpected existing image path: {image_link}")
     else:
         image_link.symlink_to(target, target_is_directory=True)

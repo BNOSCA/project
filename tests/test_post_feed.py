@@ -88,3 +88,13 @@ def test_interacted_post_loses_exploration_bonus_but_is_not_rejected():
     assert response.items[0].post_id == "p1"
     assert response.items[0].score_breakdown.exploration == 0
     assert "探索／尚未互動內容" not in response.items[0].ranking_reason
+
+
+def test_creator_diversity_is_soft_and_does_not_drop_posts():
+    posts = [make_post(f"p{i}", "street", "black", "shirt", "c1") for i in range(5)]
+    profile = UserProfile(user_id="u1")
+
+    response = rank_feed("u1", posts, profile, [], limit=5, current_time=NOW)
+
+    assert len(response.items) == 5
+    assert {item.post_id for item in response.items} == {post.post_id for post in posts}

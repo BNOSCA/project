@@ -25,5 +25,5 @@ class Settings:
             raise ValueError("BACKEND_MODE must be mock or live")
         origins = tuple(x.strip() for x in os.getenv("CORS_ORIGINS", "http://localhost:5173").split(",") if x.strip())
         db_path = Path(os.getenv("APP_DB_PATH", str(ROOT / "runtime" / "demo.sqlite3"))).expanduser()
-        data_dir = Path(os.getenv("APP_DATA_DIR", str(ROOT / "data" / "catalog" / "combined"))).expanduser()
+        data_dir = Path(os.getenv("APP_DATA_DIR", str(ROOT / "data" / "fixtures"))).expanduser()
         return cls(mode, origins, db_path, data_dir, float(os.getenv("LLM_TIMEOUT_SECONDS", "8")))

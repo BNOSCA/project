@@ -49,6 +49,8 @@ class EventStore:
                 );
                 CREATE INDEX IF NOT EXISTS idx_external_trends_lookup
                 ON external_trend_signals(source, geo, attribute, period_end);
+                CREATE INDEX IF NOT EXISTS idx_events_user_type_target
+                ON events(user_id, event_type, target_id);
             """)
 
     def connect(self) -> sqlite3.Connection:
@@ -85,6 +87,17 @@ class EventStore:
                 WHERE session_id = ? AND user_id = ?
                 ORDER BY created_at ASC LIMIT ?""",
                 (session_id, user_id, limit),
+            ).fetchall()
+        return [json.loads(row["payload"]) for row in rows]
+
+    def list_user_events(self, user_id: str, limit: int = 5000) -> list[dict]:
+        """Return cross-session events for account-level ranking and exposure history."""
+        with self.connect() as db:
+            rows = db.execute(
+                """SELECT payload FROM events
+                WHERE user_id = ?
+                ORDER BY created_at ASC LIMIT ?""",
+                (user_id, limit),
             ).fetchall()
         return [json.loads(row["payload"]) for row in rows]
 

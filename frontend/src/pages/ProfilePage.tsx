@@ -1,6 +1,10 @@
 import {
+  LogOut,
+  Pencil,
   Sparkles,
+  X,
 } from 'lucide-react'
+import { useEffect, useState, type FormEvent } from 'react'
 
 import { Avatar } from '../components/common/Avatar'
 import { OutfitPost } from '../components/post/OutfitPost'
@@ -31,6 +35,9 @@ interface ProfilePageProps {
   ) => void
 
   onGoSaved: () => void
+
+  onUpdateProfile: (profile: Pick<User, 'displayName' | 'username' | 'bio' | 'avatarUrl'>) => Promise<void>
+  onSignOut: () => Promise<void>
 }
 
 export function ProfilePage({
@@ -42,7 +49,42 @@ export function ProfilePage({
   onSave,
   onFindProducts,
   onGoSaved,
+  onUpdateProfile,
+  onSignOut,
 }: ProfilePageProps) {
+  const [editing, setEditing] = useState(false)
+  const [displayName, setDisplayName] = useState(user.displayName)
+  const [username, setUsername] = useState(user.username)
+  const [bio, setBio] = useState(user.bio ?? '')
+  const [avatarUrl, setAvatarUrl] = useState(user.avatarUrl ?? '')
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    setDisplayName(user.displayName)
+    setUsername(user.username)
+    setBio(user.bio ?? '')
+    setAvatarUrl(user.avatarUrl ?? '')
+  }, [user])
+
+  async function saveProfile(event: FormEvent) {
+    event.preventDefault()
+    setError('')
+    setSaving(true)
+    try {
+      await onUpdateProfile({
+        displayName: displayName.trim(),
+        username: username.trim().replace(/^@/, ''),
+        bio: bio.trim(),
+        avatarUrl: avatarUrl.trim() || undefined,
+      })
+      setEditing(false)
+    } catch (saveError) {
+      setError(saveError instanceof Error ? saveError.message : '無法儲存個人檔案')
+    } finally {
+      setSaving(false)
+    }
+  }
   const userPosts =
     posts.filter(
       post =>
@@ -74,7 +116,9 @@ export function ProfilePage({
             <button
               type="button"
               className="secondary-button"
+              onClick={() => setEditing(true)}
             >
+              <Pencil size={14} />
               編輯個人檔案
             </button>
           </div>
@@ -114,6 +158,34 @@ export function ProfilePage({
           </div>
         </div>
       </div>
+
+      <button className="profile-signout" type="button" onClick={() => void onSignOut()}>
+        <LogOut size={16} />
+        登出帳號
+      </button>
+
+      {editing && (
+        <div className="modal-backdrop" role="presentation" onMouseDown={event => {
+          if (event.target === event.currentTarget) setEditing(false)
+        }}>
+          <section className="profile-editor" role="dialog" aria-modal="true" aria-labelledby="profile-editor-title">
+            <button className="icon-button dialog-close" type="button" onClick={() => setEditing(false)} aria-label="關閉">
+              <X size={20} />
+            </button>
+            <h2 id="profile-editor-title">編輯個人檔案</h2>
+            <p>更新其他人看到的名稱、帳號與自我介紹。</p>
+            <form onSubmit={saveProfile}>
+              <label>顯示名稱<input value={displayName} onChange={event => setDisplayName(event.target.value)} maxLength={40} required /></label>
+              <label>使用者名稱<div className="username-input"><span>@</span><input value={username} onChange={event => setUsername(event.target.value)} pattern="[A-Za-z0-9._]+" maxLength={30} required /></div></label>
+              <label>頭像圖片網址<input type="url" value={avatarUrl} onChange={event => setAvatarUrl(event.target.value)} placeholder="https://..." /></label>
+              <label>自我介紹<textarea value={bio} onChange={event => setBio(event.target.value)} maxLength={160} rows={4} /></label>
+              <div className="profile-editor-count">{bio.length}/160</div>
+              {error && <div className="form-error" role="alert">{error}</div>}
+              <button className="primary-button" type="submit" disabled={saving}>{saving ? '儲存中...' : '儲存變更'}</button>
+            </form>
+          </section>
+        </div>
+      )}
 
       <section className="style-profile">
         <div className="style-profile-title">
