@@ -237,6 +237,7 @@ __marimo__/
 *.md
 !README.md
 !draft2.md
+!POST_FEED_RECOMMENDER.md
 !frontend/README.md
 !scripts/README.md
 !GIT_WORKFLOW.md

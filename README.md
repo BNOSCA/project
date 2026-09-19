@@ -121,6 +121,14 @@ seed 會把 `data/fixtures/products.json`、`posts.json`、`creators.json` 寫�
 
 預期策略是 `products` / `posts` / `creators` 公開讀、client 不可寫；`users` 僅使用者本人可讀寫；`sessions` / `interactions` 必須登入且 `user_id == request.auth.uid`。後端 Admin SDK 由 Google Cloud IAM 控制，不受 Firestore rules 限制。
 
+## 貼文推薦模組
+
+`backend/post_feed.py` 提供不依賴 HTTP 的貼文排序與偏好更新函式，讓 E 後端可在後續整合時直接呼叫。排序訊號包含長期偏好、單次瀏覽意圖、社交關係、深度互動、內容品質、協同分數、近期成長、探索、新鮮度、重複曝光衰減及負面互動。
+
+Google Trends 匯出檔由 `backend/post_trends.py` 解析，關鍵字對應表位於 `data/trend_keywords.json`，資料以 `geo=TW` 存入 SQLite。趨勢分為 `style`、`color`、`occasion`、`item`，合成權重依序為 50%、25%、15%、10%；外部趨勢占最終排序 10%。目前模組尚未替換 `/api/v1/feed` 的固定展示 feed，以避免在 E 的整合點未協調前修改 `backend/main.py`。
+
+共用 schema 新增選填的使用者年齡區間／性別、profile 版本、貼文商品類別標籤、互動統計、明確的 feed 分數拆解及外部趨勢資料契約。新增欄位均有預設值，既有 fixtures 與前端契約可繼續使用。
+
 ## 部署與現況
 
 可用 [Dockerfile](Dockerfile) 建立單一映像，包含 React build、FastAPI、合併商品庫與本機 Kaggle 圖片；容器的 `/` 提供前端，`/api/*` 提供 API。預設監聽 `8000`，也接受平台提供的 `PORT`。Docker daemon 未啟動時可先用本機雙服務驗收；部署平台、domain 與 credentials 待提供，因此尚未上線。容器內 SQLite 若未掛載持久磁碟，重啟後 session／事件會消失。
