@@ -1,19 +1,19 @@
 import {
   ArrowRight,
+  ImagePlus,
   Sparkles,
 } from 'lucide-react'
 import {
   type FormEvent,
+  useRef,
   useState,
 } from 'react'
 
 import {
-  recommend,
-  type RecommendResponse,
-} from '../../services/recommendation'
+  searchCatalogProducts,
+  type CatalogSearchResult,
+} from '../../services/feed'
 import { QuerySuggestionChips } from './QuerySuggestionChips'
-import { getSessionId } from '../../services/session'
-import { getRequestIdentity } from '../../services/auth'
 
 const suggestions = [
   '面試穿搭',
@@ -24,7 +24,7 @@ const suggestions = [
 ]
 
 interface AIQueryBarProps {
-  onResult: (response: RecommendResponse) => void
+  onResult: (response: CatalogSearchResult) => void
   onStart: () => void
   onError: (message: string) => void
   isLoading: boolean
@@ -37,6 +37,9 @@ export function AIQueryBar({
   isLoading,
 }: AIQueryBarProps) {
   const [query, setQuery] = useState('')
+  const [queryImage, setQueryImage] = useState<string | null>(null)
+  const [imageName, setImageName] = useState('')
+  const imageInput = useRef<HTMLInputElement>(null)
 
   function applySuggestion(suggestion: string) {
     const suggestionText = suggestion === '約會'
@@ -48,24 +51,35 @@ export function AIQueryBar({
       : suggestionText)
   }
 
+  function chooseImage(file: File | undefined) {
+    if (!file) return
+    if (!file.type.startsWith('image/')) {
+      onError('請選擇圖片檔案。')
+      return
+    }
+    const reader = new FileReader()
+    reader.onload = () => {
+      setQueryImage(typeof reader.result === 'string' ? reader.result : null)
+      setImageName(file.name)
+    }
+    reader.onerror = () => onError('圖片讀取失敗，請換一張圖片再試。')
+    reader.readAsDataURL(file)
+  }
+
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
     const text = query.trim()
-    if (!text || isLoading) {
+    if ((!text && !queryImage) || isLoading) {
       return
     }
 
     onStart()
 
     try {
-      const identity = await getRequestIdentity()
-      const response = await recommend({
-        session_id: getSessionId(identity.userId),
-        text,
-        user_id: identity.userId,
-        filters: {},
-        image: null,
+      const response = await searchCatalogProducts({
+        queryText: text,
+        queryImage,
       })
 
       onResult(response)
@@ -79,7 +93,7 @@ export function AIQueryBar({
       <div className="ai-query-heading">
         <span><Sparkles size={15} /> AI 穿搭靈感</span>
         <h1>今天想穿什麼？</h1>
-        <p>把場合、預算和感覺一次告訴我。</p>
+        <p>用文字、參考圖片或兩者一起找相似單品。</p>
       </div>
 
       <form className="ai-query-form" onSubmit={submit}>
@@ -87,18 +101,36 @@ export function AIQueryBar({
         <input
           value={query}
           onChange={event => setQuery(event.target.value)}
-          placeholder="例如：週末約會，預算 2500，想日系一點"
-          aria-label="描述你想找的穿搭"
+          placeholder="例如：日系 寬鬆 襯衫"
+          aria-label="描述你想找的商品"
           disabled={isLoading}
         />
+        <input ref={imageInput} className="visually-hidden" type="file"
+          accept="image/*" onChange={event => chooseImage(event.target.files?.[0])} />
+        <button type="button" className="query-image-button"
+          aria-label="上傳參考圖片" title="上傳參考圖片"
+          disabled={isLoading} onClick={() => imageInput.current?.click()}>
+          <ImagePlus size={18} />
+        </button>
         <button
           type="submit"
-          aria-label="取得穿搭推薦"
-          disabled={!query.trim() || isLoading}
+          aria-label="搜尋相似商品"
+          disabled={(!query.trim() && !queryImage) || isLoading}
         >
           <ArrowRight size={20} />
         </button>
       </form>
+
+      {imageName && (
+        <div className="query-image-status">
+          <span>參考圖：{imageName}</span>
+          <button type="button" onClick={() => {
+            setQueryImage(null)
+            setImageName('')
+            if (imageInput.current) imageInput.current.value = ''
+          }}>移除</button>
+        </div>
+      )}
 
       <QuerySuggestionChips
         suggestions={suggestions}

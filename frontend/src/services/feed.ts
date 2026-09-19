@@ -3,8 +3,8 @@ import type {
   OutfitPost,
   Product,
 } from '../types'
-import { getSessionId } from './session'
-import { authenticatedHeaders, getRequestIdentity } from './auth'
+import { getSessionId } from './session.ts'
+import { authenticatedHeaders, getRequestIdentity } from './auth.ts'
 
 interface ApiPost {
   post_id: string
@@ -181,15 +181,41 @@ export async function loadPostProducts(postId: string): Promise<Product[]> {
 export interface CatalogSearchResult {
   products: Product[]
   fusionMethod: string
+  candidateCount: number
 }
 
+export interface CatalogSearchFilters {
+  category?: string
+  priceMax?: number
+  availableOnly?: boolean
+  excludedColors?: string[]
+  excludedFits?: string[]
+  sizes?: string[]
+}
+
+export interface CatalogSearchRequest {
+  queryText?: string
+  queryImage?: string | null
+  imageWeight?: number
+  filters?: CatalogSearchFilters
+}
+
+export function searchCatalogProducts(request: CatalogSearchRequest): Promise<CatalogSearchResult>
+/** @deprecated Pass a CatalogSearchRequest so image search can be specified. */
+export function searchCatalogProducts(queryText: string, filters?: CatalogSearchFilters): Promise<CatalogSearchResult>
 export async function searchCatalogProducts(
-  queryText: string,
-  filters: {
-    category?: string
-    priceMax?: number
-  } = {},
+  requestOrQuery: CatalogSearchRequest | string,
+  legacyFilters: CatalogSearchFilters = {},
 ): Promise<CatalogSearchResult> {
+  const request = typeof requestOrQuery === 'string'
+    ? { queryText: requestOrQuery, filters: legacyFilters }
+    : requestOrQuery
+  const queryText = request.queryText?.trim() ?? ''
+  const queryImage = request.queryImage ?? null
+  const filters = request.filters ?? {}
+  const mode = queryImage
+    ? (queryText ? 'mixed' : 'image')
+    : 'text'
   const [identity, authHeaders] = await Promise.all([
     getRequestIdentity(),
     authenticatedHeaders(),
@@ -200,10 +226,16 @@ export async function searchCatalogProducts(
     body: JSON.stringify({
       session_id: getSessionId(identity.userId),
       query_text: queryText,
-      mode: 'text',
+      query_image: queryImage,
+      mode,
+      image_weight: request.imageWeight ?? 0.5,
       filters: {
         categories: filters.category ? [filters.category] : [],
         ...(filters.priceMax ? { price_max: filters.priceMax } : {}),
+        ...(filters.availableOnly ? { available_only: true } : {}),
+        ...(filters.excludedColors?.length ? { excluded_colors: filters.excludedColors } : {}),
+        ...(filters.excludedFits?.length ? { excluded_fits: filters.excludedFits } : {}),
+        ...(filters.sizes?.length ? { sizes: filters.sizes } : {}),
       },
     }),
   })
@@ -215,7 +247,7 @@ export async function searchCatalogProducts(
   }
   const data = await response.json() as {
     products: Array<{ product: ApiCatalogProduct | null; score: number }>
-    retrieval: { fusion_method: string }
+    retrieval: { fusion_method: string; prefilter_count: number }
   }
   return {
     products: data.products.flatMap(hit => {
@@ -224,6 +256,7 @@ export async function searchCatalogProducts(
       return product ? [{ ...product, similarity: Math.round(hit.score * 100) }] : []
     }),
     fusionMethod: data.retrieval.fusion_method,
+    candidateCount: data.retrieval.prefilter_count,
   }
 }
 

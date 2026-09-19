@@ -91,7 +91,21 @@ class TestSearchRelevance(unittest.TestCase):
             self.assertGreaterEqual(resp.products[i].score, resp.products[i + 1].score)
             self.assertIn("relevance", resp.products[i].score_breakdown)
 
+    def test_filter_only_browse_does_not_need_an_embedding_query(self):
+        req = SearchRequest(
+            session_id="test-session",
+            query_text="",
+            mode="text",
+            filters=SearchFilters(categories=["top"]),
+            limit=10,
+        )
+        catalog = [p for p in self.products if p.category == "top"]
+        resp = search_products(req, catalog)
+
+        self.assertEqual(resp.retrieval.fusion_method, "filters_only")
+        self.assertEqual([hit.product_id for hit in resp.products], ["p-001", "p-003"])
+        self.assertTrue(all(hit.score == 0 for hit in resp.products))
+
 
 if __name__ == "__main__":
     unittest.main()
-

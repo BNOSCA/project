@@ -29,16 +29,19 @@ def test_three_combined_catalog_demo_runs(tmp_path: Path):
         feed = feed_response.json()
         assert len(feed["items"]) >= 3
         post = feed["items"][0]["post"]
-        assert post["item_tags"]
+        assert post["item_tags"] or post["detected_regions"]
         assert feed["items"][0]["creator"]["display_name"]
 
         detail_response = client.get(f"/api/v1/posts/{post['post_id']}")
         assert detail_response.status_code == 200
         detail = detail_response.json()
         assert detail["creator"]["creator_id"] == post["creator_id"]
-        assert detail["tagged_products"]
-        assert all(tag["match_type"] == "similar" and tag["product"]["product_url"]
-                   for tag in detail["tagged_products"])
+        if detail["tagged_products"]:
+            assert all(tag["match_type"] == "similar" and tag["product"]["product_url"]
+                       for tag in detail["tagged_products"])
+        else:
+            assert detail["similar_products"]
+            assert all(product["product_url"] for product in detail["similar_products"])
 
         recommendation_response = client.post("/api/v1/recommend", json={
             "session_id": session,
@@ -66,7 +69,7 @@ def test_three_combined_catalog_demo_runs(tmp_path: Path):
         assert search_response.status_code == 200, search_response.text
         hits = search_response.json()["products"]
         assert hits
-        assert search_response.json()["retrieval"]["fusion_method"] == "metadata_text"
+        assert search_response.json()["retrieval"]["fusion_method"] in {"metadata_text", "fashion_clip_text"}
         assert all(hit["product"]["category"] == "top" and
                    hit["product"]["price"] <= 1000 and
                    "beige" not in hit["product"]["colors"] for hit in hits)
@@ -111,7 +114,7 @@ def test_implemented_search_modes_and_feed_events_are_reachable(tmp_path: Path):
         "filters": {"categories": ["shoes"]},
     })
     assert search.status_code == 200, search.text
-    assert search.json()["retrieval"]["fusion_method"] == "mock_embedding_mixed"
+    assert search.json()["retrieval"]["fusion_method"] in {"metadata_text", "rrf"}
     assert search.json()["products"]
     assert all(hit["product"]["category"] == "shoes" for hit in search.json()["products"])
 
@@ -134,3 +137,31 @@ def test_implemented_search_modes_and_feed_events_are_reachable(tmp_path: Path):
             break
     opened = next(item for item in items if item["post_id"] == post_id)
     assert opened["score_breakdown"]["exploration"] == 0
+
+
+def test_post_detail_populates_image_retrieved_similar_products(monkeypatch, tmp_path: Path):
+    """A post image must drive product selection, not reuse a static tag list."""
+    from backend import main
+
+    calls = {}
+    monkeypatch.setattr(main, "embedding_runtime", lambda: {
+        "model_backend": "transformers", "store_backend": "transformers", "store_compatible": True,
+    })
+
+    def fake_relevance(*, query_image, candidates, mode, **_kwargs):
+        calls.update(query_image=query_image, mode=mode, candidate_ids=[p.product_id for p in candidates])
+        return {product.product_id: index for index, product in enumerate(reversed(candidates))}
+
+    monkeypatch.setattr(main, "compute_relevance", fake_relevance)
+    settings = Settings("mock", ("http://localhost:5173",), tmp_path / "post-search.sqlite3",
+                        ROOT / "data" / "catalog" / "combined", 8)
+    client = TestClient(create_app(settings))
+
+    response = client.get("/api/v1/posts/post-pexels-batch-13008395")
+
+    assert response.status_code == 200
+    detail = response.json()
+    assert calls["mode"] == "image"
+    assert calls["query_image"] == detail["post"]["image_url"]
+    assert detail["tagged_products"] == []
+    assert {item["category"] for item in detail["similar_products"]} == {"top", "bottom", "shoes"}

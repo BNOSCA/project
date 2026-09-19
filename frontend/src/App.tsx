@@ -804,6 +804,7 @@ export default function App() {
         }
         onRefreshFeed={refreshFeed}
         onImpression={recordImpression}
+        onOpenProduct={openProduct}
       />
     )
   }

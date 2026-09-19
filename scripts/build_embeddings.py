@@ -134,8 +134,8 @@ class FashionCLIPWrapper:
             self.backend = "fashion_clip"
             print("[OK] Loaded official FashionCLIP successfully.")
             return
-        except ImportError:
-            pass
+        except Exception as e:
+            print(f"[Warning] Could not load official FashionCLIP ({e}).", file=sys.stderr)
 
         # Attempt 2: Hugging Face Transformers with patrickjohncyh/fashion-clip or clip-ViT-B/32
         try:
@@ -144,8 +144,12 @@ class FashionCLIPWrapper:
 
             model_name = "patrickjohncyh/fashion-clip"
             print(f"[Info] Trying HuggingFace model: {model_name}...")
-            self.processor = AutoProcessor.from_pretrained(model_name)
-            self.model = AutoModel.from_pretrained(model_name).to(self.device)
+            # Runtime search must not block requests on an implicit model
+            # download.  The setup command downloads/caches the model once;
+            # deployments that deliberately permit fetching can opt in.
+            allow_download = os.getenv("FASHIONCLIP_ALLOW_DOWNLOAD", "false").lower() == "true"
+            self.processor = AutoProcessor.from_pretrained(model_name, local_files_only=not allow_download)
+            self.model = AutoModel.from_pretrained(model_name, local_files_only=not allow_download).to(self.device)
             self.model.eval()
             self.backend = "transformers"
             print(f"[OK] Loaded HuggingFace {model_name} successfully.")
@@ -214,8 +218,14 @@ class FashionCLIPWrapper:
             all_embeddings = []
             for i in range(0, len(texts), batch_size):
                 batch_texts = texts[i : i + batch_size]
+                # CLIP/FashionCLIP has a fixed 77-token text context.  Some
+                # tokenizers advertise no maximum, so relying on
+                # ``truncation=True`` alone can produce a runtime shape error
+                # for long catalog descriptions.
+                max_length = int(getattr(self.model.config, "max_position_embeddings", 77))
                 inputs = self.processor(
-                    text=batch_texts, return_tensors="pt", padding=True, truncation=True
+                    text=batch_texts, return_tensors="pt", padding=True,
+                    truncation=True, max_length=max_length,
                 ).to(self.device)
                 with torch.no_grad():
                     text_features = self.model.get_text_features(**inputs)
@@ -472,4 +482,3 @@ if __name__ == "__main__":
         cache_dir=args.cache_dir,
         mock=args.mock,
     )
-

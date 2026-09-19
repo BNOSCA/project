@@ -31,6 +31,29 @@ _GLOBAL_STORE: Optional[EmbeddingStore] = None
 _GLOBAL_MODEL: Optional[FashionCLIPWrapper] = None
 
 
+def embedding_runtime() -> dict[str, str | bool | None]:
+    """Describe the actually usable retrieval runtime.
+
+    The vectors committed with the project record the encoder that created
+    them.  A query vector from a different encoder must never be compared to
+    those vectors: identical dimensions do not make two embedding spaces
+    compatible.
+    """
+    store = get_embedding_store()
+    model = get_model()
+    store_backend = str(store.metadata.get("backend")) if store else None
+    compatible = bool(
+        store
+        and store_backend == model.backend
+        and model.backend != "mock"
+    )
+    return {
+        "model_backend": model.backend,
+        "store_backend": store_backend,
+        "store_compatible": compatible,
+    }
+
+
 def get_embedding_store() -> Optional[EmbeddingStore]:
     """Retrieve or load cached EmbeddingStore."""
     global _GLOBAL_STORE
@@ -105,8 +128,23 @@ def compute_relevance(
     if not candidates:
         return {}
 
-    store = get_embedding_store()
     model = get_model()
+    store = get_embedding_store()
+    # Never mix vectors produced by different encoders.  In particular, a
+    # mock query vector against the committed Transformers index would return
+    # plausible-looking but meaningless rankings.
+    use_store = bool(
+        store
+        and store.metadata.get("backend") == model.backend
+        and model.backend != "mock"
+    )
+
+    # The deterministic mock encoder exists only to keep development and
+    # tests operational.  For text it has no semantic meaning, so use the
+    # transparent metadata fallback instead of presenting random vectors as
+    # relevance.  Image scores remain unavailable until FashionCLIP loads.
+    if model.backend == "mock" and query_text and query_text.strip():
+        return _metadata_text_scores(query_text, candidates)
 
     cand_ids = [p.product_id for p in candidates]
     relevance_scores: dict[str, float] = {}
@@ -121,16 +159,21 @@ def compute_relevance(
             q_img_vec = model.encode_images([q_img])[0]
             q_img_vec = l2_normalize(q_img_vec)
 
-            if store and store.image_embeddings is not None:
+            if use_store and store and store.image_embeddings is not None:
                 # Fast matrix dot product from precomputed store
                 search_res = store.search(q_img_vec, modality="image", top_k=len(cand_ids), candidate_ids=cand_ids)
                 for pid, sim in search_res:
                     # Cosine sim in [-1, 1] mapped to [0, 1]
                     img_scores[pid] = max(0.0, float(sim))
-            else:
-                # Fallback: compute on the fly if store not built
+            elif model.backend != "mock":
+                # There is no product-image encoder cache to calculate
+                # against.  Returning no visual score is preferable to a
+                # fabricated constant score.
                 for p in candidates:
-                    img_scores[p.product_id] = 0.5
+                    img_scores[p.product_id] = 0.0
+            else:
+                for p in candidates:
+                    img_scores[p.product_id] = 0.0
         else:
             for pid in cand_ids:
                 img_scores[pid] = 0.0
@@ -144,7 +187,7 @@ def compute_relevance(
         q_txt_vec = model.encode_texts([q_txt])[0]
         q_txt_vec = l2_normalize(q_txt_vec)
 
-        if store and store.text_embeddings is not None:
+        if use_store and store and store.text_embeddings is not None:
             # Fast matrix dot product from precomputed store
             search_res = store.search(q_txt_vec, modality="text", top_k=len(cand_ids), candidate_ids=cand_ids)
             for pid, sim in search_res:
@@ -227,17 +270,25 @@ def search_products(request: SearchRequest, catalog: list[Product]) -> SearchRes
             retrieval=RetrievalInfo(prefilter_count=0, fusion_method="none"),
         )
 
-    # 1. Compute relevance scores
-    relevance_map = compute_relevance(
-        query_text=request.query_text,
-        query_image=request.query_image,
-        candidates=catalog,
-        mode=request.mode,
-        image_weight=request.image_weight,
-    )
-    model_backend = get_model().backend
-    if request.mode == "text" and model_backend == "mock":
-        relevance_map = _metadata_text_scores(request.query_text, catalog)
+    has_text = bool(request.query_text.strip())
+    has_image = bool(request.query_image)
+    # A filter-only browse keeps deterministic metadata order and avoids
+    # loading a large encoder merely to give every candidate a score of zero.
+    if not has_text and not has_image:
+        relevance_map = {product.product_id: 0.0 for product in catalog}
+        model_backend = "filters_only"
+    else:
+        # 1. Compute relevance scores
+        relevance_map = compute_relevance(
+            query_text=request.query_text,
+            query_image=request.query_image,
+            candidates=catalog,
+            mode=request.mode,
+            image_weight=request.image_weight,
+        )
+        model_backend = get_model().backend
+        if request.query_text.strip() and model_backend == "mock":
+            relevance_map = _metadata_text_scores(request.query_text, catalog)
 
     # 2. Build SearchHits
     hits: list[SearchHit] = []
@@ -265,8 +316,10 @@ def search_products(request: SearchRequest, catalog: list[Product]) -> SearchRes
     # Sort descending by relevance score, ties broken by product_id
     hits.sort(key=lambda h: (-h.score, h.product_id))
 
-    if model_backend == "mock":
-        fusion_name = "metadata_text" if request.mode == "text" else f"mock_embedding_{request.mode}"
+    if model_backend == "filters_only":
+        fusion_name = "filters_only"
+    elif model_backend == "mock":
+        fusion_name = "metadata_text" if request.query_text.strip() else "embedding_unavailable_image"
     else:
         fusion_name = "rrf" if request.mode == "mixed" else f"fashion_clip_{request.mode}"
     retrieval_info = RetrievalInfo(
