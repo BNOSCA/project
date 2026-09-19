@@ -268,7 +268,7 @@ def compute_relevance(
                 # Fast matrix dot product from precomputed store
                 search_res = store.search(q_img_vec, modality="image", top_k=len(cand_ids), candidate_ids=cand_ids)
                 for pid, sim in search_res:
-                    # Cosine sim in [-1, 1] mapped to [0, 1]
+                    # Negative cosine values are clipped; positive values stay unchanged.
                     img_scores[pid] = max(0.0, float(sim))
             elif model.backend != "mock":
                 # There is no product-image encoder cache to calculate
