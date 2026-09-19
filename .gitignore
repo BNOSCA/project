@@ -233,6 +233,7 @@ __marimo__/
 !README.md
 !draft2.md
 !frontend/README.md
+!scripts/README.md
 !GIT_WORKFLOW.md
 !POST_FEED_RECOMMENDER.md
 !BACKEND_README.md
@@ -242,3 +243,8 @@ node_modules/
 frontend/node_modules/
 frontend/dist/
 *.tsbuildinfo
+
+# Embedding and preprocessing artifacts
+.cache_images/
+data/clean_*.json
+data/sample_images/
