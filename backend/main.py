@@ -437,6 +437,15 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                 )])
             return FeedbackResponse(profile=profile, recommendation=recommendation, duplicate=duplicate)
         profile = UserProfile.model_validate(await call_module("feedback", "record_feedback", event))
+        sync_interactions([InteractionEvent(
+            event_id=event.event_id,
+            session_id=event.session_id,
+            user_id=event.user_id,
+            event_type=event.event_type,
+            target_type=event.target_type or "post",
+            target_id=event.target_id or "profile",
+            created_at=event.created_at,
+        )])
         recommendation = None
         if previous:
             intent = apply_intent_patch(previous, patch)

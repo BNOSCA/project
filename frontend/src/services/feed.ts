@@ -284,7 +284,7 @@ export function recordPostInteraction(
 
 export function recordPostImpression(postId: string, position: number) {
   return getRequestIdentity().then(identity => postJson('/api/v1/events/batch', [{
-    event_id: `impression:${identity.userId}:${postId}`,
+    event_id: `impression:${identity.userId}:${getSessionId(identity.userId)}:${postId}`,
     session_id: getSessionId(identity.userId),
     user_id: identity.userId,
     event_type: 'impression',
