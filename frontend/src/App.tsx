@@ -30,6 +30,12 @@ import { HomePage } from './pages/HomePage'
 import { ProfilePage } from './pages/ProfilePage'
 import { SavedPage } from './pages/SavedPage'
 
+import {
+  loadRecommendedFeed,
+  recordPostLike,
+  recordPostSave,
+} from './services/feed'
+
 import type {
   AppPage,
   OutfitPost,
@@ -160,6 +166,28 @@ export default function App() {
   }, [])
 
   /*
+   * 優先使用本機 FastAPI 的推薦 feed；後端未啟動時保留
+   * 內建 mock，讓純前端開發仍可使用。
+   */
+  useEffect(() => {
+    let active = true
+
+    loadRecommendedFeed()
+      .then(recommendedPosts => {
+        if (active && recommendedPosts.length > 0) {
+          setPosts(recommendedPosts)
+        }
+      })
+      .catch(() => {
+        // Intentional local fallback to mockPosts.
+      })
+
+    return () => {
+      active = false
+    }
+  }, [])
+
+  /*
    * Toast 自動消失。
    */
   useEffect(() => {
@@ -248,6 +276,9 @@ export default function App() {
   function toggleLike(
     postId: string,
   ) {
+    const isAdding =
+      !likedIds.includes(postId)
+
     setLikedIds(
       current => {
         const next =
@@ -266,11 +297,20 @@ export default function App() {
         return next
       },
     )
+
+    if (isAdding) {
+      void recordPostLike(postId).catch(() => {
+        setNotice('已在本機按讚；推薦回饋暫時無法送出')
+      })
+    }
   }
 
   function toggleSave(
     postId: string,
   ) {
+    const isAdding =
+      !savedIds.includes(postId)
+
     setSavedIds(
       current => {
         const wasSaved =
@@ -300,6 +340,12 @@ export default function App() {
         return next
       },
     )
+
+    if (isAdding) {
+      void recordPostSave(postId).catch(() => {
+        setNotice('已儲存在瀏覽器；收藏互動暫時無法送出')
+      })
+    }
   }
 
   function openProducts(
