@@ -20,7 +20,7 @@ project/
 ## Data flow
 ```
 Image: A/frontend (React) -> E/Backend (main.py) ->  C/FashionCLIP(recommender.py) -> E/(main.py) -> A/Frontend
-Words: A/frontend (React) -> E/Backend (main.py) -> B/LLM API (intent.py) -> C/(recommender.py) -> E/(main.py) -> A/Frontend
+Words: A/frontend (React) -> E/Backend (main.py) -> B/LLM API (intent.py) -> C/E5(recommender.py) -> E/(main.py) -> A/Frontend
 D/Personalized feedback only fetched when C recommend
 ```
 
