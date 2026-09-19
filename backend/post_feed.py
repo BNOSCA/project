@@ -9,15 +9,15 @@ from .schemas import FeedItem, FeedResponse, FeedScoreBreakdown, InteractionEven
 
 
 BASE_WEIGHTS = {
-    "long_term_preference": 0.15,
-    "session_intent": 0.10,
-    "recommendation_intent": 0.20,
-    "social": 0.10,
-    "deep_engagement": 0.12,
-    "quality": 0.10,
-    "collaborative": 0.08,
-    "velocity": 0.05,
-    "exploration": 0.10,
+    "long_term_preference": 0.08,
+    "session_intent": 0.05,
+    "recommendation_intent": 0.60,
+    "social": 0.05,
+    "deep_engagement": 0.06,
+    "quality": 0.05,
+    "collaborative": 0.04,
+    "velocity": 0.02,
+    "exploration": 0.05,
 }
 EXTERNAL_TREND_WEIGHT = 0.10
 TREND_DIMENSION_WEIGHTS = {"style": 0.50, "color": 0.25, "occasion": 0.15, "item": 0.10}
