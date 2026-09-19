@@ -1,14 +1,32 @@
 import {
   Sparkles,
 } from 'lucide-react'
+import { useState } from 'react'
 
 import type {
   RecommendedOutfit,
   RecommendResponse,
 } from '../../services/recommendation'
+import { recordProductClick } from '../../services/feed'
 import { ParsedIntentChips } from './ParsedIntentChips'
 
 const swatches = ['#d8e0e3', '#55575a', '#e8e1d4']
+
+function OutfitPiece({ item, index }: {
+  item: RecommendedOutfit['items'][number]
+  index: number
+}) {
+  const [imageFailed, setImageFailed] = useState(false)
+  return item.image_url && !imageFailed ? (
+    <img src={item.image_url} alt={item.name} onError={() => setImageFailed(true)} />
+  ) : (
+    <div className="recommendation-piece"
+      style={{ backgroundColor: swatches[index % swatches.length] }}>
+      <span>{item.category}</span>
+      <strong>{item.name}</strong>
+    </div>
+  )
+}
 
 function OutfitCard({
   outfit,
@@ -19,18 +37,7 @@ function OutfitCard({
     <article className="recommendation-card">
       <div className="recommendation-visual">
         {outfit.items.slice(0, 3).map((item, index) => (
-          item.image_url ? (
-            <img key={item.product_id} src={item.image_url} alt={item.name} />
-          ) : (
-            <div
-              key={item.product_id}
-              className="recommendation-piece"
-              style={{ backgroundColor: swatches[index % swatches.length] }}
-            >
-              <span>{item.category}</span>
-              <strong>{item.name}</strong>
-            </div>
-          )
+          <OutfitPiece key={item.product_id} item={item} index={index} />
         ))}
       </div>
       <div className="recommendation-copy">
@@ -39,9 +46,20 @@ function OutfitCard({
           <strong>NT${outfit.total_price.toLocaleString()}</strong>
         </div>
         <p>{outfit.reason}</p>
-        <span className="recommendation-item-count">
-          {outfit.items.length} 件單品
-        </span>
+        <ul className="recommendation-products">
+          {outfit.items.map(item => (
+            <li key={item.product_id}>
+              {item.product_url ? (
+                <a href={item.product_url} target="_blank" rel="noopener noreferrer"
+                  onClick={() => { void recordProductClick(item.product_id).catch(() => {}) }}>
+                  {item.name} · NT${item.price.toLocaleString()} ↗
+                </a>
+              ) : (
+                <span>{item.name} · NT${item.price.toLocaleString()}</span>
+              )}
+            </li>
+          ))}
+        </ul>
       </div>
     </article>
   )
@@ -108,6 +126,7 @@ export function RecommendationResults({
               <OutfitCard key={outfit.outfit_id} outfit={outfit} />
             ))}
           </div>
+          {response.message && <p className="recommendation-disclaimer">{response.message}</p>}
         </>
       )}
     </section>

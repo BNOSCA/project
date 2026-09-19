@@ -12,6 +12,8 @@ import {
   type RecommendResponse,
 } from '../../services/recommendation'
 import { QuerySuggestionChips } from './QuerySuggestionChips'
+import { getSessionId } from '../../services/session'
+import { getRequestIdentity } from '../../services/auth'
 
 const suggestions = [
   '面試穿搭',
@@ -57,17 +59,18 @@ export function AIQueryBar({
     onStart()
 
     try {
+      const identity = await getRequestIdentity()
       const response = await recommend({
-        session_id: `web-${crypto.randomUUID()}`,
+        session_id: getSessionId(identity.userId),
         text,
-        user_id: 'anonymous-demo',
+        user_id: identity.userId,
         filters: {},
         image: null,
       })
 
       onResult(response)
-    } catch {
-      onError('目前無法取得推薦，請稍後再試。')
+    } catch (error) {
+      onError(error instanceof Error ? error.message : '目前無法取得推薦，請稍後再試。')
     }
   }
 

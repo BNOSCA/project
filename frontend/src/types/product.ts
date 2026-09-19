@@ -16,4 +16,6 @@ export interface Product {
   productUrl?: string
 
   similarity?: number
+
+  matchType?: 'exact' | 'similar'
 }

@@ -2,6 +2,7 @@ import { ImagePlus } from 'lucide-react'
 import { useState } from 'react'
 
 import { Avatar } from '../components/common/Avatar'
+import { TestAccountPanel } from '../components/common/TestAccountPanel'
 import { OutfitPost } from '../components/post/OutfitPost'
 import { AIQueryBar } from '../components/search/AIQueryBar'
 import {
@@ -41,6 +42,8 @@ interface HomePageProps {
   ) => void
 
   onCreatePost: () => void
+
+  onRefreshFeed: () => Promise<void>
 }
 
 export function HomePage({
@@ -52,6 +55,7 @@ export function HomePage({
   onSave,
   onFindProducts,
   onCreatePost,
+  onRefreshFeed,
 }: HomePageProps) {
   const [
     feedMode,
@@ -89,6 +93,7 @@ export function HomePage({
 
   return (
     <>
+      <TestAccountPanel />
       <header className="feed-tabs">
         <button
           type="button"
@@ -134,6 +139,7 @@ export function HomePage({
           onResult={response => {
             setRecommendation(response)
             setIsRecommending(false)
+            void onRefreshFeed()
           }}
           onError={message => {
             setRecommendationError(message)
@@ -186,6 +192,12 @@ export function HomePage({
       </div>
 
       <section className="feed">
+        {visiblePosts.length === 0 && (
+          <div className="empty-state">
+            <h2>目前沒有穿搭貼文</h2>
+            <p>請稍後重新整理，或切回「為你推薦」。</p>
+          </div>
+        )}
         {visiblePosts.map(
           post => (
             <OutfitPost

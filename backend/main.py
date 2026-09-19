@@ -5,19 +5,23 @@ from __future__ import annotations
 import asyncio
 import importlib
 import logging
+import os
 import sqlite3
 from typing import Any
 
-from fastapi import FastAPI, Query, Request
+from fastapi import FastAPI, Header, Query, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 
-from .config import Settings
+from .config import ROOT, Settings
 from .db import EventStore
 from .explanation import build_explanation
+from .firebase import initialize_firebase
 from .feed_debug import build_debug_router
 from .mock import FixtureCatalog, MockServices, filter_products, parse_demo_intent
+from .search import search_products
 from .schemas import (
     ErrorBody, ErrorResponse, EventBatchResult, FeedbackEvent, FeedbackResponse,
     FeedResponse, InsightsResponse, Intent, InteractionEvent, Outfit, PostDetail,
@@ -39,6 +43,33 @@ class APIError(Exception):
         self.details = details or {}
 
 
+def authenticated_user_id(authorization: str | None) -> str | None:
+    """Verify a Firebase bearer token and return its uid when supplied."""
+    required = os.getenv("FIREBASE_AUTH_REQUIRED", "false").lower() == "true"
+    if not authorization:
+        if required:
+            raise APIError(401, "UNAUTHENTICATED", "請先登入後再使用推薦服務。")
+        return None
+    scheme, _, token = authorization.partition(" ")
+    if scheme.lower() != "bearer" or not token:
+        raise APIError(401, "UNAUTHENTICATED", "Authorization 格式無效。")
+    try:
+        from firebase_admin import auth as firebase_auth
+
+        initialize_firebase()
+        uid = firebase_auth.verify_id_token(token).get("uid")
+        if not uid:
+            raise ValueError("missing uid")
+        return uid
+    except Exception as exc:
+        if not required:
+            # Local development may have the Firebase web SDK configured before
+            # Firebase Admin credentials are installed. Keep the mock runtime
+            # usable, but never use this mode in a deployed environment.
+            return None
+        raise APIError(401, "UNAUTHENTICATED", "Firebase 登入驗證失敗。") from exc
+
+
 def error_response(status: int, code: str, message: str, retryable: bool = False, details: dict | None = None) -> JSONResponse:
     body = ErrorResponse(error=ErrorBody(code=code, message=message, retryable=retryable, details=details or {}))
     return JSONResponse(status_code=status, content=body.model_dump(mode="json"))
@@ -48,6 +79,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     settings = settings or Settings.from_env()
     app = FastAPI(title="Outfit demo API", version="0.1.0")
     app.add_middleware(CORSMiddleware, allow_origins=list(settings.cors_origins), allow_methods=["GET", "POST"], allow_headers=["Content-Type"])
+    local_images = settings.data_dir / "images"
+    if local_images.is_dir():
+        app.mount("/products/kaggle", StaticFiles(directory=local_images), name="catalog-images")
     catalog_error = db_error = None
     try:
         catalog = FixtureCatalog(settings.data_dir)
@@ -199,7 +233,11 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                 "dependencies": dependencies}
 
     @app.post("/api/v1/recommend", response_model=RecommendationResponse)
-    async def recommend(request: RecommendRequest) -> RecommendationResponse:
+    async def recommend(request: RecommendRequest,
+                        authorization: str | None = Header(default=None)) -> RecommendationResponse:
+        verified_uid = authenticated_user_id(authorization)
+        if verified_uid:
+            request = request.model_copy(update={"user_id": verified_uid})
         if request.image is not None:
             raise APIError(422, "INVALID_INPUT", "圖片搜尋屬 P1，目前只支援文字。")
         service = require_mock()
@@ -235,10 +273,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     @app.post("/api/v1/search", response_model=SearchResponse)
     async def search(request: SearchRequest) -> SearchResponse:
-        if request.mode != "text" or request.query_image is not None:
-            raise APIError(422, "INVALID_INPUT", "圖片與混合搜尋屬 P1，目前只支援文字。")
-        if not request.query_text.strip():
-            raise APIError(422, "INVALID_INPUT", "query_text 不能為空。")
+        if request.mode in {"image", "mixed"} and not request.query_image:
+            raise APIError(422, "INVALID_INPUT", "圖片或圖文搜尋需要 query_image。")
+        if request.mode in {"text", "mixed"} and not request.query_text.strip():
+            raise APIError(422, "INVALID_INPUT", "文字或圖文搜尋需要 query_text。")
         service = require_mock()
         if settings.mode == "live":
             try:
@@ -264,7 +302,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             merged.filters.excluded_colors = sorted(set(merged.filters.excluded_colors + session_intent.excluded.colors))
             merged.filters.excluded_fits = sorted(set(merged.filters.excluded_fits + session_intent.excluded.fits))
         if settings.mode == "mock":
-            return service.search(merged)
+            candidates = filter_products(catalog.products, merged.filters)
+            return search_products(merged, candidates)
         candidates = filter_products(catalog.products, merged.filters)
         response = SearchResponse.model_validate(await call_module("search", "search_products", merged, candidates))
         product_ids = {p.product_id for p in candidates}
@@ -278,7 +317,11 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     @app.get("/api/v1/feed", response_model=FeedResponse)
     def feed(user_id: str = "anonymous-demo", session_id: str | None = None,
-             cursor: str | None = None, limit: int = Query(20, ge=1, le=100)) -> FeedResponse:
+             cursor: str | None = None, limit: int = Query(20, ge=1, le=100),
+             authorization: str | None = Header(default=None)) -> FeedResponse:
+        verified_uid = authenticated_user_id(authorization)
+        if verified_uid:
+            user_id = verified_uid
         if cursor is not None and (not cursor.isdigit() or int(cursor) > 1000000):
             raise APIError(422, "INVALID_INPUT", "cursor 無效。")
         return require_mock().feed(user_id, session_id, cursor, limit)
@@ -291,7 +334,11 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         return detail
 
     @app.post("/api/v1/events/batch", response_model=EventBatchResult)
-    async def events_batch(events: list[InteractionEvent]) -> EventBatchResult:
+    async def events_batch(events: list[InteractionEvent],
+                           authorization: str | None = Header(default=None)) -> EventBatchResult:
+        verified_uid = authenticated_user_id(authorization)
+        if verified_uid:
+            events = [event.model_copy(update={"user_id": verified_uid}) for event in events]
         if len(events) > 100:
             raise APIError(422, "INVALID_INPUT", "一次最多上報 100 個事件。")
         for event in events:
@@ -306,7 +353,11 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         return EventBatchResult.model_validate(await call_module("events", "record_interactions", events))
 
     @app.post("/api/v1/feedback", response_model=FeedbackResponse)
-    async def feedback(event: FeedbackEvent) -> FeedbackResponse:
+    async def feedback(event: FeedbackEvent,
+                       authorization: str | None = Header(default=None)) -> FeedbackResponse:
+        verified_uid = authenticated_user_id(authorization)
+        if verified_uid:
+            event = event.model_copy(update={"user_id": verified_uid})
         if event.remember_preference:
             raise APIError(422, "INVALID_INPUT", "P0 只支援 session 偏好；長期偏好尚未啟用。")
         if event.target_type == "post" and event.target_id not in require_mock().catalog.posts_by_id:
@@ -361,6 +412,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         if settings.mode == "mock":
             return require_mock().insights()
         return InsightsResponse.model_validate(await call_module("feedback", "get_insights"))
+
+    built_frontend = ROOT / "frontend" / "dist"
+    if built_frontend.is_dir():
+        app.mount("/", StaticFiles(directory=built_frontend, html=True), name="frontend")
 
     return app
 

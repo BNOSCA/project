@@ -1,0 +1,19 @@
+{
+  "total_products": 1012,
+  "sources": {
+    "kaggle": 500,
+    "official_brands": 512
+  },
+  "categories": {
+    "accessory": 59,
+    "bottom": 281,
+    "outerwear": 82,
+    "shoes": 173,
+    "top": 417
+  },
+  "priced_products": 512,
+  "local_kaggle_images": 500,
+  "posts": 20,
+  "creators": 4,
+  "posts_with_similar_product": 20
+}
