@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 
 import pytest
 
-from backend.post_feed import rank_feed, trend_components, update_profile
+from backend.post_feed import BASE_WEIGHTS, RECOMMENDATION_WEIGHTS, demographic_match, rank_feed, trend_components, update_profile
 from backend.schemas import InteractionEvent, Post, PostEngagement, UserProfile
 
 
@@ -88,6 +88,56 @@ def test_interacted_post_loses_exploration_bonus_but_is_not_rejected():
     assert response.items[0].post_id == "p1"
     assert response.items[0].score_breakdown.exploration == 0
     assert "探索／尚未互動內容" not in response.items[0].ranking_reason
+
+
+def test_search_session_weights_boost_matching_post():
+    matching = make_post("matching", "japanese", "black", "shirt", "c1")
+    different = make_post("different", "street", "red", "denim", "c2")
+    profile = UserProfile(user_id="u1")
+
+    response = rank_feed(
+        "u1", [matching, different], profile, [], current_time=NOW,
+        session_weights={"style:japanese": 1.0, "color:black": 1.0, "occasion:commute": 1.0},
+    )
+
+    assert response.items[0].post_id == "matching"
+    assert response.items[0].score_breakdown.session_intent > 0.5
+    assert "符合本次瀏覽意圖" in response.items[0].ranking_reason
+
+
+def test_recommendation_intent_has_its_own_higher_weight():
+    matching = make_post("matching", "japanese", "black", "shirt", "c1")
+    different = make_post("different", "street", "red", "denim", "c2")
+    profile = UserProfile(user_id="u1")
+
+    response = rank_feed(
+        "u1", [matching, different], profile, [], current_time=NOW,
+        recommendation_weights={"style:japanese": 1.0, "color:black": 1.0, "occasion:commute": 1.0},
+    )
+
+    assert response.items[0].post_id == "matching"
+    assert response.items[0].score_breakdown.recommendation_intent > 0.5
+    assert "符合本次穿搭需求" in response.items[0].ranking_reason
+
+
+def test_feed_without_recommendation_uses_full_standard_weights():
+    assert "recommendation_intent" not in BASE_WEIGHTS
+    assert sum(BASE_WEIGHTS.values()) == pytest.approx(1.0)
+    assert sum(RECOMMENDATION_WEIGHTS.values()) == pytest.approx(1.0)
+
+
+def test_demographics_are_a_soft_audience_match_signal():
+    post = make_post("p1", "japanese", "black", "shirt", "c1")
+    post.audience_genders = ["female"]
+    post.audience_age_ranges = ["18-24"]
+
+    matching = UserProfile(user_id="u1", gender="female", age_range="18-24")
+    non_matching = UserProfile(user_id="u2", gender="male", age_range="35-44")
+    unknown = UserProfile(user_id="u3", gender="unspecified")
+
+    assert demographic_match(post, matching) == 1.0
+    assert demographic_match(post, non_matching) == 0.0
+    assert demographic_match(post, unknown) == 0.5
 
 
 def test_creator_diversity_is_soft_and_does_not_drop_posts():
