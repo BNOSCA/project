@@ -29,6 +29,21 @@ class EventStore:
                     profile_json TEXT NOT NULL,
                     intent_json TEXT
                 );
+                CREATE TABLE IF NOT EXISTS external_trend_signals (
+                    trend_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    source TEXT NOT NULL,
+                    keyword TEXT NOT NULL,
+                    attribute TEXT NOT NULL,
+                    geo TEXT NOT NULL,
+                    period_start TEXT NOT NULL,
+                    period_end TEXT NOT NULL,
+                    raw_score REAL NOT NULL,
+                    normalized_score REAL NOT NULL CHECK(normalized_score >= 0 AND normalized_score <= 1),
+                    imported_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    UNIQUE(source, keyword, geo, period_start, period_end)
+                );
+                CREATE INDEX IF NOT EXISTS idx_external_trends_lookup
+                ON external_trend_signals(source, geo, attribute, period_end);
             """)
 
     def connect(self) -> sqlite3.Connection:
@@ -85,6 +100,54 @@ class EventStore:
         with self.connect() as db:
             db.execute("DELETE FROM events WHERE session_id = ?", (session_id,))
             db.execute("DELETE FROM session_profiles WHERE session_id = ?", (session_id,))
+
+    def upsert_trend_signals(self, signals: list[dict]) -> int:
+        with self.connect() as db:
+            for signal in signals:
+                signal = signal.model_dump(mode="json") if hasattr(signal, "model_dump") else signal
+                db.execute(
+                    """INSERT INTO external_trend_signals
+                    (source, keyword, attribute, geo, period_start, period_end, raw_score, normalized_score)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                    ON CONFLICT(source, keyword, geo, period_start, period_end) DO UPDATE SET
+                    attribute=excluded.attribute, raw_score=excluded.raw_score,
+                    normalized_score=excluded.normalized_score, imported_at=CURRENT_TIMESTAMP""",
+                    (
+                        signal["source"], signal["keyword"], signal["attribute"], signal["geo"],
+                        signal["period_start"], signal["period_end"], signal["raw_score"],
+                        signal["normalized_score"],
+                    ),
+                )
+        return len(signals)
+
+    def trend_scores(self, geo: str = "TW", source: str = "google_trends") -> dict[str, float]:
+        """Average the latest 14 points and normalize within each attribute dimension."""
+        with self.connect() as db:
+            rows = db.execute(
+                """WITH ranked AS (
+                    SELECT attribute, keyword, normalized_score,
+                           ROW_NUMBER() OVER (
+                               PARTITION BY source, geo, keyword ORDER BY period_end DESC
+                           ) AS recency_rank
+                    FROM external_trend_signals WHERE geo=? AND source=?
+                ), keyword_averages AS (
+                    SELECT attribute, keyword, AVG(normalized_score) AS recent_average
+                    FROM ranked WHERE recency_rank <= 14 GROUP BY attribute, keyword
+                )
+                SELECT attribute, MAX(recent_average) AS score
+                FROM keyword_averages GROUP BY attribute""",
+                (geo, source),
+            ).fetchall()
+        raw = {row["attribute"]: float(row["score"]) for row in rows}
+        ceilings: dict[str, float] = {}
+        for attribute, score in raw.items():
+            dimension = attribute.split(":", 1)[0]
+            ceilings[dimension] = max(ceilings.get(dimension, 0.0), score)
+        return {
+            attribute: score / ceilings[attribute.split(":", 1)[0]]
+            if ceilings[attribute.split(":", 1)[0]] else 0.0
+            for attribute, score in raw.items()
+        }
 
     def insights(self) -> dict:
         with self.connect() as db:

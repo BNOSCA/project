@@ -65,10 +65,13 @@ class Product(Contract):
 
 class UserProfile(Contract):
     user_id: str
+    gender: Literal["female", "male", "non_binary", "unspecified"] | None = None
+    age_range: str | None = None
     preference_weights: dict[str, float] = Field(default_factory=dict)
     creator_affinity: dict[str, float] = Field(default_factory=dict)
     followed_creator_ids: list[str] = Field(default_factory=list)
     trend_affinity: float = 0
+    profile_version: int = Field(default=0, ge=0)
     updated_at: datetime | None = None
 
 
@@ -76,7 +79,10 @@ class InteractionEvent(Contract):
     event_id: str
     session_id: str
     user_id: str = "anonymous-demo"
-    event_type: Literal["impression", "dwell", "post_open", "like", "dislike", "save", "product_click"]
+    event_type: Literal[
+        "impression", "dwell", "post_open", "like", "dislike", "save", "follow",
+        "product_click", "not_interested", "hide", "quick_skip",
+    ]
     target_type: Literal["post", "product"]
     target_id: str
     dwell_ms: int | None = Field(default=None, ge=0)
@@ -201,6 +207,12 @@ class ProductTag(Contract):
     match_type: Literal["exact", "similar"]
 
 
+class PostEngagement(Contract):
+    like_count: int = Field(default=0, ge=0)
+    save_count: int = Field(default=0, ge=0)
+    comment_count: int = Field(default=0, ge=0)
+
+
 class Post(Contract):
     post_id: str
     creator_id: str
@@ -209,7 +221,9 @@ class Post(Contract):
     styles: list[str] = Field(default_factory=list)
     colors: list[str] = Field(default_factory=list)
     occasion: list[str] = Field(default_factory=list)
+    item_tags: list[str] = Field(default_factory=list)
     tagged_products: list[ProductTag] = Field(default_factory=list)
+    engagement: PostEngagement = Field(default_factory=PostEngagement)
     source: str
     source_checked_at: str | None = None
     is_demo: bool = True
@@ -222,11 +236,33 @@ class Creator(Contract):
     is_demo: bool = True
 
 
+class FeedScoreBreakdown(Contract):
+    preference: float = 0
+    long_term_preference: float = 0
+    session_intent: float = 0
+    social: float = 0
+    deep_engagement: float = 0
+    quality: float = 0
+    collaborative: float = 0
+    velocity: float = 0
+    exploration: float = 0
+    style_trend: float = 0
+    color_trend: float = 0
+    occasion_trend: float = 0
+    item_trend: float = 0
+    external_trend: float = 0
+    fatigue_multiplier: float = 1
+    recency_multiplier: float = 1
+    negative_penalty: float = 0
+    total_score: float = 0
+
+
 class FeedItem(Contract):
     post_id: str
     rank: int
+    score: float = 0
     ranking_reason: list[str] = Field(default_factory=list)
-    score_breakdown: dict[str, float] = Field(default_factory=dict)
+    score_breakdown: FeedScoreBreakdown = Field(default_factory=FeedScoreBreakdown)
     post: Post | None = None
 
 
@@ -235,6 +271,17 @@ class FeedResponse(Contract):
     items: list[FeedItem] = Field(default_factory=list)
     next_cursor: str | None = None
     profile_version: int = 0
+
+
+class ExternalTrendSignal(Contract):
+    source: Literal["google_trends"] = "google_trends"
+    keyword: str
+    attribute: str
+    geo: str = "TW"
+    period_start: str
+    period_end: str
+    raw_score: float = Field(ge=0, le=100)
+    normalized_score: float = Field(ge=0, le=1)
 
 
 class TaggedProductDetail(ProductTag):

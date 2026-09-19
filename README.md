@@ -82,6 +82,14 @@ npm test
 
 環境變數範例見 [.env.example](.env.example)。`CORS_ORIGINS` 以逗號分隔；預設只接受 `http://localhost:5173`。`APP_DB_PATH` 預設在被 Git 忽略的 `runtime/`。API key 僅由 B 模組讀取環境變數，不放進 repo。
 
+## 貼文推薦模組
+
+`backend/post_feed.py` 提供不依賴 HTTP 的貼文排序與偏好更新函式，讓 E 後端可在後續整合時直接呼叫。排序訊號包含長期偏好、單次瀏覽意圖、社交關係、深度互動、內容品質、協同分數、近期成長、探索、新鮮度、重複曝光衰減及負面互動。
+
+Google Trends 匯出檔由 `backend/post_trends.py` 解析，關鍵字對應表位於 `data/trend_keywords.json`，資料以 `geo=TW` 存入 SQLite。趨勢分為 `style`、`color`、`occasion`、`item`，合成權重依序為 50%、25%、15%、10%；外部趨勢占最終排序 10%。目前模組尚未替換 `/api/v1/feed` 的固定展示 feed，以避免在 E 的整合點未協調前修改 `backend/main.py`。
+
+共用 schema 新增選填的使用者年齡區間／性別、profile 版本、貼文商品類別標籤、互動統計、明確的 feed 分數拆解及外部趨勢資料契約。新增欄位均有預設值，既有 fixtures 與前端契約可繼續使用。
+
 ## 部署與現況
 
 可用 [Dockerfile](Dockerfile) 建立映像，預設對外監聽 `8000`，也接受平台提供的 `PORT`；部署平台、domain 與 credentials 尚未提供，因此尚未部署。B/C/D、前端與正式商品授權資料尚未在 repo 中，完整雙模組真實 Demo、三次乾淨環境連跑及錄影／提交須待這些模組完成。此 repo 的 mock 路徑可先提供 A 串接與契約檢查。
