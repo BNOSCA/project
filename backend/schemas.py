@@ -253,6 +253,8 @@ class Post(Contract):
     colors: list[str] = Field(default_factory=list)
     occasion: list[str] = Field(default_factory=list)
     item_tags: list[str] = Field(default_factory=list)
+    audience_genders: list[Literal["female", "male", "non_binary", "all"]] = Field(default_factory=list)
+    audience_age_ranges: list[str] = Field(default_factory=list)
     tagged_products: list[ProductTag] = Field(default_factory=list)
     detected_regions: list[DetectedRegion] = Field(default_factory=list)
     engagement: PostEngagement = Field(default_factory=PostEngagement)
@@ -273,6 +275,7 @@ class FeedScoreBreakdown(Contract):
     long_term_preference: float = 0
     session_intent: float = 0
     recommendation_intent: float = 0
+    demographic_match: float = 0
     social: float = 0
     deep_engagement: float = 0
     quality: float = 0

@@ -3,31 +3,34 @@
 from __future__ import annotations
 
 import math
+import re
 from datetime import datetime, timezone
 
 from .schemas import FeedItem, FeedResponse, FeedScoreBreakdown, InteractionEvent, Post, UserProfile
 
 
 BASE_WEIGHTS = {
-    "long_term_preference": 0.25,
-    "session_intent": 0.15,
-    "social": 0.15,
-    "deep_engagement": 0.12,
-    "quality": 0.10,
-    "collaborative": 0.08,
-    "velocity": 0.05,
+    "long_term_preference": 0.23,
+    "session_intent": 0.14,
+    "demographic_match": 0.08,
+    "social": 0.14,
+    "deep_engagement": 0.11,
+    "quality": 0.09,
+    "collaborative": 0.07,
+    "velocity": 0.04,
     "exploration": 0.10,
 }
 RECOMMENDATION_WEIGHTS = {
     "long_term_preference": 0.08,
-    "session_intent": 0.05,
+    "session_intent": 0.04,
     "recommendation_intent": 0.60,
-    "social": 0.05,
-    "deep_engagement": 0.06,
-    "quality": 0.05,
-    "collaborative": 0.04,
+    "demographic_match": 0.06,
+    "social": 0.04,
+    "deep_engagement": 0.05,
+    "quality": 0.04,
+    "collaborative": 0.03,
     "velocity": 0.02,
-    "exploration": 0.05,
+    "exploration": 0.04,
 }
 EXTERNAL_TREND_WEIGHT = 0.10
 TREND_DIMENSION_WEIGHTS = {"style": 0.50, "color": 0.25, "occasion": 0.15, "item": 0.10}
@@ -72,6 +75,29 @@ def _weights_match(post: Post, preferences: dict[str, float]) -> float:
     if not keys:
         return 0.5
     return _bounded((sum(preferences.get(key, 0.0) for key in keys) / len(keys) + 1) / 2)
+
+
+def _age_interval(value: str) -> tuple[int, int] | None:
+    match = re.fullmatch(r"\s*(\d+)\s*-\s*(\d+)\s*", value)
+    if match:
+        return int(match.group(1)), int(match.group(2))
+    match = re.fullmatch(r"\s*(\d+)\s*\+\s*", value)
+    return (int(match.group(1)), 200) if match else None
+
+
+def demographic_match(post: Post, profile: UserProfile) -> float:
+    """Soft cold-start signal; absent or unknown audience data remains neutral."""
+    scores: list[float] = []
+    if profile.gender and profile.gender != "unspecified" and post.audience_genders:
+        scores.append(1.0 if "all" in post.audience_genders or profile.gender in post.audience_genders else 0.0)
+    if profile.age_range and post.audience_age_ranges:
+        user_age = _age_interval(profile.age_range)
+        audience_ages = [_age_interval(value) for value in post.audience_age_ranges]
+        if user_age and any(age and age[0] <= user_age[1] and user_age[0] <= age[1] for age in audience_ages):
+            scores.append(1.0)
+        elif user_age and any(audience_ages):
+            scores.append(0.0)
+    return sum(scores) / len(scores) if scores else 0.5
 
 
 def trend_components(post: Post, trend_scores: dict[str, float]) -> dict[str, float]:
@@ -177,6 +203,7 @@ def rank_feed(
             "long_term_preference": _weights_match(post, profile.preference_weights),
             "session_intent": _weights_match(post, session_weights),
             "recommendation_intent": _weights_match(post, recommendation_weights),
+            "demographic_match": demographic_match(post, profile),
             "social": max(
                 1.0 if post.creator_id in profile.followed_creator_ids else 0.0,
                 profile.creator_affinity.get(post.creator_id, 0.0),
@@ -229,6 +256,8 @@ def rank_feed(
             reasons.append("符合本次瀏覽意圖")
         if breakdown.recommendation_intent >= 0.55:
             reasons.append("符合本次穿搭需求")
+        if breakdown.demographic_match >= 0.75:
+            reasons.append("適合你的受眾設定")
         if post.creator_id in profile.followed_creator_ids:
             reasons.append("來自已追蹤創作者")
         if breakdown.collaborative > 0:

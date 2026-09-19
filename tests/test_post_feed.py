@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 
 import pytest
 
-from backend.post_feed import BASE_WEIGHTS, RECOMMENDATION_WEIGHTS, rank_feed, trend_components, update_profile
+from backend.post_feed import BASE_WEIGHTS, RECOMMENDATION_WEIGHTS, demographic_match, rank_feed, trend_components, update_profile
 from backend.schemas import InteractionEvent, Post, PostEngagement, UserProfile
 
 
@@ -124,3 +124,17 @@ def test_feed_without_recommendation_uses_full_standard_weights():
     assert "recommendation_intent" not in BASE_WEIGHTS
     assert sum(BASE_WEIGHTS.values()) == pytest.approx(1.0)
     assert sum(RECOMMENDATION_WEIGHTS.values()) == pytest.approx(1.0)
+
+
+def test_demographics_are_a_soft_audience_match_signal():
+    post = make_post("p1", "japanese", "black", "shirt", "c1")
+    post.audience_genders = ["female"]
+    post.audience_age_ranges = ["18-24"]
+
+    matching = UserProfile(user_id="u1", gender="female", age_range="18-24")
+    non_matching = UserProfile(user_id="u2", gender="male", age_range="35-44")
+    unknown = UserProfile(user_id="u3", gender="unspecified")
+
+    assert demographic_match(post, matching) == 1.0
+    assert demographic_match(post, non_matching) == 0.0
+    assert demographic_match(post, unknown) == 0.5
