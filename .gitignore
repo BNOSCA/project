@@ -218,3 +218,8 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Keep only the active project documentation in version control.
+*.md
+!README.md
+!draft2.md
