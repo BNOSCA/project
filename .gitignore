@@ -223,6 +223,7 @@ __marimo__/
 *.md
 !README.md
 !draft2.md
+!POST_FEED_RECOMMENDER.md
 !frontend/README.md
 
 # Frontend build and dependency artifacts.
