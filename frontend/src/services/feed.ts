@@ -3,8 +3,10 @@ import type {
   OutfitPost,
   Product,
 } from '../types'
-import { getSessionId } from './session.ts'
-import { authenticatedHeaders, getRequestIdentity } from './auth.ts'
+import { getSessionId } from './session'
+import { authenticatedHeaders, getRequestIdentity } from './auth'
+import { api } from './api'
+import { enqueueEvents } from './eventQueue'
 
 interface ApiPost {
   post_id: string
@@ -118,6 +120,12 @@ export async function loadRecommendedFeed(): Promise<OutfitPost[]> {
     .map(item => toOutfitPost(item.post, item.score, item.creator?.display_name))
 }
 
+export async function loadAccountPosts(kind: 'saved' | 'liked' | 'own'): Promise<OutfitPost[]> {
+  const data = await api<ApiFeedResponse>(`/api/v1/me/posts?kind=${kind}`)
+  return data.items.filter(item => item.post !== null)
+    .map(item => toOutfitPost(item.post!, item.score, item.creator?.display_name))
+}
+
 interface ApiCatalogProduct {
   product_id: string
   name: string
@@ -177,7 +185,7 @@ function catalogProduct(
 }
 
 export async function loadPostProducts(postId: string): Promise<Product[]> {
-  const response = await fetch(`/api/v1/posts/${encodeURIComponent(postId)}`)
+  const response = await fetch(`/api/v1/posts/${encodeURIComponent(postId)}`, { headers: await authenticatedHeaders() })
   if (!response.ok) throw new Error(`Post detail failed (${response.status})`)
   const detail = (await response.json()) as ApiPostDetail
   const products = [
@@ -302,6 +310,7 @@ export async function searchCatalogProducts(
 }
 
 async function postJson(path: string, body: unknown) {
+  if (path === '/api/v1/events/batch') return enqueueEvents(body as Parameters<typeof enqueueEvents>[0])
   const authHeaders = await authenticatedHeaders()
   const response = await fetch(path, {
     method: 'POST',
@@ -358,7 +367,7 @@ export function recordPostInteraction(
 
 export function recordPostImpression(postId: string, position: number) {
   return getRequestIdentity().then(identity => postJson('/api/v1/events/batch', [{
-    event_id: `impression:${identity.userId}:${postId}`,
+    event_id: `impression:${identity.userId}:${getSessionId(identity.userId)}:${postId}`,
     session_id: getSessionId(identity.userId),
     user_id: identity.userId,
     event_type: 'impression',
