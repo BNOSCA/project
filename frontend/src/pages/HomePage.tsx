@@ -5,7 +5,9 @@ import { Avatar } from '../components/common/Avatar'
 import { OutfitPost } from '../components/post/OutfitPost'
 import { ProductItem } from '../components/product/ProductItem'
 import { AIQueryBar } from '../components/search/AIQueryBar'
+import { RecommendationResults } from '../components/search/RecommendationResults'
 import type { CatalogSearchResult } from '../services/feed'
+import type { RecommendResponse } from '../services/recommendation'
 
 import type {
   OutfitPost as OutfitPostModel,
@@ -72,6 +74,8 @@ export function HomePage({
     useState<CatalogSearchResult | null>(null)
   const [searchError, setSearchError] =
     useState('')
+  const [recommendation, setRecommendation] =
+    useState<RecommendResponse | null>(null)
   const [isSearching, setIsSearching] =
     useState(false)
   const [isRefreshing, setIsRefreshing] = useState(false)
@@ -168,6 +172,7 @@ export function HomePage({
             setIsSearching(true)
             setSearchError('')
             setSearchResult(null)
+            setRecommendation(null)
           }}
           onResult={response => {
             setSearchResult(response)
@@ -176,6 +181,7 @@ export function HomePage({
               setSearchError('商品結果已更新，但貼文推薦暫時無法刷新。')
             })
           }}
+          onRecommendation={setRecommendation}
           onError={message => {
             setSearchError(message)
             setIsSearching(false)
@@ -211,6 +217,7 @@ export function HomePage({
             )}
           </section>
         )}
+        {recommendation && <RecommendationResults response={recommendation} />}
       </section>
 
       <section className="quick-post">

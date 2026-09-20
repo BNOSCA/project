@@ -23,14 +23,34 @@ class _ExplanationBatch(_StrictModel):
     explanations: list[_Explanation]
 
 
-def _fallback(product: Product) -> str:
-    """Remain factual when an LLM key is not configured or unavailable."""
-    details = [product.category]
+_CATEGORY_LABELS = {
+    "top": "上身單品",
+    "bottom": "下身單品",
+    "shoes": "鞋款",
+    "outerwear": "外搭",
+    "dress": "洋裝",
+}
+
+
+def _fallback(product: Product, query_text: str) -> str:
+    """Give a product-specific, auditable reason if the LLM is unavailable."""
+    query = query_text.casefold()
+    evidence: list[str] = []
     if product.colors:
-        details.append("、".join(product.colors[:2]))
+        matched_colors = [color for color in product.colors if color.casefold() in query]
+        evidence.append(f"{''.join(matched_colors or product.colors[:1])}色")
     if product.styles:
-        details.append("、".join(product.styles[:2]))
-    return f"符合篩選條件；商品標籤包含{'／'.join(details)}。"
+        matched_styles = [style for style in product.styles if style.casefold() in query]
+        styles = matched_styles or product.styles[:2]
+        evidence.append("、".join(styles) + "風格")
+    if product.fit:
+        evidence.append(f"{product.fit}版型")
+    if not evidence and product.materials:
+        evidence.append("、".join(product.materials[:2]) + "材質")
+
+    product_type = _CATEGORY_LABELS.get(product.category, "商品")
+    attributes = "、".join(evidence) if evidence else "商品名稱與分類"
+    return f"「{product.name}」是{product_type}，可從{attributes}看出與本次需求的連結。"
 
 
 def _llm_explanations(query_text: str, products: list[Product]) -> dict[str, str]:
@@ -44,6 +64,8 @@ def _llm_explanations(query_text: str, products: list[Product]) -> dict[str, str
                 "colors": product.colors,
                 "styles": product.styles,
                 "fit": product.fit,
+                "materials": product.materials,
+                "description": (product.description or "")[:240],
                 "price_twd": product.price,
             }
             for product in products
@@ -55,8 +77,10 @@ def _llm_explanations(query_text: str, products: list[Product]) -> dict[str, str
             "content": (
                 "You explain catalog search matches in Traditional Chinese. "
                 "For every supplied product, return one concise explanation of at most 36 Chinese characters. "
-                "Use only the supplied product fields and user query. Do not claim the item is identical, in stock, "
-                "or suitable for an unstated occasion."
+                "Each explanation must mention the product name or a distinctive noun from it, then cite one or two "
+                "specific supplied facts (such as color, style, fit, material, or description) and relate them to the "
+                "user query. Never use vague templates such as '搜尋相關分數'、'標籤相符'、'符合需求', and never invent "
+                "unstated features, stock, or occasions."
             ),
         },
         {
@@ -82,25 +106,26 @@ def _llm_explanations(query_text: str, products: list[Product]) -> dict[str, str
 
 
 def add_search_explanations(response: SearchResponse, query_text: str) -> SearchResponse:
-    """Add batch LLM explanations, with an explicitly labelled factual fallback."""
+    """Explain only the highest-scoring similar products, with a factual fallback."""
     hits = [hit for hit in response.products if hit.product is not None]
     if not query_text.strip() or not hits:
         return response
 
-    products = [hit.product for hit in hits if hit.product is not None]
+    explained_hits = sorted(hits, key=lambda hit: hit.score, reverse=True)[:3]
+    products = [hit.product for hit in explained_hits if hit.product is not None]
     try:
         explanations = _llm_explanations(query_text, products)
     except (LLMUnavailableError, LLMResponseError):
         explanations = {}
 
-    for hit in hits:
+    for hit in explained_hits:
         assert hit.product is not None
         explanation = explanations.get(hit.product_id)
         if explanation:
             hit.explanation = explanation
             hit.explanation_source = "llm"
         else:
-            hit.explanation = _fallback(hit.product)
+            hit.explanation = _fallback(hit.product, query_text)
             hit.explanation_source = "fallback"
     return response
 

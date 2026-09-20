@@ -223,6 +223,8 @@ class SearchResponse(Contract):
     mode: Literal["text", "image", "mixed"]
     products: list[SearchHit] = Field(default_factory=list)
     retrieval: RetrievalInfo = Field(default_factory=RetrievalInfo)
+    intent: Intent | None = None
+    outfits: list[Outfit] = Field(default_factory=list)
 
 
 class ProductTag(Contract):

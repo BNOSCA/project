@@ -123,8 +123,6 @@ export function ProductItem({
 
         {product.similarityExplanation && (
           <small>
-            {product.similarityExplanationSource === 'llm' ? 'AI 相似原因' : '相似原因'} ·
-            {' '}
             {product.similarityExplanation}
           </small>
         )}

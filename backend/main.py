@@ -465,6 +465,11 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         if settings.mode == "mock":
             candidates = searchable_products(merged.filters)
             response = search_products(merged, candidates)
+            response.intent = query_intent
+            if has_text and not query_intent.needs_clarification:
+                response.outfits = service.recommend(
+                    query_intent, "anonymous-demo", SearchFilters()
+                ).outfits
             return await asyncio.to_thread(add_search_explanations, response, query_intent.semantic_query)
         candidates = searchable_products(merged.filters)
         response = SearchResponse.model_validate(await call_module("search", "search_products", merged, candidates))
@@ -473,6 +478,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             if hit.product_id not in product_ids:
                 raise APIError(500, "INTERNAL_ERROR", "搜尋結果違反硬篩選。")
             hit.product = catalog.products_by_id[hit.product_id]
+        response.intent = query_intent
+        if has_text and not query_intent.needs_clarification:
+            profile = UserProfile.model_validate(await call_module("feedback", "get_profile", "anonymous-demo"))
+            response.outfits = await live_outfits(query_intent, profile, SearchFilters())
         return await asyncio.to_thread(add_search_explanations, response, query_intent.semantic_query)
 
     app.include_router(build_debug_router(require_mock))

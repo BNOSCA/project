@@ -7,6 +7,7 @@ import { getSessionId } from './session'
 import { authenticatedHeaders, getRequestIdentity } from './auth'
 import { api } from './api'
 import { enqueueEvents } from './eventQueue'
+import type { RecommendResponse } from './recommendation'
 
 interface ApiPost {
   post_id: string
@@ -219,6 +220,7 @@ export interface CatalogSearchResult {
   products: Product[]
   fusionMethod: string
   candidateCount: number
+  recommendation?: RecommendResponse
 }
 
 export interface CatalogSearchFilters {
@@ -290,7 +292,17 @@ export async function searchCatalogProducts(
       explanation_source?: 'llm' | 'fallback' | 'none'
     }>
     retrieval: { fusion_method: string; prefilter_count: number }
+    intent?: RecommendResponse['intent'] | null
+    outfits?: RecommendResponse['outfits']
   }
+  const recommendation = data.intent && data.outfits?.length
+    ? {
+        session_id: getSessionId(identity.userId),
+        intent: data.intent,
+        outfits: data.outfits,
+        fallback_used: true,
+      }
+    : undefined
   return {
     products: data.products.flatMap(hit => {
       if (!hit.product) return []
@@ -298,7 +310,9 @@ export async function searchCatalogProducts(
       return product ? [{
         ...product,
         similarity: Math.round(hit.score * 100),
-        ...(hit.explanation ? { similarityExplanation: hit.explanation } : {}),
+        ...(hit.explanation
+          ? { similarityExplanation: hit.explanation }
+          : {}),
         ...(hit.explanation_source === 'llm' || hit.explanation_source === 'fallback'
           ? { similarityExplanationSource: hit.explanation_source }
           : {}),
@@ -306,6 +320,7 @@ export async function searchCatalogProducts(
     }),
     fusionMethod: data.retrieval.fusion_method,
     candidateCount: data.retrieval.prefilter_count,
+    recommendation,
   }
 }
 
