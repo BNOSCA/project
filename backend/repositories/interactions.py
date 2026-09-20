@@ -16,7 +16,11 @@ class InteractionRepository:
     def record_interaction(self, event: InteractionEvent | dict) -> str:
         data = event.model_dump(mode="json") if isinstance(event, InteractionEvent) else dict(event)
         event_id = data["event_id"]
-        self.collection.document(event_id).set(data, merge=False)
+        try:
+            self.collection.document(event_id).create(data)
+        except Exception as exc:
+            if exc.__class__.__name__ not in {"AlreadyExists", "Conflict"}:
+                raise
         return event_id
 
     def list_for_session(self, session_id: str, limit: int = 100) -> list[InteractionEvent]:

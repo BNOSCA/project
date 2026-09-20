@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, HttpUrl, model_validator
@@ -84,6 +84,8 @@ class UserProfile(Contract):
     user_id: str
     gender: Literal["female", "male", "non_binary", "unspecified"] | None = None
     age_range: str | None = None
+    preferred_styles: list[str] = Field(default_factory=list)
+    onboarding_completed: bool = False
     preference_weights: dict[str, float] = Field(default_factory=dict)
     creator_affinity: dict[str, float] = Field(default_factory=dict)
     followed_creator_ids: list[str] = Field(default_factory=list)
@@ -98,7 +100,7 @@ class InteractionEvent(Contract):
     user_id: str = "anonymous-demo"
     event_type: Literal[
         "impression", "dwell", "post_open", "like", "dislike", "save", "follow",
-        "product_click", "not_interested", "hide", "quick_skip",
+        "product_click", "not_interested", "hide", "quick_skip", "explicit", "unlike", "unsave",
     ]
     target_type: Literal["post", "product"]
     target_id: str
@@ -112,6 +114,8 @@ class InteractionEvent(Contract):
     def dwell_requires_duration(self) -> "InteractionEvent":
         if self.event_type == "dwell" and self.dwell_ms is None:
             raise ValueError("dwell_ms is required for dwell events")
+        if self.created_at is None:
+            self.created_at = datetime.now(timezone.utc)
         return self
 
 
@@ -138,6 +142,8 @@ class FeedbackEvent(Contract):
             raise ValueError("like/dislike feedback requires a target")
         if self.event_type == "explicit" and not self.explicit_patch and not self.text:
             raise ValueError("explicit feedback requires text or explicit_patch")
+        if self.created_at is None:
+            self.created_at = datetime.now(timezone.utc)
         return self
 
 
@@ -347,6 +353,18 @@ class InsightsResponse(Contract):
     time_range: dict[str, str | None]
     source_type: Literal["real", "demo", "synthetic"] = "demo"
     event_counts: dict[str, int] = Field(default_factory=dict)
+
+
+class AdminStatusResponse(Contract):
+    is_admin: bool
+
+
+class AdminInsightsResponse(Contract):
+    overview: dict[str, int]
+    age_distribution: dict[str, int]
+    style_distribution: dict[str, int]
+    engagement: dict[str, int]
+    rates: dict[str, float]
 
 
 class ErrorBody(Contract):
