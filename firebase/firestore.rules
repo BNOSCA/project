@@ -30,20 +30,22 @@ service cloud.firestore {
     }
 
     match /users/{uid} {
-      allow read, create, update, delete: if ownsUserDocument(uid);
+      allow read: if ownsUserDocument(uid);
+      allow write: if false;
+      match /{state=**} {
+        allow read: if ownsUserDocument(uid);
+        allow write: if false;
+      }
     }
 
     match /sessions/{sessionId} {
       allow read: if signedIn() && resource.data.user_id == request.auth.uid;
-      allow create: if payloadUserMatchesAuth();
-      allow update, delete: if signedIn()
-        && resource.data.user_id == request.auth.uid
-        && request.resource.data.user_id == request.auth.uid;
+      allow write: if false;
     }
 
     match /interactions/{eventId} {
       allow read: if signedIn() && resource.data.user_id == request.auth.uid;
-      allow create: if payloadUserMatchesAuth();
+      allow create: if false;
       allow update, delete: if false;
     }
 

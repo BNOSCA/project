@@ -198,6 +198,10 @@ def extract_budget(
     text: str,
 ) -> int | None:
     patterns = (
+        r"(?:預算|budget)\s*"
+        r"(?:提高到|提高至|提升到|提升至|增加到|增加至|調整到|調整至|改成|改為)"
+        r"\s*(\d{2,7})",
+
         r"(?:預算|budget)"
         r"(?:是|約|大概|大約|差不多)?"
         r"\s*[:：]?\s*(\d{2,7})",
@@ -326,6 +330,7 @@ def split_alias_preferences(
                 )
 
     return positive, negative
+
 
 
 def add_unique(
@@ -576,7 +581,57 @@ def parse_fallback_intent(
             not in same_turn_material_conflict
         ],
     )
+    remove_values(
+        preferred["materials"],
+        [
+            value
+            for value
+            in excluded_materials
+            if value
+            not in same_turn_material_conflict
+        ],
+    )
 
+    # 「改成 / 換成」代表替換本次有提到的偏好維度
+    is_replacement = bool(
+        re.search(
+            r"(?:改成|換成|改為|換為)",
+            normalized_text,
+        )
+    )
+
+    if is_replacement:
+        if preferred_styles:
+            preferred["styles"] = []
+
+        if preferred_colors:
+            preferred["colors"] = []
+
+        if preferred_fits:
+            preferred["fits"] = []
+
+        if preferred_materials:
+            preferred["materials"] = []
+
+    add_unique(
+        preferred["styles"],
+        preferred_styles,
+    )
+
+    add_unique(
+        preferred["colors"],
+        preferred_colors,
+    )
+
+    add_unique(
+        preferred["fits"],
+        preferred_fits,
+    )
+
+    add_unique(
+        preferred["materials"],
+        preferred_materials,
+    )
     add_unique(
         preferred["styles"],
         preferred_styles,

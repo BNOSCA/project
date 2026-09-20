@@ -1,7 +1,9 @@
 import {
   Bookmark,
+  BarChart3,
   Compass,
   Home,
+  LogOut,
   Plus,
   ShoppingBag,
   User as UserIcon,
@@ -20,9 +22,11 @@ interface SidebarProps {
   currentUser: User
 
   isAuthenticated: boolean
+  isAdmin: boolean
 
   onNavigate: (page: AppPage) => void
   onAuthClick: () => void
+  onSignOut: () => Promise<void>
 }
 
 const navigationItems: Array<{
@@ -66,8 +70,10 @@ export function Sidebar({
   currentPage,
   currentUser,
   isAuthenticated,
+  isAdmin,
   onNavigate,
   onAuthClick,
+  onSignOut,
 }: SidebarProps) {
   return (
     <aside className="left-sidebar">
@@ -82,7 +88,7 @@ export function Sidebar({
         className="desktop-nav"
         aria-label="主要導覽"
       >
-        {navigationItems.map(item => {
+        {[...navigationItems, ...(isAdmin ? [{ id: 'insights' as AppPage, label: '數據洞察', icon: BarChart3 }] : [])].map(item => {
           const Icon = item.icon
 
           return (
@@ -115,6 +121,7 @@ export function Sidebar({
         發佈穿搭
       </button>
 
+      <div className="sidebar-account">
       <button
         className="mini-profile"
         onClick={() => isAuthenticated ? onNavigate('profile') : onAuthClick()}
@@ -134,6 +141,8 @@ export function Sidebar({
           </small>
         </span>
       </button>
+      {isAuthenticated && <button className="sidebar-signout" type="button" title="登出帳號" aria-label="登出帳號" onClick={() => void onSignOut()}><LogOut size={18} strokeWidth={1.8} /></button>}
+      </div>
     </aside>
   )
 }
