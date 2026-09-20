@@ -13,6 +13,12 @@ import {
   searchCatalogProducts,
   type CatalogSearchResult,
 } from '../../services/feed'
+import {
+  recommend,
+  type RecommendResponse,
+} from '../../services/recommendation'
+import { getRequestIdentity } from '../../services/auth'
+import { getSessionId } from '../../services/session'
 import { QuerySuggestionChips } from './QuerySuggestionChips'
 
 const suggestions = [
@@ -25,6 +31,7 @@ const suggestions = [
 
 interface AIQueryBarProps {
   onResult: (response: CatalogSearchResult) => void
+  onRecommendation: (response: RecommendResponse) => void
   onStart: () => void
   onError: (message: string) => void
   isLoading: boolean
@@ -32,6 +39,7 @@ interface AIQueryBarProps {
 
 export function AIQueryBar({
   onResult,
+  onRecommendation,
   onStart,
   onError,
   isLoading,
@@ -84,6 +92,19 @@ export function AIQueryBar({
       })
 
       onResult(response)
+      if (response.recommendation) {
+        onRecommendation(response.recommendation)
+      } else if (text) {
+        // Support a frontend deployed ahead of the API rollout: older search
+        // responses do not yet contain tag-derived outfits.
+        void getRequestIdentity()
+          .then(identity => recommend({
+            session_id: getSessionId(identity.userId),
+            text,
+          }))
+          .then(onRecommendation)
+          .catch(() => {})
+      }
     } catch (error) {
       onError(error instanceof Error ? error.message : '目前無法取得推薦，請稍後再試。')
     }

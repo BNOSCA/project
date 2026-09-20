@@ -93,6 +93,69 @@ def filter_products(products: list[Product], filters: SearchFilters, intent: Int
     return result
 
 
+_OUTFIT_EXCLUDED_NAME_PARTS = {
+    "top": ("購物袋", "內褲", "襪", "鞋", "吊飾"),
+    "bottom": ("購物袋", "內褲", "襪", "鞋", "吊飾"),
+    "shoes": ("購物袋", "內褲", "襪", "吊飾"),
+}
+
+_STYLE_NEIGHBORS = {
+    "japanese": {"casual", "relaxed", "minimal", "straight", "denim", "canvas"},
+    "minimal": {"minimal", "straight", "regular", "formal"},
+    "business_casual": {"formal", "minimal", "regular", "straight", "oxford"},
+    "smart_casual": {"casual", "minimal", "regular", "straight", "oxford"},
+    "casual": {"casual", "relaxed", "denim", "canvas", "sneaker"},
+    "streetwear": {"relaxed", "denim", "canvas", "sneaker"},
+    "preppy": {"formal", "regular", "oxford", "straight"},
+}
+
+_OCCASION_STYLE_NEIGHBORS = {
+    "interview": {"formal", "minimal", "regular", "straight", "oxford"},
+    "office": {"formal", "minimal", "regular", "straight", "oxford"},
+    "date": {"minimal", "casual", "relaxed", "straight"},
+    "school": {"casual", "relaxed", "denim", "canvas", "sneaker"},
+    "outdoor": {"casual", "relaxed", "sneaker"},
+}
+
+
+def _is_outfit_item(product: Product) -> bool:
+    """Keep synthetic display stock and catalog misclassifications out of outfits."""
+    # `data/fixtures/products.json` is only a six-item visual fixture. Its
+    # products must never be presented as generated outfit recommendations.
+    if product.source == "synthetic_demo" or "（展示）" in product.name:
+        return False
+    if product.category not in _OUTFIT_EXCLUDED_NAME_PARTS:
+        return False
+    return not any(token in product.name for token in _OUTFIT_EXCLUDED_NAME_PARTS[product.category])
+
+
+def _outfit_style_tags(product: Product) -> set[str]:
+    """Enrich sparse catalog tags with conservative product-title evidence."""
+    tags = set(product.styles)
+    name = product.name.casefold()
+    if any(token in name for token in ("襯衫", "針織", "polo", "打褶", "直筒", "樂福", "牛津")):
+        tags.update({"minimal", "regular", "formal"})
+    if any(token in name for token in ("寬", "baggy", "barrel", "蝙蝠袖")):
+        tags.add("relaxed")
+    if any(token in name for token in ("牛仔", "denim")):
+        tags.add("denim")
+    if any(token in name for token in ("帆布", "運動鞋", "sneaker")):
+        tags.update({"canvas", "sneaker", "casual"})
+    return tags
+
+
+def _intent_outfit_tag_weights(intent: Intent) -> dict[str, float]:
+    """Convert parsed search tags to catalog tags, favouring the use occasion."""
+    tags: dict[str, float] = {}
+    for style in intent.preferred.styles:
+        for tag in _STYLE_NEIGHBORS.get(style, {style}):
+            tags[tag] = max(tags.get(tag, 0), 1.0)
+    for occasion in intent.occasion:
+        for tag in _OCCASION_STYLE_NEIGHBORS.get(occasion, set()):
+            tags[tag] = max(tags.get(tag, 0), 2.0)
+    return tags
+
+
 def parse_demo_intent(text: str, session_id: str, previous: Intent | None = None) -> Intent:
     """A small visible fallback: never invent attributes from an LLM response."""
     intent = previous.model_copy(deep=True) if previous else Intent(session_id=session_id)
@@ -201,29 +264,38 @@ class MockServices:
 
     def recommend(self, intent: Intent, user_id: str, filters: SearchFilters) -> RecommendationResponse:
         products = [product for product in filter_products(self.catalog.products, filters, intent)
-                    if product.price is not None and (intent.budget_total is None or product.price <= intent.budget_total)]
+                    if product.price is not None and _is_outfit_item(product)
+                    and (intent.budget_total is None or product.price <= intent.budget_total)]
         profile = self.profile(intent.session_id, user_id)
+        query_tag_weights = _intent_outfit_tag_weights(intent)
+
+        def tag_match(item: Product) -> float:
+            return sum(query_tag_weights.get(tag, 0) for tag in _outfit_style_tags(item))
+
         def priority(item: Product) -> tuple[float, int, str]:
-            matches = (bool(set(item.styles) & set(intent.preferred.styles)) +
+            matches = (tag_match(item) +
                        bool(set(item.colors) & set(intent.preferred.colors)) +
                        bool(item.fit and item.fit in intent.preferred.fits))
             preference = sum(profile.preference_weights.get(f"style:{style}", 0) for style in item.styles)
             preference += sum(profile.preference_weights.get(f"color:{color}", 0) for color in item.colors)
             return (-(matches + 0.35 * preference), item.price, item.product_id)
 
+        categories = ["top", "bottom"]
+        if any(product.category == "shoes" for product in products):
+            categories.append("shoes")
         by_category = {category: sorted((p for p in products if p.category == category), key=priority)[:10]
-                       for category in intent.required_categories}
+                       for category in categories}
         outfits: list[Outfit] = []
         if all(by_category.values()):
             from itertools import product
-            for items in product(*(by_category[c] for c in intent.required_categories)):
+            for items in product(*(by_category[c] for c in categories)):
                 total = sum(item.price for item in items)
                 if intent.budget_total is not None and total > intent.budget_total:
                     continue
-                style_hits = sum(bool(set(item.styles) & set(intent.preferred.styles)) for item in items)
+                style_hits = sum(min(1, tag_match(item) / 2) for item in items)
                 color_hits = sum(bool(set(item.colors) & set(intent.preferred.colors)) for item in items)
                 fit_hits = sum(bool(item.fit and item.fit in intent.preferred.fits) for item in items)
-                active_dimensions = sum(bool(values) for values in (intent.preferred.styles, intent.preferred.colors, intent.preferred.fits))
+                active_dimensions = sum(bool(values) for values in (query_tag_weights, intent.preferred.colors, intent.preferred.fits))
                 relevance = (style_hits + color_hits + fit_hits) / max(active_dimensions * len(items), 1)
                 weights = ([profile.preference_weights.get(f"style:{style}", 0) for item in items for style in item.styles] +
                            [profile.preference_weights.get(f"color:{color}", 0) for item in items for color in item.colors])
@@ -237,19 +309,39 @@ class MockServices:
                 outfit = Outfit(outfit_id=outfit_id, items=list(items), total_price=total, score=score,
                                 score_breakdown=ScoreBreakdown(relevance=relevance, preference=preference, compatibility=0, trend=0),
                                 matched_constraints=list(intent.hard_constraints), warnings=warnings)
-                outfit.reason = build_explanation(outfit, intent)
                 outfits.append(outfit)
         outfits.sort(key=lambda o: (-o.score, o.total_price, o.outfit_id))
-        distinct_outfits = []
+        # Select the three cards as a small collection, not merely the three
+        # highest-scoring permutations. A repeated shoe/top/bottom gets a
+        # reuse penalty, so each card demonstrates a genuinely different
+        # option. Reuse remains possible only when the catalog lacks another
+        # viable item in that category.
+        distinct_outfits: list[Outfit] = []
         seen_product_pages = set()
-        for outfit in outfits:
-            pages = tuple(str(item.product_url or item.product_id) for item in outfit.items)
-            if pages in seen_product_pages:
-                continue
-            seen_product_pages.add(pages)
-            distinct_outfits.append(outfit)
-            if len(distinct_outfits) == 3:
+        used_by_category: dict[str, set[str]] = {category: set() for category in categories}
+        remaining = list(outfits)
+        while remaining and len(distinct_outfits) < 3:
+            viable = []
+            for outfit in remaining:
+                pages = tuple(str(item.product_url or item.product_id) for item in outfit.items)
+                if pages in seen_product_pages:
+                    continue
+                reuse_count = sum(
+                    str(item.product_url or item.product_id) in used_by_category[item.category]
+                    for item in outfit.items
+                )
+                viable.append((reuse_count, -outfit.score, outfit.total_price, outfit.outfit_id, outfit))
+            if not viable:
                 break
+            _, _, _, _, chosen = min(viable)
+            chosen_pages = tuple(str(item.product_url or item.product_id) for item in chosen.items)
+            seen_product_pages.add(chosen_pages)
+            for item in chosen.items:
+                used_by_category[item.category].add(str(item.product_url or item.product_id))
+            distinct_outfits.append(chosen)
+            remaining.remove(chosen)
+        for outfit in distinct_outfits:
+            outfit.reason = build_explanation(outfit, intent)
         return RecommendationResponse(session_id=intent.session_id, intent=intent, outfits=distinct_outfits, fallback_used=True,
                                       message="商品資料為展示快照；價格與庫存可能變動。")
 

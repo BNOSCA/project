@@ -20,8 +20,9 @@ from .cloud_store import CloudCatalog, CloudServices, CloudStore, key
 from .config import ROOT
 from .firebase import get_firestore_client, initialize_firebase
 from .mock import filter_products, parse_demo_intent
-from .schemas import FeedbackEvent, FeedbackResponse, InteractionEvent, Intent, Post, RecommendRequest, SearchRequest, UserProfile
-from .search import search_products
+from .schemas import FeedbackEvent, FeedbackResponse, InteractionEvent, Intent, Post, RecommendRequest, SearchFilters, SearchRequest, SearchResponse, UserProfile
+from .search import infer_query_categories, search_products
+from .search_explanations import add_search_explanations
 
 logger = logging.getLogger(__name__)
 STYLES = {"japanese", "korean", "minimal", "streetwear", "casual", "outdoor", "sporty", "vintage", "preppy", "techwear", "old_money"}
@@ -227,16 +228,21 @@ def create_cloud_app(settings):
             "kind": "outfits", "created_at": datetime.now(timezone.utc), **result.model_dump(mode="json")})
         return result
 
-    @app.post("/api/v1/search")
-    def search(body: SearchRequest, user_id=Depends(uid)):
+    @app.post("/api/v1/search", response_model=SearchResponse)
+    def search(body: SearchRequest, user_id=Depends(uid)) -> SearchResponse:
         if body.mode in {"text", "mixed"} and not body.query_text.strip():
             raise HTTPException(422, "請輸入文字搜尋條件")
         if body.mode in {"image", "mixed"} and not body.query_image:
             raise HTTPException(422, "請提供搜尋圖片")
         svc = service(user_id)
-        intent = parse_demo_intent(body.query_text, body.session_id)
+        # Keep the query interpretation shared with `/recommend`: the search
+        # hits, their explanations, and generated outfits must reflect the
+        # same tags and constraints.
+        intent = svc.parse_intent(body.query_text, body.session_id, user_id, origin="search")
         previous = svc.store.get_intent(body.session_id)
         filters = body.filters.model_copy(deep=True)
+        if body.query_text.strip() and not filters.categories:
+            filters.categories = infer_query_categories(body.query_text)
         filters.excluded_colors = list(set(filters.excluded_colors + intent.excluded.colors +
             (Intent.model_validate(previous).excluded.colors if previous else [])))
         filters.excluded_fits = list(set(filters.excluded_fits + intent.excluded.fits +
@@ -244,6 +250,12 @@ def create_cloud_app(settings):
         if intent.budget_total is not None:
             filters.price_max = min(filters.price_max, intent.budget_total) if filters.price_max is not None else intent.budget_total
         result = search_products(body.model_copy(update={"filters": filters}), filter_products(svc.catalog.products, filters))
+        result.intent = intent
+        if body.query_text.strip() and not intent.needs_clarification:
+            # `MockServices.recommend`, inherited by CloudServices, excludes
+            # the six synthetic `products.json` display items by source.
+            result.outfits = svc.recommend(intent, user_id, SearchFilters()).outfits
+        result = add_search_explanations(result, intent.semantic_query or body.query_text)
         svc.store.write(f"search_history/{uuid.uuid4()}", {"user_id": user_id,
             "session_id": body.session_id, "query": body.query_text, "filters": filters.model_dump(),
             "created_at": datetime.now(timezone.utc), "result_ids": [p.product_id for p in result.products]})

@@ -8,7 +8,8 @@ from fastapi.testclient import TestClient
 from backend.cloud_api import create_cloud_app
 from backend.cloud_store import key
 from backend.config import ROOT, Settings
-from backend.mock import FixtureCatalog
+from backend.mock import FixtureCatalog, parse_demo_intent
+from backend.schemas import SearchResponse
 
 
 class Snapshot:
@@ -132,6 +133,37 @@ def test_cloud_authorization_and_onboarding(cloud):
     assert db.data['users/a']['onboarding_completed'] is True
     assert client.get('/api/v1/profile/a', headers=headers()).json()['preference_weights']['style:minimal'] == .4
     assert client.get('/api/v1/me', headers=headers('b')).json()['profile'] is None
+
+
+def test_cloud_search_returns_product_explanations_and_tag_derived_outfits(cloud, monkeypatch):
+    client, _, _ = cloud
+
+    def parsed(_self, text, session_id, _user_id, origin="unknown"):
+        intent = parse_demo_intent(text, session_id)
+        intent.origin = origin
+        return intent
+
+    def explain(response: SearchResponse, _query: str) -> SearchResponse:
+        for hit in response.products[:3]:
+            hit.explanation = f"「{hit.product.name}」的商品特徵與搜尋描述有關。"
+            hit.explanation_source = "llm"
+        return response
+
+    monkeypatch.setattr('backend.cloud_api.CloudServices.parse_intent', parsed)
+    monkeypatch.setattr('backend.cloud_api.add_search_explanations', explain)
+    import backend.search as search_module
+    from scripts.build_embeddings import FashionCLIPWrapper
+    monkeypatch.setattr(search_module, '_GLOBAL_MODEL', FashionCLIPWrapper(device='cpu', mock=True))
+
+    response = client.post('/api/v1/search', headers=headers(), json={
+        'session_id': 'search-explanations', 'query_text': '日系 襯衫', 'mode': 'text', 'limit': 3,
+    })
+
+    assert response.status_code == 200, response.text
+    result = response.json()
+    assert result['intent']['origin'] == 'search'
+    assert all(hit['explanation_source'] == 'llm' and hit['explanation'] for hit in result['products'])
+    assert result['outfits'] == []  # the cloud test catalog contains only excluded display stock
 
 
 def test_event_and_preference_commit_retry_are_atomic(cloud):

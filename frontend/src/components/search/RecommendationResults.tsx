@@ -45,7 +45,7 @@ function OutfitCard({
           <span>完整穿搭</span>
           <strong>NT${outfit.total_price.toLocaleString()}</strong>
         </div>
-        <p>{outfit.reason}</p>
+        <p>依本次搜尋標籤，組合上衣、下身與鞋款。</p>
         <ul className="recommendation-products">
           {outfit.items.map(item => (
             <li key={item.product_id}>
